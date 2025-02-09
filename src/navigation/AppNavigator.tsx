@@ -1,48 +1,57 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from '../screens/HomeScreen';
-import LessonDetailScreen from '../screens/LessonDetailScreen';
-import PhraseLearningScreen from '../screens/PhraseLearningScreen';
-import QuizScreen from '../screens/QuizScreen';
+import CourseListScreen from '../screens/CourseListScreen';
+import CourseDetailScreen from '../screens/CourseDetailScreen';
+import CourseLearningScreen from '../screens/CourseLearningScreen';
+import CourseQuizScreen from '../screens/CourseQuizScreen';
 import QuizResultScreen from '../screens/QuizResultScreen';
 
 export type RootStackParamList = {
-  Home: undefined;
-  LessonDetail: { lessonId: string };
-  PhraseLearning: { lessonId: string; phraseId?: string };
-  Quiz: { lessonId?: string } | undefined;
-  QuizResult: { correctCount: number; totalCount: number };
+  CourseList: undefined;
+  CourseDetail: { courseId: string };
+  CourseLearning: { courseId: string };
+  CourseQuiz: { courseId: string };
+  QuizResult: { correctCount: number; totalCount: number; courseId?: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      initialRouteName="CourseList"
+      screenOptions={{
+        headerTitleAlign: 'center',
+        headerStyle: {
+          backgroundColor: '#f8f8f8'
+        },
+        headerTintColor: '#333'
+      }}
+    >
       <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ title: 'ホーム', headerTitleAlign: 'center' }}
+        name="CourseList"
+        component={CourseListScreen}
+        options={{ title: '日本語学習コース' }}
       />
       <Stack.Screen
-        name="LessonDetail"
-        component={LessonDetailScreen}
-        options={{ title: 'レッスン詳細', headerTitleAlign: 'center' }}
+        name="CourseDetail"
+        component={CourseDetailScreen}
+        options={{ title: 'コース詳細' }}
       />
       <Stack.Screen
-        name="PhraseLearning"
-        component={PhraseLearningScreen}
-        options={{ title: 'フレーズ学習', headerTitleAlign: 'center' }}
+        name="CourseLearning"
+        component={CourseLearningScreen}
+        options={{ title: 'コース学習' }}
       />
       <Stack.Screen
-        name="Quiz"
-        component={QuizScreen}
-        options={{ title: 'クイズ', headerTitleAlign: 'center' }}
+        name="CourseQuiz"
+        component={CourseQuizScreen}
+        options={{ title: 'コースクイズ' }}
       />
       <Stack.Screen
         name="QuizResult"
         component={QuizResultScreen}
-        options={{ title: '結果', headerTitleAlign: 'center' }}
+        options={{ title: '結果' }}
       />
     </Stack.Navigator>
   );

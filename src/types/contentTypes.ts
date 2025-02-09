@@ -1,60 +1,72 @@
-export interface Phrase {
-  id: string;
-  lessonId: string;
-  jpText: string;
-  reading?: string;
-  translations: {
-    en?: string;
-    [lang: string]: string | undefined;
-  };
-  audio?: string;
-  words?: {
-    jp_word: string;
-    en_word: string;
-    audio?: string;
-  }[];
-  exampleSentences?: {
-    jp_text: string;
-    reading: string;
-    translations: {
-      en?: string;
-      [lang: string]: string | undefined;
-    };
-    audio?: string;
-  }[];
-}
-
+// レッスンの構造を定義
 export interface Lesson {
   id: string;
   title: string;
   description: string;
-  phrases: Phrase[];
+  category: string; // e.g., "basic", "business", "travel"
+  thumbnail: string;
+  totalEstimatedTime: string; // e.g., "30分"
+  courses: Course[];
 }
 
-export interface OutputTemplate {
+// コース全体の構造を定義
+export interface Course {
   id: string;
+  title: string;
   description: string;
-  parameters: {
-    text_shown?: boolean;
-    audio_shown?: boolean;
-    translation_shown?: boolean;
-    mask_pattern?: string | null;
-    source_language_prompt?: string;
-    dictionary_hints?: boolean;
-  };
+  level: 'beginner' | 'intermediate' | 'advanced';
+  estimatedTime: string; // e.g., "10分"
+  phrases: Phrase[];
+  quizQuestions: QuizQuestion[];
+  tags: string[]; // e.g., ["greeting", "daily", "formal"]
 }
 
+// 例文の構造を定義
+export interface ExampleSentence {
+  id: string;
+  jpText: string;
+  reading: string;
+  translations: {
+    en: string;
+  };
+  audio?: string;
+}
+
+// フレーズの構造を定義
+export interface Phrase {
+  id: string;
+  jpText: string;
+  reading: string;
+  translations: {
+    en: string;
+  };
+  audio?: string;
+  exampleSentences: ExampleSentence[];
+  words?: string[];
+}
+
+// クイズ問題の構造を定義
 export interface QuizQuestion {
   id: string;
-  lessonId?: string;
   question: string;
   options: string[];
   answerIndex: number;
   explanation: string;
 }
 
-export interface LessonData {
+// 進捗管理用の型定義
+export interface CourseProgress {
+  learnedPhraseIds: Set<string>;
+  completedQuizIds: Set<string>;
+  lastAccessedDate: Date;
+}
+
+export interface LessonProgress {
+  completedCourseIds: Set<string>;
+  lastAccessedDate: Date;
+}
+
+// コンテンツ全体の型定義
+export interface Content {
   lessons: Lesson[];
-  outputTemplates: OutputTemplate[];
-  quizQuestions: QuizQuestion[];
 }
