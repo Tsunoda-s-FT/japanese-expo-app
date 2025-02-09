@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Card, Title, Paragraph, ActivityIndicator } from 'react-native-paper';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Card, Title, Paragraph, ActivityIndicator, ProgressBar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -14,14 +14,12 @@ const CourseListScreen: React.FC = () => {
   const navigation = useNavigation<CourseListScreenNavProp>();
   const [courses, setCourses] = useState<Course[] | null>(null);
   const [loading, setLoading] = useState(true);
-  const { getCourseProgress } = useProgress();
+  const { courseProgressMap, getCourseProgressRatio } = useProgress();
 
   useEffect(() => {
-    (async () => {
-      const data = await getAllCourses();
-      setCourses(data);
-      setLoading(false);
-    })();
+    const data = getAllCourses();
+    setCourses(data);
+    setLoading(false);
   }, []);
 
   const handleCoursePress = (courseId: string) => {
@@ -29,19 +27,31 @@ const CourseListScreen: React.FC = () => {
   };
 
   if (loading) {
-    return <ActivityIndicator style={styles.loading} />;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   if (!courses) {
-    return <Paragraph style={styles.error}>コース情報を取得できませんでした。</Paragraph>;
+    return (
+      <View style={styles.errorContainer}>
+        <Paragraph style={styles.errorText}>コース情報を取得できませんでした。</Paragraph>
+      </View>
+    );
   }
 
   return (
     <ScrollView style={styles.container}>
       <Title style={styles.header}>日本語学習コース</Title>
       {courses.map((course) => {
-        const progress = getCourseProgress(course.id);
-        const progressText = `進捗: ${(progress * 100).toFixed(1)}%`;
+        const progress = getCourseProgressRatio(course.id);
+        const cp = courseProgressMap.get(course.id);
+        const learnedPhrases = cp?.learnedPhraseIds.size ?? 0;
+        const completedQuizzes = cp?.completedQuizIds.size ?? 0;
+        const totalPhrases = course.phrases.length;
+        const totalQuizzes = course.quizQuestions.length;
 
         return (
           <Card
@@ -51,8 +61,18 @@ const CourseListScreen: React.FC = () => {
           >
             <Card.Content>
               <Title>{course.title}</Title>
-              <Paragraph>{course.description}</Paragraph>
-              <Paragraph style={styles.progressText}>{progressText}</Paragraph>
+              <Paragraph style={styles.description}>{course.description}</Paragraph>
+              <View style={styles.progressContainer}>
+                <ProgressBar progress={progress} style={styles.progressBar} />
+                <Paragraph style={styles.progressText}>
+                  進捗: {(progress * 100).toFixed(1)}%
+                </Paragraph>
+                <Paragraph style={styles.statsText}>
+                  フレーズ: {learnedPhrases}/{totalPhrases}
+                  {' | '}
+                  クイズ: {completedQuizzes}/{totalQuizzes}
+                </Paragraph>
+              </View>
             </Card.Content>
           </Card>
         );
@@ -67,29 +87,48 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#f5f5f5'
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center'
+  },
   header: {
     fontSize: 24,
     marginBottom: 16,
     textAlign: 'center'
   },
   card: {
-    marginBottom: 16,
-    elevation: 4,
-    borderRadius: 8
+    marginBottom: 16
   },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+  description: {
+    marginVertical: 8,
+    color: '#666'
   },
-  error: {
-    padding: 16,
-    textAlign: 'center',
-    color: 'red'
+  progressContainer: {
+    marginTop: 8
+  },
+  progressBar: {
+    marginBottom: 4
   },
   progressText: {
-    marginTop: 8,
+    textAlign: 'right',
+    fontSize: 12,
     color: '#666'
+  },
+  statsText: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4
   }
 });
 

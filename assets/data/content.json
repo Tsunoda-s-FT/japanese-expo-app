@@ -3,18 +3,20 @@
     {
       "id": "lesson_greetings",
       "title": "あいさつ",
-      "description": "日本語の基本的なあいさつを学びます。時間帯や場面に応じた適切なあいさつ表現を身につけましょう。",
-      "thumbnail": "images/lessons/greetings.jpg",
+      "description": "日本語の基本的なあいさつを学びます。",
       "category": "basic",
+      "thumbnail": "images/lessons/greetings.jpg",
       "totalEstimatedTime": "45分",
+
       "courses": [
         {
           "id": "course_basic_greetings",
           "title": "基本のあいさつ",
-          "description": "朝昼晩の基本的なあいさつをまとめたコース。初対面や日常で使う基本的な挨拶表現を学習します。",
+          "description": "朝昼晩のあいさつをまとめたコース。日常でよく使う表現を学びます。",
           "level": "beginner",
           "estimatedTime": "15分",
           "tags": ["greeting", "daily", "formal"],
+
           "phrases": [
             {
               "id": "phrase_ohayou",
@@ -24,22 +26,11 @@
                 "en": "Good morning"
               },
               "audio": "audio/ohayou_gozaimasu.mp3",
-              "words": [
-                {
-                  "jp_word": "おはよう",
-                  "en_word": "morning greeting (casual)",
-                  "audio": "audio/ohayou.mp3"
-                },
-                {
-                  "jp_word": "ございます",
-                  "en_word": "polite suffix",
-                  "audio": "audio/gozaimasu.mp3"
-                }
-              ],
+
               "exampleSentences": [
                 {
-                  "jp_text": "朝起きたときに「おはようございます」と言います。",
-                  "reading": "あさ おきた とき に「おはようございます」と いいます。",
+                  "jp_text": "朝起きたら「おはようございます」と言います。",
+                  "reading": "あさ おきたら 「おはようございます」と いいます。",
                   "translations": {
                     "en": "We say 'Good morning' when we wake up."
                   },
@@ -55,72 +46,53 @@
                 "en": "Hello / Good afternoon"
               },
               "audio": "audio/konnichiwa.mp3",
-              "words": [
-                {
-                  "jp_word": "今日",
-                  "en_word": "today",
-                  "audio": "audio/kyou.mp3"
-                }
-              ],
+
               "exampleSentences": [
                 {
-                  "jp_text": "昼頃に会ったときは「こんにちは」と言いましょう。",
-                  "reading": "ひるごろ に あった とき は「こんにちは」と いいましょう。",
+                  "jp_text": "昼頃には「こんにちは」と挨拶しましょう。",
+                  "reading": "ひるごろ には「こんにちは」と あいさつしましょう。",
                   "translations": {
-                    "en": "Let's say 'Hello' when we meet someone during the day."
+                    "en": "Around noon, say 'Hello'."
                   },
                   "audio": "audio/example_konnichiwa_1.mp3"
                 }
               ]
             }
           ],
+
           "quizQuestions": [
             {
               "id": "quiz_greetings_1",
               "question": "「おはようございます」の意味はどれ？",
-              "options": [
-                "Good evening",
-                "Good night",
-                "Good morning",
-                "Hello"
-              ],
+              "options": ["Good night", "Good afternoon", "Good morning", "Hello"],
               "answerIndex": 2,
-              "explanation": "「おはようございます」は朝のあいさつで、英語の'Good morning'に相当します。"
+              "explanation": "「おはようございます」は朝の挨拶で、英語の'Good morning'に相当します。"
             }
           ]
         },
+
         {
           "id": "course_business_greetings",
           "title": "ビジネスのあいさつ",
-          "description": "オフィスでよく使うあいさつや、ビジネスシーンで必要な丁寧な表現を学びます。",
+          "description": "仕事で使う丁寧なあいさつ表現を学びます。",
           "level": "intermediate",
           "estimatedTime": "20分",
-          "tags": ["greeting", "business", "formal"],
+          "tags": ["business", "formal", "office"],
+
           "phrases": [
             {
               "id": "phrase_ohayou_business",
               "jpText": "おはようございます。今日もよろしくお願いいたします。",
-              "reading": "おはようございます。きょうもよろしくおねがいいたします。",
+              "reading": "おはようございます。きょうもよろしく おねがいいたします。",
               "translations": {
                 "en": "Good morning. I look forward to working with you today."
               },
               "audio": "audio/ohayou_business.mp3",
-              "words": [
-                {
-                  "jp_word": "よろしく",
-                  "en_word": "please treat me well",
-                  "audio": "audio/yoroshiku.mp3"
-                },
-                {
-                  "jp_word": "お願いいたします",
-                  "en_word": "I request (very polite)",
-                  "audio": "audio/onegai_itashimasu.mp3"
-                }
-              ],
+
               "exampleSentences": [
                 {
-                  "jp_text": "オフィスに着いたら、同僚に「おはようございます」と挨拶しましょう。",
-                  "reading": "オフィス に ついたら、どうりょう に 「おはようございます」と あいさつ しましょう。",
+                  "jp_text": "オフィスに着いたら「おはようございます」と挨拶しましょう。",
+                  "reading": "オフィス に ついたら「おはようございます」と あいさつしましょう。",
                   "translations": {
                     "en": "When you arrive at the office, greet your colleagues with 'Good morning'."
                   },
@@ -129,87 +101,83 @@
               ]
             }
           ],
+
           "quizQuestions": [
             {
               "id": "quiz_business_1",
-              "question": "ビジネスの場面で適切な朝の挨拶は？",
+              "question": "ビジネスの朝のあいさつとして最も丁寧なのは？",
               "options": [
                 "おはよう",
-                "おはようございます。今日もよろしくお願いいたします。",
-                "おはよう！元気？",
-                "やあ、おはよう"
+                "おはようございます",
+                "よろしくね",
+                "こんにちは"
               ],
               "answerIndex": 1,
-              "explanation": "ビジネスの場面では、「おはようございます。今日もよろしくお願いいたします。」という丁寧な表現を使います。"
+              "explanation": "ビジネスシーンでは「おはようございます」が適切です。"
             }
           ]
         }
       ]
     },
+
+
     {
       "id": "lesson_self_intro",
       "title": "自己紹介",
-      "description": "日本語での自己紹介の仕方を学びます。場面に応じた適切な自己紹介ができるようになりましょう。",
-      "thumbnail": "images/lessons/self_introduction.jpg",
+      "description": "日本語での自己紹介の仕方を学びます。",
       "category": "basic",
-      "totalEstimatedTime": "60分",
+      "thumbnail": "images/lessons/self_intro.jpg",
+      "totalEstimatedTime": "30分",
+
       "courses": [
         {
           "id": "course_basic_self_intro",
           "title": "基本の自己紹介",
-          "description": "名前、出身、趣味など、基本的な自己紹介の表現を学びます。",
+          "description": "名前・出身・趣味などの自己紹介フレーズを学びます。",
           "level": "beginner",
-          "estimatedTime": "20分",
+          "estimatedTime": "15分",
           "tags": ["self-introduction", "daily", "casual"],
+
           "phrases": [
             {
               "id": "phrase_watashi_wa",
-              "jpText": "私は田中です。",
-              "reading": "わたし は たなか です。",
+              "jpText": "私は山田です",
+              "reading": "わたし は やまだ です",
               "translations": {
-                "en": "I am Tanaka."
+                "en": "I am Yamada"
               },
               "audio": "audio/watashi_wa_tanaka.mp3",
-              "words": [
-                {
-                  "jp_word": "私",
-                  "en_word": "I",
-                  "audio": "audio/watashi.mp3"
-                },
-                {
-                  "jp_word": "です",
-                  "en_word": "to be (polite)",
-                  "audio": "audio/desu.mp3"
-                }
-              ],
+
               "exampleSentences": [
                 {
-                  "jp_text": "初めまして、私は田中です。よろしくお願いします。",
-                  "reading": "はじめまして、わたし は たなか です。よろしく おねがいします。",
+                  "jp_text": "初めまして。私は山田です。",
+                  "reading": "はじめまして。わたし は やまだ です。",
                   "translations": {
-                    "en": "Nice to meet you, I am Tanaka. Please treat me well."
+                    "en": "Nice to meet you. I'm Yamada."
                   },
                   "audio": "audio/example_intro_1.mp3"
                 }
               ]
             }
           ],
+
           "quizQuestions": [
             {
               "id": "quiz_self_intro_1",
-              "question": "「私は山田です」の英訳として正しいものは？",
+              "question": "「私は山田です」の正しい英訳はどれ？",
               "options": [
-                "You are Yamada.",
-                "I am Tanaka.",
                 "I am Yamada.",
-                "He is Yamada."
+                "He is Yamada.",
+                "They are Yamada.",
+                "You are Yamada."
               ],
-              "answerIndex": 2,
-              "explanation": "「私は」は'I am'、「山田です」は'Yamada'を意味します。"
+              "answerIndex": 0,
+              "explanation": "「私は山田です」は “I am Yamada.” に対応します。"
             }
           ]
         }
       ]
     }
+
   ]
 }

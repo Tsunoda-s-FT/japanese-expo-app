@@ -4,9 +4,9 @@ import { Card, Title, Button, useTheme, Text, ActivityIndicator } from 'react-na
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
-import { getCourse } from '../services/contentService';
+import { getCourseById } from '../services/contentService';
 import { useProgress } from '../context/ProgressContext';
-import { Course, Phrase, CourseProgress } from '../types/contentTypes';
+import { Course, Phrase } from '../types/contentTypes';
 import { playAudio } from '../utils/audioUtils';
 
 type CourseLearningScreenRouteProp = RouteProp<RootStackParamList, 'CourseLearning'>;
@@ -17,17 +17,17 @@ export default function CourseLearningScreen() {
   const navigation = useNavigation<CourseLearningScreenNavigationProp>();
   const route = useRoute<CourseLearningScreenRouteProp>();
   const { courseId } = route.params;
-  const { courseProgress, markPhraseLearned } = useProgress();
+  const { courseProgressMap, markPhraseLearned } = useProgress();
 
   const [course, setCourse] = useState<Course | null>(null);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadData = () => {
       try {
         console.log('Loading course data for ID:', courseId);
-        const courseData = getCourse(courseId);
+        const courseData = getCourseById(courseId);
         if (!courseData) {
           console.error('Course not found:', courseId);
           setLoading(false);
@@ -49,12 +49,15 @@ export default function CourseLearningScreen() {
   const handleNext = () => {
     if (!course) return;
 
+    // 現在のフレーズを学習済みとしてマーク
     const currentPhrase = course.phrases[currentPhraseIndex];
     markPhraseLearned(courseId, currentPhrase.id);
 
+    // 次のフレーズへ進む
     if (currentPhraseIndex < course.phrases.length - 1) {
       setCurrentPhraseIndex(prev => prev + 1);
     } else {
+      // コース完了
       navigation.navigate('CourseDetail', { courseId });
     }
   };
@@ -67,80 +70,81 @@ export default function CourseLearningScreen() {
 
   if (loading) {
     return (
-      <View style={[styles.container, styles.centered]}>
-        <ActivityIndicator size="large" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>
     );
   }
 
   if (!course) {
     return (
-      <View style={[styles.container, styles.centered]}>
-        <Text>コースが見つかりません。</Text>
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>コースが見つかりません。</Text>
       </View>
     );
   }
 
   const currentPhrase = course.phrases[currentPhraseIndex];
-  const progress = courseProgress.get(courseId);
-  const isPhraseLearned = progress?.learnedPhraseIds.has(currentPhrase.id);
+  const cp = courseProgressMap.get(courseId);
+  const isPhraseLearned = cp?.learnedPhraseIds.has(currentPhrase.id) ?? false;
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView style={styles.scrollView}>
         <Card style={styles.card}>
           <Card.Content>
-            <Title style={styles.phraseJp}>{currentPhrase.jpText}</Title>
-            <Text style={styles.phraseReading}>{currentPhrase.reading}</Text>
-            <Text style={styles.phraseEn}>{currentPhrase.translations.en}</Text>
-
-            {currentPhrase.exampleSentences && (
-              <View style={styles.examplesContainer}>
-                <Title style={styles.examplesTitle}>例文</Title>
-                {currentPhrase.exampleSentences.map((example, index) => (
-                  <View key={index} style={styles.exampleItem}>
-                    <Text style={styles.exampleJp}>{example.jpText}</Text>
-                    <Text style={styles.exampleReading}>{example.reading}</Text>
-                    <Text style={styles.exampleEn}>{example.translations.en}</Text>
-                    {example.audio && (
-                      <Button
-                        mode="text"
-                        onPress={() => handlePlayAudio(example.audio)}
-                        style={styles.audioButton}
-                      >
-                        音声を再生
-                      </Button>
-                    )}
-                  </View>
-                ))}
-              </View>
-            )}
+            <Title style={styles.phraseText}>{currentPhrase.jpText}</Title>
+            <Text style={styles.reading}>{currentPhrase.reading}</Text>
+            <Text style={styles.translation}>{currentPhrase.translations.en}</Text>
 
             {currentPhrase.audio && (
               <Button
-                mode="contained"
+                mode="outlined"
                 onPress={() => handlePlayAudio(currentPhrase.audio)}
-                style={styles.mainAudioButton}
+                style={styles.audioButton}
               >
-                フレーズの音声を再生
+                音声を再生
               </Button>
+            )}
+
+            {currentPhrase.exampleSentences && currentPhrase.exampleSentences.length > 0 && (
+              <View style={styles.examplesContainer}>
+                <Text style={styles.examplesTitle}>例文:</Text>
+                {currentPhrase.exampleSentences.map((example, index) => (
+                  <Card key={index} style={styles.exampleCard}>
+                    <Card.Content>
+                      <Text style={styles.exampleJp}>{example.jpText}</Text>
+                      <Text style={styles.exampleReading}>{example.reading}</Text>
+                      <Text style={styles.exampleTranslation}>{example.translations.en}</Text>
+                      {example.audio && (
+                        <Button
+                          mode="text"
+                          onPress={() => handlePlayAudio(example.audio)}
+                          style={styles.exampleAudioButton}
+                        >
+                          例文の音声
+                        </Button>
+                      )}
+                    </Card.Content>
+                  </Card>
+                ))}
+              </View>
             )}
           </Card.Content>
         </Card>
       </ScrollView>
 
       <View style={styles.footer}>
+        <Text style={styles.progress}>
+          {currentPhraseIndex + 1} / {course.phrases.length}
+        </Text>
         <Button
           mode="contained"
           onPress={handleNext}
           style={styles.nextButton}
-          disabled={isPhraseLearned}
         >
-          {isPhraseLearned ? '学習済み' : '次へ'}
+          {currentPhraseIndex < course.phrases.length - 1 ? '次へ' : '完了'}
         </Button>
-        <Text style={styles.progress}>
-          {currentPhraseIndex + 1} / {course.phrases.length}
-        </Text>
       </View>
     </View>
   );
@@ -149,74 +153,85 @@ export default function CourseLearningScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f5f5f5'
   },
-  centered: {
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  errorContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 16
   },
-  scrollContent: {
-    padding: 16,
+  errorText: {
+    color: 'red',
+    textAlign: 'center'
+  },
+  scrollView: {
+    flex: 1,
+    padding: 16
   },
   card: {
-    margin: 16,
-    elevation: 4,
+    marginBottom: 16
   },
-  phraseJp: {
+  phraseText: {
     fontSize: 24,
-    marginBottom: 8,
+    marginBottom: 8
   },
-  phraseReading: {
+  reading: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 8,
+    marginBottom: 8
   },
-  phraseEn: {
-    fontSize: 16,
-    color: '#333',
-  },
-  examplesContainer: {
-    backgroundColor: '#f8f8f8',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 24,
-  },
-  examplesTitle: {
-    fontSize: 16,
-    marginBottom: 16,
-  },
-  exampleItem: {
-    marginBottom: 16,
-  },
-  exampleJp: {
+  translation: {
     fontSize: 18,
-    marginBottom: 8,
-  },
-  exampleReading: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 8,
-  },
-  exampleEn: {
-    fontSize: 16,
-    color: '#333',
+    marginBottom: 16
   },
   audioButton: {
-    marginTop: 8,
+    marginBottom: 16
   },
-  mainAudioButton: {
-    marginTop: 16,
+  examplesContainer: {
+    marginTop: 16
+  },
+  examplesTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8
+  },
+  exampleCard: {
+    marginBottom: 8
+  },
+  exampleJp: {
+    fontSize: 16,
+    marginBottom: 4
+  },
+  exampleReading: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4
+  },
+  exampleTranslation: {
+    fontSize: 14,
+    color: '#444'
+  },
+  exampleAudioButton: {
+    marginTop: 4
   },
   footer: {
     padding: 16,
+    backgroundColor: 'white',
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
-  },
-  nextButton: {
-    marginBottom: 8,
+    borderTopColor: '#eee'
   },
   progress: {
-    fontSize: 16,
-    color: '#666',
+    textAlign: 'center',
+    marginBottom: 8,
+    color: '#666'
   },
+  nextButton: {
+    marginTop: 8
+  }
 });

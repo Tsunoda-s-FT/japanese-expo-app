@@ -4,7 +4,7 @@ import { Text, Button, ActivityIndicator, ProgressBar, Card, Title, Paragraph } 
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { getCourse } from '../services/contentService';
+import { getCourseById } from '../services/contentService';
 import { Course } from '../types/contentTypes';
 import { useProgress } from '../context/ProgressContext';
 
@@ -19,14 +19,12 @@ const CourseDetailScreen: React.FC = () => {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const { getCourseProgress, courseProgress } = useProgress();
+  const { courseProgressMap } = useProgress();
 
   useEffect(() => {
-    (async () => {
-      const foundCourse = await getCourse(courseId);
-      setCourse(foundCourse || null);
-      setLoading(false);
-    })();
+    const foundCourse = getCourseById(courseId);
+    setCourse(foundCourse || null);
+    setLoading(false);
   }, [courseId]);
 
   const handleStartCourse = () => {
@@ -48,59 +46,53 @@ const CourseDetailScreen: React.FC = () => {
   }
 
   // 進捗状況の計算
-  const getProgress = () => {
-    if (!course) return { phrases: 0, quizzes: 0 };
-    const progress = courseProgress.get(courseId);
-    if (!progress) return { phrases: 0, quizzes: 0 };
+  const totalPhrases = course.phrases.length;
+  const totalQuizzes = course.quizQuestions.length;
 
-    return {
-      phrases: progress.learnedPhraseIds.size / course.phrases.length,
-      quizzes: progress.completedQuizIds.size / course.quizQuestions.length
-    };
-  };
+  const cp = courseProgressMap.get(courseId);
+  const learnedCount = cp ? cp.learnedPhraseIds.size : 0;
+  const quizCompletedCount = cp ? cp.completedQuizIds.size : 0;
 
-  const progress = getProgress();
+  const phraseProgressRatio = totalPhrases > 0 ? learnedCount / totalPhrases : 0;
+  const quizProgressRatio = totalQuizzes > 0 ? quizCompletedCount / totalQuizzes : 0;
 
   return (
     <View style={styles.container}>
-      <Card style={styles.headerCard}>
+      <Card style={styles.card}>
         <Card.Content>
-          <Title style={styles.title}>{course.title}</Title>
-          <Paragraph style={styles.description}>{course.description}</Paragraph>
+          <Title>{course.title}</Title>
+          <Paragraph>{course.description}</Paragraph>
+          <View style={styles.metaInfo}>
+            <Text>レベル: {course.level}</Text>
+            <Text>所要時間: {course.estimatedTime}</Text>
+          </View>
         </Card.Content>
       </Card>
 
-      <View style={styles.progressSection}>
-        <Text style={styles.sectionTitle}>学習の進捗</Text>
-        <ProgressBar progress={progress.phrases} style={styles.progressBar} />
-        <View style={styles.statsContainer}>
-          <Text style={styles.statsText}>
-            フレーズ学習: {progress.phrases * 100}% ({progress.phrases * course.phrases.length} / {course.phrases.length})
-          </Text>
-          <Text style={styles.statsText}>
-            クイズ完了: {progress.quizzes * 100}% ({progress.quizzes * course.quizQuestions.length} / {course.quizQuestions.length})
-          </Text>
-        </View>
+      <View style={styles.progressContainer}>
+        <Text>フレーズ進捗: {(phraseProgressRatio * 100).toFixed(0)}%</Text>
+        <ProgressBar progress={phraseProgressRatio} style={styles.progressBar} />
+
+        <Text>クイズ進捗: {(quizProgressRatio * 100).toFixed(0)}%</Text>
+        <ProgressBar progress={quizProgressRatio} style={styles.progressBar} />
       </View>
 
-      <View style={styles.buttonContainer}>
-        <Button
-          mode="contained"
-          style={styles.button}
-          onPress={handleStartCourse}
-        >
-          コースを開始
-        </Button>
+      <Button
+        mode="contained"
+        style={styles.button}
+        onPress={handleStartCourse}
+      >
+        コース学習を開始
+      </Button>
 
-        <Button
-          mode="outlined"
-          style={styles.button}
-          onPress={handleStartQuiz}
-          disabled={course.quizQuestions.length === 0}
-        >
-          コースのクイズを受ける
-        </Button>
-      </View>
+      <Button
+        mode="outlined"
+        style={styles.button}
+        onPress={handleStartQuiz}
+        disabled={course.quizQuestions.length === 0}
+      >
+        コースのクイズを受ける
+      </Button>
     </View>
   );
 };
@@ -108,50 +100,7 @@ const CourseDetailScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5'
-  },
-  headerCard: {
-    marginBottom: 16,
-    elevation: 4,
-    borderRadius: 8
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 8
-  },
-  description: {
-    fontSize: 16,
-    color: '#666'
-  },
-  progressSection: {
-    backgroundColor: 'white',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8
-  },
-  progressBar: {
-    height: 8,
-    borderRadius: 4
-  },
-  statsContainer: {
-    marginTop: 8
-  },
-  statsText: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4
-  },
-  buttonContainer: {
-    marginTop: 16
-  },
-  button: {
-    marginBottom: 8
+    padding: 16
   },
   loading: {
     flex: 1,
@@ -159,9 +108,25 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   error: {
-    padding: 16,
+    color: 'red',
     textAlign: 'center',
-    color: 'red'
+    marginTop: 20
+  },
+  card: {
+    marginBottom: 16
+  },
+  metaInfo: {
+    marginTop: 8
+  },
+  progressContainer: {
+    marginVertical: 16
+  },
+  progressBar: {
+    height: 8,
+    marginVertical: 4
+  },
+  button: {
+    marginTop: 8
   }
 });
 

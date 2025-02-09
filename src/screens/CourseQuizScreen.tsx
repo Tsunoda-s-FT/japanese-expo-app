@@ -4,10 +4,9 @@ import { Text, Button, ActivityIndicator, ProgressBar, Card, RadioButton } from 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { getCourse } from '../services/contentService';
+import { getCourseById } from '../services/contentService';
 import { Course, QuizQuestion } from '../types/contentTypes';
 import { useProgress } from '../context/ProgressContext';
-import { Audio } from 'expo-av';
 import { playAudio } from '../utils/audioUtils';
 
 type CourseQuizRouteProp = RouteProp<RootStackParamList, 'CourseQuiz'>;
@@ -25,40 +24,29 @@ const CourseQuizScreen: React.FC = () => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [sound, setSound] = useState<Audio.Sound>();
 
-  const { markQuizCompleted } = useProgress();
+  const { courseProgressMap, markQuizCompleted } = useProgress();
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const foundCourse = await getCourse(courseId);
-      if (foundCourse) {
-        setCourse(foundCourse);
-        setQuestions(foundCourse.quizQuestions);
-      }
-      setLoading(false);
-    })();
+    setLoading(true);
+    const foundCourse = getCourseById(courseId);
+    if (foundCourse) {
+      setCourse(foundCourse);
+      setQuestions(foundCourse.quizQuestions);
+    }
+    setLoading(false);
   }, [courseId]);
 
-  // サウンドのクリーンアップ
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
-
-  const handleAnswer = async () => {
+  const handleSubmit = () => {
     if (selectedOption === null || !course) return;
 
     const currentQuestion = questions[currentIndex];
+    setShowExplanation(true);
+
     if (selectedOption === currentQuestion.answerIndex) {
       setCorrectCount(prev => prev + 1);
-      await markQuizCompleted(courseId, currentQuestion.id);
+      markQuizCompleted(courseId, currentQuestion.id);
     }
-    setShowExplanation(true);
   };
 
   const handleNext = () => {
@@ -67,7 +55,7 @@ const CourseQuizScreen: React.FC = () => {
       setSelectedOption(null);
       setShowExplanation(false);
     } else {
-      // クイズ終了、結果画面へ
+      // クイズ完了、結果画面へ
       navigation.navigate('QuizResult', {
         courseId,
         correctCount,
@@ -86,43 +74,48 @@ const CourseQuizScreen: React.FC = () => {
 
   if (!course || questions.length === 0) {
     return (
-      <View style={styles.container}>
-        <Text>クイズが見つかりませんでした。</Text>
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>クイズが見つかりません。</Text>
       </View>
     );
   }
 
   const currentQuestion = questions[currentIndex];
   const progress = (currentIndex + 1) / questions.length;
+  const cp = courseProgressMap.get(courseId);
+  const isQuizCompleted = cp?.completedQuizIds.has(currentQuestion.id) ?? false;
 
   return (
     <ScrollView style={styles.container}>
-      <ProgressBar progress={progress} />
-      <Text style={styles.progress}>
-        {currentIndex + 1} / {questions.length}
-      </Text>
+      <ProgressBar progress={progress} style={styles.progressBar} />
+      <Text style={styles.progressText}>{currentIndex + 1} / {questions.length}</Text>
 
       <Card style={styles.questionCard}>
         <Card.Content>
-          <Text style={styles.questionText}>{currentQuestion.question}</Text>
+          <Text style={styles.question}>{currentQuestion.question}</Text>
 
           <RadioButton.Group
-            onValueChange={value => setSelectedOption(Number(value))}
-            value={selectedOption?.toString() ?? ''}
+            onValueChange={(val) => setSelectedOption(Number(val))}
+            value={selectedOption?.toString() || ''}
           >
-            {currentQuestion.options.map((option, index) => (
+            {currentQuestion.options.map((opt, idx) => (
               <RadioButton.Item
-                key={index}
-                label={option}
-                value={index.toString()}
+                key={idx}
+                label={opt}
+                value={idx.toString()}
                 disabled={showExplanation}
+                style={styles.radioItem}
               />
             ))}
           </RadioButton.Group>
 
           {showExplanation && (
-            <View style={styles.explanationContainer}>
+            <View style={styles.explanationBox}>
+              <Text style={styles.explanationTitle}>解説:</Text>
               <Text style={styles.explanationText}>{currentQuestion.explanation}</Text>
+              <Text style={styles.resultText}>
+                {selectedOption === currentQuestion.answerIndex ? '正解！' : '不正解'}
+              </Text>
             </View>
           )}
         </Card.Content>
@@ -131,7 +124,7 @@ const CourseQuizScreen: React.FC = () => {
       {!showExplanation ? (
         <Button
           mode="contained"
-          onPress={handleAnswer}
+          onPress={handleSubmit}
           disabled={selectedOption === null}
           style={styles.button}
         >
@@ -150,39 +143,71 @@ const CourseQuizScreen: React.FC = () => {
   );
 };
 
-export default CourseQuizScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#f5f5f5'
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
-  progress: {
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center'
+  },
+  progressBar: {
+    marginBottom: 8
+  },
+  progressText: {
     textAlign: 'center',
-    marginVertical: 8,
+    marginBottom: 16,
+    color: '#666'
   },
   questionCard: {
-    marginVertical: 16,
+    marginBottom: 16
   },
-  questionText: {
+  question: {
     fontSize: 18,
-    marginBottom: 16,
+    marginBottom: 16
   },
-  explanationContainer: {
-    marginTop: 16,
+  radioItem: {
+    marginVertical: 4
+  },
+  explanationBox: {
+    backgroundColor: '#f0f0f0',
     padding: 16,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
+    marginTop: 16,
+    borderRadius: 8
+  },
+  explanationTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8
   },
   explanationText: {
     fontSize: 14,
+    color: '#444',
+    marginBottom: 8
+  },
+  resultText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 8,
+    color: '#2196F3'
   },
   button: {
-    marginTop: 16,
-  },
+    marginTop: 16
+  }
 });
+
+export default CourseQuizScreen;

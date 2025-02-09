@@ -1,161 +1,126 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CourseProgress } from '../types/contentTypes';
-import { getCourse } from '../services/contentService';
+
+// コースの進捗状態
+interface CourseProgress {
+  learnedPhraseIds: Set<string>;
+  completedQuizIds: Set<string>;
+  lastAccessedDate: Date;
+}
 
 interface ProgressContextValue {
-  learnedPhrases: Set<string>;
-  courseProgress: Map<string, CourseProgress>;
+  // コース単位の進捗をMapで保持 (courseId -> CourseProgress)
+  courseProgressMap: Map<string, CourseProgress>;
+
   markPhraseLearned: (courseId: string, phraseId: string) => void;
   markQuizCompleted: (courseId: string, quizId: string) => void;
-  initializeCourseProgress: (courseId: string) => void;
-  getCourseProgress: (courseId: string) => number;
-  saveCourseProgress: (courseId: string, progress: CourseProgress) => void;
+
+  getCourseProgressRatio: (courseId: string) => number;
+  getCourseQuizProgressRatio: (courseId: string) => number;
 }
 
 const ProgressContext = createContext<ProgressContextValue | undefined>(undefined);
 
-const STORAGE_KEYS = {
-  LEARNED_PHRASES: 'LEARNED_PHRASES',
-  COURSE_PROGRESS: 'COURSE_PROGRESS'
-} as const;
+const STORAGE_KEY = '@AppCourseProgress'; // AsyncStorage用キー
 
 export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [learnedPhrases, setLearnedPhrases] = useState<Set<string>>(new Set());
-  const [courseProgress, setCourseProgress] = useState<Map<string, CourseProgress>>(new Map());
+  const [courseProgressMap, setCourseProgressMap] = useState<Map<string, CourseProgress>>(new Map());
 
+  // 起動時に読み込み
   useEffect(() => {
     (async () => {
       try {
-        const savedPhrases = await AsyncStorage.getItem(STORAGE_KEYS.LEARNED_PHRASES);
-        if (savedPhrases) {
-          const phraseArray = JSON.parse(savedPhrases) as string[];
-          setLearnedPhrases(new Set(phraseArray));
+        const json = await AsyncStorage.getItem(STORAGE_KEY);
+        if (json) {
+          // 保存形式: { [courseId]: { learnedPhraseIds: string[], completedQuizIds: string[], lastAccessedDate: string } }
+          const obj = JSON.parse(json);
+          const newMap = new Map<string, CourseProgress>();
+          Object.entries(obj).forEach(([courseId, val]) => {
+            const v = val as {
+              learnedPhraseIds: string[];
+              completedQuizIds: string[];
+              lastAccessedDate: string;
+            };
+            newMap.set(courseId, {
+              learnedPhraseIds: new Set(v.learnedPhraseIds),
+              completedQuizIds: new Set(v.completedQuizIds),
+              lastAccessedDate: new Date(v.lastAccessedDate)
+            });
+          });
+          setCourseProgressMap(newMap);
         }
-
-        const savedProgress = await AsyncStorage.getItem(STORAGE_KEYS.COURSE_PROGRESS);
-        if (savedProgress) {
-          const progressArray = JSON.parse(savedProgress) as Array<{
-            courseId: string;
-            learnedPhraseIds: string[];
-            completedQuizIds: string[];
-            lastAccessedDate: string;
-          }>;
-          
-          const progressMap = new Map(
-            progressArray.map(p => [
-              p.courseId,
-              {
-                learnedPhraseIds: new Set(p.learnedPhraseIds),
-                completedQuizIds: new Set(p.completedQuizIds),
-                lastAccessedDate: new Date(p.lastAccessedDate)
-              }
-            ])
-          );
-          setCourseProgress(progressMap);
-        }
-      } catch (error) {
-        console.error('Failed to load progress data:', error);
+      } catch (e) {
+        console.error('Error loading progress:', e);
       }
     })();
   }, []);
 
+  // 変更があったら保存
   useEffect(() => {
-    (async () => {
-      try {
-        await AsyncStorage.setItem(
-          STORAGE_KEYS.LEARNED_PHRASES,
-          JSON.stringify(Array.from(learnedPhrases))
-        );
-      } catch (error) {
-        console.error('Failed to save learned phrases:', error);
-      }
-    })();
-  }, [learnedPhrases]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const progressArray = Array.from(courseProgress.entries()).map(([courseId, progress]) => ({
-          courseId,
-          learnedPhraseIds: Array.from(progress.learnedPhraseIds),
-          completedQuizIds: Array.from(progress.completedQuizIds),
-          lastAccessedDate: progress.lastAccessedDate.toISOString()
-        }));
-        await AsyncStorage.setItem(
-          STORAGE_KEYS.COURSE_PROGRESS,
-          JSON.stringify(progressArray)
-        );
-      } catch (error) {
-        console.error('Failed to save course progress:', error);
-      }
-    })();
-  }, [courseProgress]);
+    const save = async () => {
+      const obj: any = {};
+      courseProgressMap.forEach((cp, courseId) => {
+        obj[courseId] = {
+          learnedPhraseIds: Array.from(cp.learnedPhraseIds),
+          completedQuizIds: Array.from(cp.completedQuizIds),
+          lastAccessedDate: cp.lastAccessedDate.toISOString()
+        };
+      });
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+    };
+    save().catch((err) => console.error(err));
+  }, [courseProgressMap]);
 
   const markPhraseLearned = (courseId: string, phraseId: string) => {
-    setLearnedPhrases(prev => new Set(prev).add(phraseId));
-    setCourseProgress(prev => {
-      const progress = prev.get(courseId) || {
-        learnedPhraseIds: new Set<string>(),
-        completedQuizIds: new Set<string>(),
+    setCourseProgressMap((prev) => {
+      const clone = new Map(prev);
+      const cp = clone.get(courseId) || {
+        learnedPhraseIds: new Set(),
+        completedQuizIds: new Set(),
         lastAccessedDate: new Date()
       };
-
-      progress.learnedPhraseIds.add(phraseId);
-      progress.lastAccessedDate = new Date();
-      return new Map(prev).set(courseId, progress);
+      cp.learnedPhraseIds.add(phraseId);
+      cp.lastAccessedDate = new Date();
+      clone.set(courseId, cp);
+      return clone;
     });
   };
 
   const markQuizCompleted = (courseId: string, quizId: string) => {
-    setCourseProgress(prev => {
-      const progress = prev.get(courseId) || {
-        learnedPhraseIds: new Set<string>(),
-        completedQuizIds: new Set<string>(),
+    setCourseProgressMap((prev) => {
+      const clone = new Map(prev);
+      const cp = clone.get(courseId) || {
+        learnedPhraseIds: new Set(),
+        completedQuizIds: new Set(),
         lastAccessedDate: new Date()
       };
-
-      progress.completedQuizIds.add(quizId);
-      progress.lastAccessedDate = new Date();
-      return new Map(prev).set(courseId, progress);
+      cp.completedQuizIds.add(quizId);
+      cp.lastAccessedDate = new Date();
+      clone.set(courseId, cp);
+      return clone;
     });
   };
 
-  const initializeCourseProgress = (courseId: string) => {
-    if (!courseProgress.has(courseId)) {
-      setCourseProgress(prev => prev.set(courseId, {
-        learnedPhraseIds: new Set<string>(),
-        completedQuizIds: new Set<string>(),
-        lastAccessedDate: new Date()
-      }));
-    }
+  /** コース全体のフレーズ学習進捗数を返す */
+  const getCourseProgressRatio = (courseId: string) => {
+    const cp = courseProgressMap.get(courseId);
+    return cp ? cp.learnedPhraseIds.size : 0;
   };
 
-  const getCourseProgress = (courseId: string): number => {
-    const progress = courseProgress.get(courseId);
-    if (!progress) return 0;
-
-    const course = getCourse(courseId);
-    if (!course) return 0;
-
-    const totalPhrases = course.phrases.length;
-    return totalPhrases > 0 ? progress.learnedPhraseIds.size / totalPhrases : 0;
-  };
-
-  const saveCourseProgress = (courseId: string, progress: CourseProgress) => {
-    setCourseProgress(prev => new Map(prev).set(courseId, progress));
+  /** コースクイズの完了進捗数を返す */
+  const getCourseQuizProgressRatio = (courseId: string) => {
+    const cp = courseProgressMap.get(courseId);
+    return cp ? cp.completedQuizIds.size : 0;
   };
 
   return (
     <ProgressContext.Provider
       value={{
-        learnedPhrases,
-        courseProgress,
+        courseProgressMap,
         markPhraseLearned,
         markQuizCompleted,
-        initializeCourseProgress,
-        getCourseProgress,
-        saveCourseProgress
+        getCourseProgressRatio,
+        getCourseQuizProgressRatio
       }}
     >
       {children}
@@ -163,10 +128,8 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   );
 };
 
-export const useProgress = () => {
-  const context = useContext(ProgressContext);
-  if (!context) {
-    throw new Error('useProgress must be used within a ProgressProvider');
-  }
-  return context;
-};
+export function useProgress() {
+  const ctx = useContext(ProgressContext);
+  if (!ctx) throw new Error('useProgress must be used inside ProgressProvider');
+  return ctx;
+}
