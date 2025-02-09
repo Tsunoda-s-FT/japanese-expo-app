@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Text, Button, ActivityIndicator, ProgressBar, Card, Title, Paragraph } from 'react-native-paper';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -19,7 +19,7 @@ const CourseDetailScreen: React.FC = () => {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const { courseProgressMap } = useProgress();
+  const { courseProgressMap, quizLogs } = useProgress();
 
   useEffect(() => {
     const foundCourse = getCourseById(courseId);
@@ -56,8 +56,13 @@ const CourseDetailScreen: React.FC = () => {
   const phraseProgressRatio = totalPhrases > 0 ? learnedCount / totalPhrases : 0;
   const quizProgressRatio = totalQuizzes > 0 ? quizCompletedCount / totalQuizzes : 0;
 
+  // このコース用のクイズ履歴を抽出
+  const courseQuizLogs = quizLogs
+    .filter(log => log.courseId === courseId && log.status === 'completed')
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Card style={styles.card}>
         <Card.Content>
           <Title>{course.title}</Title>
@@ -93,7 +98,46 @@ const CourseDetailScreen: React.FC = () => {
       >
         コースのクイズを受ける
       </Button>
-    </View>
+
+      <View style={styles.historyContainer}>
+        <Title style={styles.historyTitle}>このコースのクイズ履歴</Title>
+
+        {courseQuizLogs.length === 0 ? (
+          <Paragraph style={styles.noHistoryText}>
+            まだクイズを完了した履歴がありません。
+          </Paragraph>
+        ) : (
+          courseQuizLogs.map((log) => {
+            const dateObj = new Date(log.date);
+            const dateString = dateObj.toLocaleString('ja-JP', {
+              year: 'numeric', month: '2-digit', day: '2-digit',
+              hour: '2-digit', minute: '2-digit',
+            });
+            const scorePercent = Math.round((log.correctCount / log.totalCount) * 100);
+            return (
+              <TouchableOpacity
+                key={log.sessionId}
+                activeOpacity={0.8}
+                onPress={() => {
+                  navigation.navigate('QuizHistoryDetail', {
+                    sessionId: log.sessionId,
+                  });
+                }}
+              >
+                <Card key={log.sessionId} style={styles.historyCard}>
+                  <Card.Content>
+                    <Text style={styles.historyDate}>{dateString}</Text>
+                    <Text>
+                      スコア: {log.correctCount}/{log.totalCount} ({scorePercent}%)
+                    </Text>
+                  </Card.Content>
+                </Card>
+              </TouchableOpacity>
+            );
+          })
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -126,8 +170,26 @@ const styles = StyleSheet.create({
     marginVertical: 4
   },
   button: {
-    marginTop: 8
-  }
+    marginTop: 8,
+  },
+  historyContainer: {
+    marginTop: 24,
+  },
+  historyTitle: {
+    fontSize: 20,
+    marginBottom: 8,
+  },
+  noHistoryText: {
+    color: '#666',
+    marginBottom: 16,
+  },
+  historyCard: {
+    marginVertical: 6,
+  },
+  historyDate: {
+    color: '#999',
+    marginBottom: 4,
+  },
 });
 
 export default CourseDetailScreen;

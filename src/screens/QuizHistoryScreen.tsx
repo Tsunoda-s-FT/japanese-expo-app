@@ -1,6 +1,6 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Text, Card, Title, Divider } from 'react-native-paper';
+import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Text, Card, Title, Paragraph } from 'react-native-paper';
 import { useProgress } from '../context/ProgressContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -13,21 +13,10 @@ const QuizHistoryScreen: React.FC = () => {
   const { quizLogs } = useProgress();
   const navigation = useNavigation<QuizHistoryNavProp>();
 
-  // 完了したクイズのみをフィルタリングし、日付の新しい順にソート
+  // 完了したクイズのみをフィルタリングし、新しい順に
   const completedLogs = quizLogs
-    .filter(log => log.status === 'completed')
+    .filter((log) => log.status === 'completed')
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('ja-JP', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   if (completedLogs.length === 0) {
     return (
@@ -43,42 +32,52 @@ const QuizHistoryScreen: React.FC = () => {
       {completedLogs.map((log) => {
         const course = getCourseById(log.courseId);
         const scorePercentage = Math.round((log.correctCount / log.totalCount) * 100);
+        const dateString = new Date(log.date).toLocaleString('ja-JP', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
 
         return (
-          <Card key={log.sessionId} style={styles.card}>
-            <Card.Content>
-              <Text style={styles.dateText}>{formatDate(log.date)}</Text>
-              <Title style={styles.courseTitle}>
-                {course?.title || 'Unknown Course'}
-              </Title>
+          <TouchableOpacity
+            key={log.sessionId}
+            activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate('QuizHistoryDetail', { sessionId: log.sessionId });
+            }}
+          >
+            <Card style={styles.card}>
+              <Card.Content>
+                <Text style={styles.dateText}>{dateString}</Text>
+                <Title style={styles.courseTitle}>
+                  {course?.title || '不明なコース'}
+                </Title>
 
-              <View style={styles.scoreContainer}>
-                <Text style={styles.scoreText}>
-                  スコア: {log.correctCount}/{log.totalCount}
-                </Text>
-                <Text style={[
-                  styles.percentageText,
-                  { color: scorePercentage >= 80 ? '#4CAF50' : scorePercentage >= 60 ? '#FF9800' : '#F44336' }
-                ]}>
-                  {scorePercentage}%
-                </Text>
-              </View>
-
-              <Divider style={styles.divider} />
-
-              <Title style={styles.answersTitle}>回答詳細</Title>
-              {log.answers.map((answer: { isCorrect: boolean }, index: number) => (
-                <View key={index} style={styles.answerItem}>
-                  <Text style={[
-                    styles.answerText,
-                    { color: answer.isCorrect ? '#4CAF50' : '#F44336' }
-                  ]}>
-                    問題 {index + 1}: {answer.isCorrect ? '○' : '×'}
+                <View style={styles.scoreContainer}>
+                  <Text style={styles.scoreText}>
+                    スコア: {log.correctCount}/{log.totalCount}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.percentageText,
+                      {
+                        color:
+                          scorePercentage >= 80
+                            ? '#4CAF50'
+                            : scorePercentage >= 60
+                            ? '#FF9800'
+                            : '#F44336',
+                      },
+                    ]}
+                  >
+                    {scorePercentage}%
                   </Text>
                 </View>
-              ))}
-            </Card.Content>
-          </Card>
+              </Card.Content>
+            </Card>
+          </TouchableOpacity>
         );
       })}
     </ScrollView>
@@ -110,6 +109,7 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 16,
     elevation: 2,
+    borderRadius: 8,
   },
   dateText: {
     color: '#666',
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginTop: 4,
   },
   scoreText: {
     fontSize: 16,
@@ -132,19 +132,6 @@ const styles = StyleSheet.create({
   percentageText: {
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  divider: {
-    marginVertical: 12,
-  },
-  answersTitle: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  answerItem: {
-    paddingVertical: 4,
-  },
-  answerText: {
-    fontSize: 14,
   },
 });
 

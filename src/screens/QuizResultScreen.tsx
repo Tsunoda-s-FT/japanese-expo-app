@@ -64,15 +64,6 @@ const QuizResultScreen: React.FC = () => {
             コース一覧に戻る
           </Button>
         )}
-
-        {/* 履歴を見るボタンを追加 */}
-        <Button
-          mode="text"
-          style={[styles.button, { marginTop: 12 }]}
-          onPress={() => navigation.navigate('QuizHistory')}
-        >
-          履歴を見る
-        </Button>
       </View>
     </View>
   );

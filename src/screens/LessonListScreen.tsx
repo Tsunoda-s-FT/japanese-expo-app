@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Button } from 'react-native';
-import { Card, Title, Paragraph, ActivityIndicator } from 'react-native-paper';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { Card, Title, Paragraph, ActivityIndicator, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -45,16 +45,6 @@ const LessonListScreen: React.FC = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* クイズ履歴へのアクセスボタン */}
-      <Button
-        mode="outlined"
-        onPress={() => navigation.navigate('QuizHistory')}
-        style={{ marginBottom: 16 }}
-        icon="history"
-      >
-        クイズ履歴を表示
-      </Button>
-
       <Title style={styles.header}>レッスン一覧</Title>
       {lessons.map((lesson) => (
         <Card

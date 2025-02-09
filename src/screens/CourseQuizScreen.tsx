@@ -151,7 +151,7 @@ const CourseQuizScreen: React.FC = () => {
   /**
    * 3. 次へ or 最終問題なら結果画面へ
    */
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentIndex < questions.length - 1) {
       // 次の問題
       setCurrentIndex((prev) => prev + 1);
@@ -160,7 +160,7 @@ const CourseQuizScreen: React.FC = () => {
     } else {
       // 最終問題に回答済み → セッションをcompletedに
       if (sessionId) {
-        finalizeQuizSession(sessionId);
+        await finalizeQuizSession(sessionId);
       }
       // 結果画面へ (戻る操作で戻れないようreplace)
       navigation.replace('QuizResult', {

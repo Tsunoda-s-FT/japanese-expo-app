@@ -12,8 +12,8 @@ export interface ProgressContextValue {
   quizLogs: QuizSessionLog[];
 
   // ====== フレーズやクイズ進捗をマークするメソッド ======
-  markPhraseCompleted: (courseId: string, phraseId: string) => void;
-  markQuizCompleted: (courseId: string, questionId: string) => void;
+  markPhraseCompleted: (courseId: string, phraseId: string) => Promise<void>;
+  markQuizCompleted: (courseId: string, quizId: string) => Promise<void>;
 
   // ====== 進捗率を取得するメソッド ======
   getCourseProgressRatio: (courseId: string) => number;
@@ -27,12 +27,24 @@ export interface ProgressContextValue {
     selectedOptionIndex: number,
     isCorrect: boolean
   ) => void;
-  finalizeQuizSession: (sessionId: string) => void;
+  finalizeQuizSession: (sessionId: string) => Promise<void>;
   abortQuizSession: (sessionId: string, currentIndex: number) => void;
   getQuizSessionById: (sessionId: string) => QuizSessionLog | undefined;
 }
 
-const ProgressContext = createContext<ProgressContextValue | undefined>(undefined);
+const ProgressContext = createContext<ProgressContextValue>({
+  courseProgressMap: new Map(),
+  quizLogs: [],
+  markPhraseCompleted: async () => {},
+  markQuizCompleted: async () => {},
+  finalizeQuizSession: async () => {},
+  getQuizSessionById: () => undefined,
+  createNewQuizSession: () => '',
+  addAnswerToQuizSession: () => {},
+  abortQuizSession: () => {},
+  getCourseProgressRatio: () => 0,
+  getCourseQuizProgressRatio: () => 0,
+});
 
 const STORAGE_KEY = '@AppCourseProgress';
 const QUIZ_LOGS_KEY = '@AppQuizLogs';
@@ -110,7 +122,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [quizLogs]);
 
   // ========== フレーズを学習済みとしてマーク ==========
-  const markPhraseCompleted = (courseId: string, phraseId: string) => {
+  const markPhraseCompleted = async (courseId: string, phraseId: string) => {
     setCourseProgressMap((prev) => {
       const newMap = new Map(prev);
       const progress = newMap.get(courseId) || {
@@ -126,7 +138,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   // ========== クイズ問題を完了としてマーク ==========
-  const markQuizCompleted = (courseId: string, questionId: string) => {
+  const markQuizCompleted = async (courseId: string, quizId: string) => {
     setCourseProgressMap((prev) => {
       const newMap = new Map(prev);
       const progress = newMap.get(courseId) || {
@@ -134,7 +146,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         completedQuizIds: new Set<string>(),
         lastAccessedDate: new Date(),
       };
-      progress.completedQuizIds.add(questionId);
+      progress.completedQuizIds.add(quizId);
       progress.lastAccessedDate = new Date();
       newMap.set(courseId, progress);
       return newMap;
@@ -206,12 +218,12 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   /** クイズが最後まで完了した時に最終スコアなどを確定 */
-  const finalizeQuizSession = (sessionId: string) => {
+  const finalizeQuizSession = async (sessionId: string) => {
     setQuizLogs((prev) =>
       prev.map((session) => {
         if (session.sessionId === sessionId) {
           const totalCount = session.answers.length;
-          const correctCount = session.answers.filter((ans: { isCorrect: boolean }) => ans.isCorrect).length;
+          const correctCount = session.answers.filter((ans) => ans.isCorrect).length;
           return {
             ...session,
             totalCount,
@@ -242,7 +254,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   /** sessionId からクイズログを取得する */
   const getQuizSessionById = (sessionId: string) => {
-    return quizLogs.find((log) => log.sessionId === sessionId);
+    return quizLogs.find(log => log.sessionId === sessionId);
   };
 
   return (
@@ -252,13 +264,13 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         quizLogs,
         markPhraseCompleted,
         markQuizCompleted,
-        getCourseProgressRatio,
-        getCourseQuizProgressRatio,
+        finalizeQuizSession,
+        getQuizSessionById,
         createNewQuizSession,
         addAnswerToQuizSession,
-        finalizeQuizSession,
         abortQuizSession,
-        getQuizSessionById,
+        getCourseProgressRatio,
+        getCourseQuizProgressRatio,
       }}
     >
       {children}

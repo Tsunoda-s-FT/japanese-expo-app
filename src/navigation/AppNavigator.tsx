@@ -8,6 +8,7 @@ import QuizResultScreen from '../screens/QuizResultScreen';
 import LessonListScreen from '../screens/LessonListScreen';
 import LessonDetailScreen from '../screens/LessonDetailScreen';
 import QuizHistoryScreen from '../screens/QuizHistoryScreen';
+import QuizHistoryDetailScreen from '../screens/QuizHistoryDetailScreen';
 
 export type RootStackParamList = {
   LessonList: undefined;
@@ -18,6 +19,7 @@ export type RootStackParamList = {
   CourseQuiz: { courseId: string };
   QuizResult: { correctCount: number; totalCount: number; courseId?: string };
   QuizHistory: undefined;
+  QuizHistoryDetail: { sessionId: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -73,6 +75,11 @@ const AppNavigator: React.FC = () => {
         name="QuizHistory"
         component={QuizHistoryScreen}
         options={{ title: 'クイズ履歴' }}
+      />
+      <Stack.Screen
+        name="QuizHistoryDetail"
+        component={QuizHistoryDetailScreen}
+        options={{ title: '履歴詳細' }}
       />
     </Stack.Navigator>
   );
