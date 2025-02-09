@@ -1,0 +1,456 @@
+{
+  "lessons": [
+    {
+      "id": "lesson_greetings",
+      "title": "あいさつ",
+      "description": "初対面や日常で使う基本的な挨拶表現を学習します。",
+      "phrases": [
+        {
+          "id": "phrase_ohayou",
+          "lessonId": "lesson_greetings",
+          "jpText": "おはようございます",
+          "reading": "おはようございます",
+          "translations": {
+            "en": "Good morning"
+          },
+          "audio": "audio/ohayou_gozaimasu.mp3",
+          "words": [
+            {
+              "jp_word": "おはよう",
+              "en_word": "morning greeting",
+              "audio": "audio/ohayou.mp3"
+            }
+          ],
+          "exampleSentences": [
+            {
+              "jp_text": "朝起きたときに「おはようございます」と言います。",
+              "reading": "あさ おきた とき に「おはようございます」と いいます。",
+              "translations": {
+                "en": "We say 'Good morning' when we wake up."
+              },
+              "audio": "audio/example_morning_1.mp3"
+            }
+          ]
+        },
+        {
+          "id": "phrase_konnichiwa",
+          "lessonId": "lesson_greetings",
+          "jpText": "こんにちは",
+          "reading": "こんにちは",
+          "translations": {
+            "en": "Hello / Good afternoon"
+          },
+          "audio": "audio/konnichiwa.mp3",
+          "words": [
+            {
+              "jp_word": "今日",
+              "en_word": "today",
+              "audio": "audio/kyou.mp3"
+            }
+          ],
+          "exampleSentences": [
+            {
+              "jp_text": "昼頃に会ったときは「こんにちは」と言いましょう。",
+              "reading": "ひるごろ に あった とき は「こんにちは」と いいましょう。",
+              "translations": {
+                "en": "When we meet someone around noon, we say 'Hello' or 'Good afternoon'."
+              },
+              "audio": "audio/example_konnichiwa_1.mp3"
+            }
+          ]
+        },
+        {
+          "id": "phrase_konbanwa",
+          "lessonId": "lesson_greetings",
+          "jpText": "こんばんは",
+          "reading": "こんばんは",
+          "translations": {
+            "en": "Good evening"
+          },
+          "audio": "audio/konbanwa.mp3",
+          "words": [
+            {
+              "jp_word": "今晩",
+              "en_word": "this evening",
+              "audio": "audio/konban.mp3"
+            }
+          ],
+          "exampleSentences": [
+            {
+              "jp_text": "夜に人と会ったら「こんばんは」とあいさつします。",
+              "reading": "よる に ひと と あったら「こんばんは」と あいさつします。",
+              "translations": {
+                "en": "When you meet someone at night, greet them with 'Good evening'."
+              },
+              "audio": "audio/example_konbanwa_1.mp3"
+            }
+          ]
+        },
+        {
+          "id": "phrase_arigatou",
+          "lessonId": "lesson_greetings",
+          "jpText": "ありがとうございます",
+          "reading": "ありがとうございます",
+          "translations": {
+            "en": "Thank you"
+          },
+          "audio": "audio/arigatou_gozaimasu.mp3",
+          "words": [
+            {
+              "jp_word": "ありがとう",
+              "en_word": "thank you",
+              "audio": "audio/arigatou.mp3"
+            }
+          ],
+          "exampleSentences": [
+            {
+              "jp_text": "何かをしてもらったら「ありがとうございます」と言います。",
+              "reading": "なにか を してもらったら「ありがとうございます」と いいます。",
+              "translations": {
+                "en": "When someone does something for you, say 'Thank you'."
+              },
+              "audio": "audio/example_thankyou_1.mp3"
+            }
+          ]
+        },
+        {
+          "id": "phrase_sumimasen",
+          "lessonId": "lesson_greetings",
+          "jpText": "すみません",
+          "reading": "すみません",
+          "translations": {
+            "en": "Excuse me / I'm sorry"
+          },
+          "audio": "audio/sumimasen.mp3",
+          "words": [
+            {
+              "jp_word": "すみません",
+              "en_word": "excuse me / sorry",
+              "audio": "audio/sumimasen_word.mp3"
+            }
+          ],
+          "exampleSentences": [
+            {
+              "jp_text": "人に呼びかけるときや謝罪するときに「すみません」と言います。",
+              "reading": "ひと に よびかける とき や しゃざい するとき に「すみません」と いいます。",
+              "translations": {
+                "en": "Use 'Excuse me' when calling someone or apologizing."
+              },
+              "audio": "audio/example_sumimasen_1.mp3"
+            }
+          ]
+        },
+        {
+          "id": "phrase_oyasumi",
+          "lessonId": "lesson_greetings",
+          "jpText": "おやすみなさい",
+          "reading": "おやすみなさい",
+          "translations": {
+            "en": "Good night"
+          },
+          "audio": "audio/oyasuminasai.mp3",
+          "words": [
+            {
+              "jp_word": "おやすみ",
+              "en_word": "good night (casual)",
+              "audio": "audio/oyasumi.mp3"
+            }
+          ],
+          "exampleSentences": [
+            {
+              "jp_text": "寝る前に「おやすみなさい」と言いましょう。",
+              "reading": "ねる まえ に「おやすみなさい」と いいましょう。",
+              "translations": {
+                "en": "Before you go to bed, say 'Good night'."
+              },
+              "audio": "audio/example_oyasumi_1.mp3"
+            }
+          ]
+        },
+        {
+          "id": "phrase_hajimemashite",
+          "lessonId": "lesson_greetings",
+          "jpText": "はじめまして",
+          "reading": "はじめまして",
+          "translations": {
+            "en": "Nice to meet you"
+          },
+          "audio": "audio/hajimemashite.mp3",
+          "words": [
+            {
+              "jp_word": "初めまして",
+              "en_word": "Nice to meet you (first time)",
+              "audio": "audio/hajimemashite_word.mp3"
+            }
+          ],
+          "exampleSentences": [
+            {
+              "jp_text": "初対面の人に会ったら「はじめまして」と言います。",
+              "reading": "しょたいめん の ひと に あったら「はじめまして」と いいます。",
+              "translations": {
+                "en": "When you meet someone for the first time, say 'Nice to meet you'."
+              },
+              "audio": "audio/example_hajimemashite_1.mp3"
+            }
+          ]
+        },
+        {
+          "id": "phrase_yoroshiku",
+          "lessonId": "lesson_greetings",
+          "jpText": "よろしくお願いします",
+          "reading": "よろしく おねがいします",
+          "translations": {
+            "en": "I'm looking forward to working with you / Nice to meet you"
+          },
+          "audio": "audio/yoroshiku_onegaishimasu.mp3",
+          "words": [
+            {
+              "jp_word": "よろしく",
+              "en_word": "favorably, well (in greetings)",
+              "audio": "audio/yoroshiku.mp3"
+            }
+          ],
+          "exampleSentences": [
+            {
+              "jp_text": "自己紹介の最後に「よろしくお願いします」と付け加えます。",
+              "reading": "じこ しょうかい の さいご に「よろしく おねがいします」と つけくわえます。",
+              "translations": {
+                "en": "Add 'Yoroshiku onegaishimasu' at the end of a self-introduction."
+              },
+              "audio": "audio/example_yoroshiku_1.mp3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lesson_self_introduction",
+      "title": "自己紹介",
+      "description": "自分の名前や出身、趣味などを伝えるための表現を学習します。",
+      "phrases": [
+        {
+          "id": "phrase_name",
+          "lessonId": "lesson_self_introduction",
+          "jpText": "私の名前は〜です",
+          "reading": "わたし の なまえ は 〜 です",
+          "translations": {
+            "en": "My name is ..."
+          },
+          "audio": "audio/watashi_no_namae_wa_desu.mp3",
+          "words": [
+            {
+              "jp_word": "名前",
+              "en_word": "name",
+              "audio": "audio/namae.mp3"
+            }
+          ],
+          "exampleSentences": [
+            {
+              "jp_text": "正式な場面では「私の名前は○○です」と言うと丁寧です。",
+              "reading": "せいしきな ばめん では「わたし の なまえ は ○○ です」と いうと ていねい です。",
+              "translations": {
+                "en": "In a formal setting, saying 'My name is ___' is polite."
+              },
+              "audio": "audio/example_name_1.mp3"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "outputTemplates": [
+    {
+      "id": "output_basic_repeat",
+      "description": "テキストと音声を表示し、復唱",
+      "parameters": {
+        "text_shown": true,
+        "audio_shown": true,
+        "translation_shown": false,
+        "mask_pattern": null
+      }
+    },
+    {
+      "id": "output_masked_with_audio",
+      "description": "一部マスキング + 音声ありで発話",
+      "parameters": {
+        "text_shown": true,
+        "audio_shown": true,
+        "mask_pattern": "____はどこですか？"
+      }
+    },
+    {
+      "id": "output_audio_only",
+      "description": "音声のみで発話（テキスト非表示）",
+      "parameters": {
+        "text_shown": false,
+        "audio_shown": true
+      }
+    },
+    {
+      "id": "output_text_only",
+      "description": "テキストだけ提示（音声なし）",
+      "parameters": {
+        "text_shown": true,
+        "audio_shown": false
+      }
+    },
+    {
+      "id": "output_from_english",
+      "description": "英語文を提示し、日本語で発話",
+      "parameters": {
+        "source_language_prompt": "en",
+        "text_shown": true,
+        "audio_shown": false
+      }
+    }
+  ],
+  "quizQuestions": [
+    {
+      "id": "quiz_greetings_1",
+      "lessonId": "lesson_greetings",
+      "question": "「おはようございます」の意味はどれ？",
+      "options": ["Good evening", "Good night", "Good morning", "Hello"],
+      "answerIndex": 2,
+      "explanation": "「おはようございます」は朝の挨拶で、英語では『Good morning』に対応します。"
+    },
+    {
+      "id": "quiz_greetings_2",
+      "lessonId": "lesson_greetings",
+      "question": "夜会ったときに使う挨拶はどれ？",
+      "options": ["こんにちは", "こんばんは", "おやすみなさい", "ありがとう"],
+      "answerIndex": 1,
+      "explanation": "夜の挨拶は『こんばんは』です。"
+    },
+    {
+      "id": "quiz_greetings_3",
+      "lessonId": "lesson_greetings",
+      "question": "「すみません」の用法として正しいのは？",
+      "options": [
+        "感謝の気持ちを伝える表現",
+        "相手に呼びかけたり謝罪するときに使う",
+        "別れの挨拶をするときに使う",
+        "自己紹介の最初に使う"
+      ],
+      "answerIndex": 1,
+      "explanation": "「すみません」は相手を呼び止めたり、謝るときに使います。"
+    },
+    {
+      "id": "quiz_greetings_4",
+      "lessonId": "lesson_greetings",
+      "question": "次のうち、初対面の人に使う挨拶の組み合わせとして適切なものはどれ？",
+      "options": [
+        "おはようございます・こんばんは",
+        "はじめまして・よろしくお願いします",
+        "ありがとうございます・すみません",
+        "おやすみなさい・こんにちは"
+      ],
+      "answerIndex": 1,
+      "explanation": "初対面の際は「はじめまして」と挨拶し、「よろしくお願いします」と続けるのが一般的です。"
+    },
+    {
+      "id": "quiz_greetings_5",
+      "lessonId": "lesson_greetings",
+      "question": "「ありがとうございます」の適切な使用場面は？",
+      "options": [
+        "朝起きたとき",
+        "人に何かをしてもらったとき",
+        "人とすれ違うとき",
+        "寝る前"
+      ],
+      "answerIndex": 1,
+      "explanation": "「ありがとうございます」は、人から何かをしてもらったときに感謝の気持ちを表現する言葉です。"
+    },
+    {
+      "id": "quiz_greetings_6",
+      "lessonId": "lesson_greetings",
+      "question": "次の状況で最も適切な挨拶はどれ？\n「午後3時に友人と会った」",
+      "options": [
+        "おはようございます",
+        "こんばんは",
+        "こんにちは",
+        "おやすみなさい"
+      ],
+      "answerIndex": 2,
+      "explanation": "午後の時間帯（昼過ぎから夕方まで）は「こんにちは」を使います。"
+    },
+    {
+      "id": "quiz_greetings_7",
+      "lessonId": "lesson_greetings",
+      "question": "「おやすみなさい」はいつ使う？",
+      "options": [
+        "朝目が覚めたとき",
+        "昼寝をするとき",
+        "夜寝る前",
+        "仕事を終えるとき"
+      ],
+      "answerIndex": 2,
+      "explanation": "「おやすみなさい」は夜に寝る前の挨拶として使います。"
+    },
+    {
+      "id": "quiz_greetings_8",
+      "lessonId": "lesson_greetings",
+      "question": "次のうち、最も丁寧な表現はどれ？",
+      "options": [
+        "おはよう",
+        "ありがとう",
+        "ありがとうございます",
+        "どうも"
+      ],
+      "answerIndex": 2,
+      "explanation": "「〜ございます」を付けることで、より丁寧な表現になります。"
+    },
+    {
+      "id": "quiz_self_intro_1",
+      "lessonId": "lesson_self_introduction",
+      "question": "自己紹介で名前を言うとき、最も適切な表現は？",
+      "options": [
+        "名前です",
+        "私は〜です",
+        "私の名前は〜です",
+        "〜と申します"
+      ],
+      "answerIndex": 2,
+      "explanation": "「私の名前は〜です」は、標準的で分かりやすい自己紹介の表現です。"
+    },
+    {
+      "id": "quiz_self_intro_2",
+      "lessonId": "lesson_self_introduction",
+      "question": "自己紹介の最後に付け加える言葉として適切なのは？",
+      "options": [
+        "ありがとうございます",
+        "すみません",
+        "よろしくお願いします",
+        "おやすみなさい"
+      ],
+      "answerIndex": 2,
+      "explanation": "自己紹介の最後には「よろしくお願いします」を付け加えるのが一般的です。"
+    },
+    {
+      "id": "quiz_greetings_listening_1",
+      "lessonId": "lesson_greetings",
+      "question": "音声を聞いて、適切な返事を選んでください。\n[audio: morning_greeting.mp3]",
+      "options": [
+        "こんばんは",
+        "おはようございます",
+        "さようなら",
+        "ありがとうございます"
+      ],
+      "answerIndex": 1,
+      "explanation": "朝の挨拶「おはようございます」に対しては、同じく「おはようございます」と返します。",
+      "audioFile": "audio/morning_greeting.mp3"
+    },
+    {
+      "id": "quiz_greetings_situation_1",
+      "lessonId": "lesson_greetings",
+      "question": "次の状況で適切な表現を選んでください：\n「電車で誤って人にぶつかってしまった」",
+      "options": [
+        "おはようございます",
+        "ありがとうございます",
+        "すみません",
+        "よろしくお願いします"
+      ],
+      "answerIndex": 2,
+      "explanation": "人にぶつかってしまった場合は、謝罪の意味を込めて「すみません」を使います。"
+    }
+  ]
+}
