@@ -355,3 +355,7 @@ export const getContent = (): Content => {
   console.log('Returning content:', JSON.stringify(mockData));
   return mockData;
 };
+
+export const getAllCourses = (): Course[] => {
+  return mockData.lessons.flatMap(lesson => lesson.courses);
+};

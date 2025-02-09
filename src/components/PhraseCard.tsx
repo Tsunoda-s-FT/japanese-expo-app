@@ -24,7 +24,7 @@ const PhraseCard: React.FC<Props> = ({ phrase }) => {
           <View style={styles.examplesContainer}>
             {phrase.exampleSentences.map((ex, idx) => (
               <View key={idx} style={styles.exampleItem}>
-                <Text style={styles.exampleJp}>{ex.jp_text}</Text>
+                <Text style={styles.exampleJp}>{ex.jpText}</Text>
                 <Text style={styles.exampleReading}>{ex.reading}</Text>
                 <Text style={styles.exampleEn}>{ex.translations.en}</Text>
               </View>

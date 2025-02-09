@@ -4,7 +4,7 @@ import { Text, Button, ActivityIndicator, ProgressBar, Card, Title, Paragraph } 
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { getCourseById } from '../services/contentService';
+import { getCourse } from '../services/contentService';
 import { Course } from '../types/contentTypes';
 import { useProgress } from '../context/ProgressContext';
 
@@ -20,12 +20,11 @@ const CourseDetailScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const { getCourseProgress, courseProgress } = useProgress();
-  const progress = getCourseProgress(courseId);
 
   useEffect(() => {
     (async () => {
-      const foundCourse = await getCourseById(courseId);
-      setCourse(foundCourse);
+      const foundCourse = await getCourse(courseId);
+      setCourse(foundCourse || null);
       setLoading(false);
     })();
   }, [courseId]);
@@ -48,12 +47,19 @@ const CourseDetailScreen: React.FC = () => {
     return <Text style={styles.error}>コースが見つかりません。</Text>;
   }
 
-  // コースの進捗情報を取得
-  const courseProgressData = courseProgress.get(courseId);
-  const learnedPhraseCount = courseProgressData?.learnedPhraseIds.length ?? 0;
-  const totalPhraseCount = course.phrases.length;
-  const completedQuizCount = courseProgressData?.completedQuizIds.length ?? 0;
-  const totalQuizCount = course.quizQuestions.length;
+  // 進捗状況の計算
+  const getProgress = () => {
+    if (!course) return { phrases: 0, quizzes: 0 };
+    const progress = courseProgress.get(courseId);
+    if (!progress) return { phrases: 0, quizzes: 0 };
+
+    return {
+      phrases: progress.learnedPhraseIds.size / course.phrases.length,
+      quizzes: progress.completedQuizIds.size / course.quizQuestions.length
+    };
+  };
+
+  const progress = getProgress();
 
   return (
     <View style={styles.container}>
@@ -66,13 +72,13 @@ const CourseDetailScreen: React.FC = () => {
 
       <View style={styles.progressSection}>
         <Text style={styles.sectionTitle}>学習の進捗</Text>
-        <ProgressBar progress={progress} style={styles.progressBar} />
+        <ProgressBar progress={progress.phrases} style={styles.progressBar} />
         <View style={styles.statsContainer}>
           <Text style={styles.statsText}>
-            フレーズ学習: {learnedPhraseCount} / {totalPhraseCount}
+            フレーズ学習: {progress.phrases * 100}% ({progress.phrases * course.phrases.length} / {course.phrases.length})
           </Text>
           <Text style={styles.statsText}>
-            クイズ完了: {completedQuizCount} / {totalQuizCount}
+            クイズ完了: {progress.quizzes * 100}% ({progress.quizzes * course.quizQuestions.length} / {course.quizQuestions.length})
           </Text>
         </View>
       </View>
@@ -90,7 +96,7 @@ const CourseDetailScreen: React.FC = () => {
           mode="outlined"
           style={styles.button}
           onPress={handleStartQuiz}
-          disabled={totalQuizCount === 0}
+          disabled={course.quizQuestions.length === 0}
         >
           コースのクイズを受ける
         </Button>

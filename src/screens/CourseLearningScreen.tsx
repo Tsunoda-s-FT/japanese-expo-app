@@ -3,9 +3,9 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Card, Title, Button, useTheme, Text, ActivityIndicator } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App';
+import { RootStackParamList } from '../navigation/AppNavigator';
 import { getCourse } from '../services/contentService';
-import { useProgress } from '../contexts/ProgressContext';
+import { useProgress } from '../context/ProgressContext';
 import { Course, Phrase, CourseProgress } from '../types/contentTypes';
 import { playAudio } from '../utils/audioUtils';
 
@@ -17,11 +17,10 @@ export default function CourseLearningScreen() {
   const navigation = useNavigation<CourseLearningScreenNavigationProp>();
   const route = useRoute<CourseLearningScreenRouteProp>();
   const { courseId } = route.params;
-  const { getCourseProgress, saveCourseProgress } = useProgress();
+  const { courseProgress, markPhraseLearned } = useProgress();
 
   const [course, setCourse] = useState<Course | null>(null);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
-  const [progress, setProgress] = useState<CourseProgress | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,140 +36,113 @@ export default function CourseLearningScreen() {
 
         console.log('Course data loaded:', courseData);
         setCourse(courseData);
-
-        const progressData = await getCourseProgress(courseId);
-        console.log('Course progress loaded:', progressData);
-        
-        if (progressData) {
-          setProgress(progressData);
-        } else {
-          const defaultProgress: CourseProgress = {
-            learnedPhraseIds: new Set<string>(),
-            completedQuizIds: new Set<string>(),
-            lastAccessedDate: new Date()
-          };
-          console.log('Setting default progress:', defaultProgress);
-          setProgress(defaultProgress);
-        }
+        setLoading(false);
       } catch (error) {
         console.error('Error loading course data:', error);
-      } finally {
         setLoading(false);
       }
     };
 
     loadData();
-  }, [courseId, getCourseProgress]);
+  }, [courseId]);
+
+  const handleNext = () => {
+    if (!course) return;
+
+    const currentPhrase = course.phrases[currentPhraseIndex];
+    markPhraseLearned(courseId, currentPhrase.id);
+
+    if (currentPhraseIndex < course.phrases.length - 1) {
+      setCurrentPhraseIndex(prev => prev + 1);
+    } else {
+      navigation.navigate('CourseDetail', { courseId });
+    }
+  };
+
+  const handlePlayAudio = (audio?: string) => {
+    if (audio) {
+      playAudio(audio);
+    }
+  };
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
+      <View style={[styles.container, styles.centered]}>
+        <ActivityIndicator size="large" />
       </View>
     );
   }
 
-  if (!course || !progress) {
+  if (!course) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, styles.centered]}>
         <Text>コースが見つかりません。</Text>
       </View>
     );
   }
 
   const currentPhrase = course.phrases[currentPhraseIndex];
-  if (!currentPhrase) {
-    return (
-      <View style={styles.container}>
-        <Text>フレーズが見つかりません。</Text>
-      </View>
-    );
-  }
-
-  const handleNext = async () => {
-    try {
-      console.log('Marking phrase as completed:', currentPhrase.id);
-      const updatedProgress = {
-        ...progress,
-        learnedPhraseIds: new Set([...progress.learnedPhraseIds, currentPhrase.id])
-      };
-      await saveCourseProgress(courseId, updatedProgress);
-      console.log('Progress saved successfully');
-      setProgress(updatedProgress);
-
-      if (currentPhraseIndex < course.phrases.length - 1) {
-        setCurrentPhraseIndex(prev => prev + 1);
-      } else {
-        console.log('Course completed, navigating to quiz');
-        navigation.navigate('CourseQuiz', { courseId });
-      }
-    } catch (error) {
-      console.error('Error saving progress:', error);
-    }
-  };
-
-  const handlePlayAudio = async () => {
-    if (!currentPhrase.audio) {
-      console.log('No audio available for phrase:', currentPhrase.id);
-      return;
-    }
-
-    try {
-      console.log('Playing audio for phrase:', currentPhrase.id);
-      await playAudio(currentPhrase.audio);
-    } catch (error) {
-      console.error('Error playing audio:', error);
-    }
-  };
+  const progress = courseProgress.get(courseId);
+  const isPhraseLearned = progress?.learnedPhraseIds.has(currentPhrase.id);
 
   return (
-    <ScrollView style={styles.container}>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Title style={styles.phraseTitle}>
-            フレーズ {currentPhraseIndex + 1}/{course.phrases.length}
-          </Title>
-          
-          <View style={styles.phraseContainer}>
-            <Text style={styles.japanese}>{currentPhrase.jpText}</Text>
-            <Text style={styles.reading}>{currentPhrase.reading}</Text>
-            <Text style={styles.english}>{currentPhrase.translations.en}</Text>
-          </View>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Card style={styles.card}>
+          <Card.Content>
+            <Title style={styles.phraseJp}>{currentPhrase.jpText}</Title>
+            <Text style={styles.phraseReading}>{currentPhrase.reading}</Text>
+            <Text style={styles.phraseEn}>{currentPhrase.translations.en}</Text>
 
-          {currentPhrase.audio && (
-            <Button
-              mode="contained"
-              onPress={handlePlayAudio}
-              style={styles.audioButton}
-              icon="volume-high"
-            >
-              音声を再生
-            </Button>
-          )}
+            {currentPhrase.exampleSentences && (
+              <View style={styles.examplesContainer}>
+                <Title style={styles.examplesTitle}>例文</Title>
+                {currentPhrase.exampleSentences.map((example, index) => (
+                  <View key={index} style={styles.exampleItem}>
+                    <Text style={styles.exampleJp}>{example.jpText}</Text>
+                    <Text style={styles.exampleReading}>{example.reading}</Text>
+                    <Text style={styles.exampleEn}>{example.translations.en}</Text>
+                    {example.audio && (
+                      <Button
+                        mode="text"
+                        onPress={() => handlePlayAudio(example.audio)}
+                        style={styles.audioButton}
+                      >
+                        音声を再生
+                      </Button>
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
 
-          {currentPhrase.exampleSentences && currentPhrase.exampleSentences.length > 0 && (
-            <View style={styles.exampleContainer}>
-              <Title style={styles.exampleTitle}>例文</Title>
-              {currentPhrase.exampleSentences.map((example, index) => (
-                <View key={example.id || index} style={styles.example}>
-                  <Text style={styles.japanese}>{example.jpText}</Text>
-                  <Text style={styles.reading}>{example.reading}</Text>
-                  <Text style={styles.english}>{example.translations.en}</Text>
-                </View>
-              ))}
-            </View>
-          )}
+            {currentPhrase.audio && (
+              <Button
+                mode="contained"
+                onPress={() => handlePlayAudio(currentPhrase.audio)}
+                style={styles.mainAudioButton}
+              >
+                フレーズの音声を再生
+              </Button>
+            )}
+          </Card.Content>
+        </Card>
+      </ScrollView>
 
-          <Button
-            mode="contained"
-            onPress={handleNext}
-            style={styles.nextButton}
-          >
-            {currentPhraseIndex < course.phrases.length - 1 ? '次へ' : 'クイズを始める'}
-          </Button>
-        </Card.Content>
-      </Card>
-    </ScrollView>
+      <View style={styles.footer}>
+        <Button
+          mode="contained"
+          onPress={handleNext}
+          style={styles.nextButton}
+          disabled={isPhraseLearned}
+        >
+          {isPhraseLearned ? '学習済み' : '次へ'}
+        </Button>
+        <Text style={styles.progress}>
+          {currentPhraseIndex + 1} / {course.phrases.length}
+        </Text>
+      </View>
+    </View>
   );
 }
 
@@ -179,53 +151,72 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
-  loadingContainer: {
-    flex: 1,
+  centered: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  scrollContent: {
+    padding: 16,
   },
   card: {
     margin: 16,
     elevation: 4,
   },
-  phraseTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  phraseContainer: {
-    marginBottom: 24,
-  },
-  japanese: {
+  phraseJp: {
     fontSize: 24,
     marginBottom: 8,
   },
-  reading: {
+  phraseReading: {
     fontSize: 16,
     color: '#666',
     marginBottom: 8,
   },
-  english: {
+  phraseEn: {
     fontSize: 16,
     color: '#333',
   },
-  audioButton: {
-    marginBottom: 24,
-  },
-  exampleContainer: {
+  examplesContainer: {
     backgroundColor: '#f8f8f8',
     padding: 16,
     borderRadius: 8,
     marginBottom: 24,
   },
-  exampleTitle: {
+  examplesTitle: {
     fontSize: 16,
     marginBottom: 16,
   },
-  example: {
+  exampleItem: {
     marginBottom: 16,
   },
-  nextButton: {
+  exampleJp: {
+    fontSize: 18,
+    marginBottom: 8,
+  },
+  exampleReading: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 8,
+  },
+  exampleEn: {
+    fontSize: 16,
+    color: '#333',
+  },
+  audioButton: {
     marginTop: 8,
+  },
+  mainAudioButton: {
+    marginTop: 16,
+  },
+  footer: {
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+  },
+  nextButton: {
+    marginBottom: 8,
+  },
+  progress: {
+    fontSize: 16,
+    color: '#666',
   },
 });

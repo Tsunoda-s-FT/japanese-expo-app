@@ -6,7 +6,7 @@ import { RootStackParamList } from '../navigation/AppNavigator';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getCourse } from '../services/contentService';
 import { Course, QuizQuestion } from '../types/contentTypes';
-import { useProgress } from '../contexts/ProgressContext';
+import { useProgress } from '../context/ProgressContext';
 import { Audio } from 'expo-av';
 import { playAudio } from '../utils/audioUtils';
 
