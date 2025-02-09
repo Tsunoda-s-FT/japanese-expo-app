@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Card, Title, Button, useTheme, Text, ActivityIndicator } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -17,7 +17,7 @@ export default function CourseLearningScreen() {
   const navigation = useNavigation<CourseLearningScreenNavigationProp>();
   const route = useRoute<CourseLearningScreenRouteProp>();
   const { courseId } = route.params;
-  const { courseProgressMap, markPhraseLearned } = useProgress();
+  const { courseProgressMap, markPhraseCompleted } = useProgress();
 
   const [course, setCourse] = useState<Course | null>(null);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
@@ -51,14 +51,33 @@ export default function CourseLearningScreen() {
 
     // 現在のフレーズを学習済みとしてマーク
     const currentPhrase = course.phrases[currentPhraseIndex];
-    markPhraseLearned(courseId, currentPhrase.id);
+    markPhraseCompleted(courseId, currentPhrase.id);
 
     // 次のフレーズへ進む
     if (currentPhraseIndex < course.phrases.length - 1) {
       setCurrentPhraseIndex(prev => prev + 1);
     } else {
-      // コース完了
-      navigation.navigate('CourseDetail', { courseId });
+      // コース完了時、クイズを受けるか確認
+      Alert.alert(
+        'コース学習完了',
+        '学習おつかれさまでした！クイズを受けますか？',
+        [
+          {
+            text: 'クイズを受ける',
+            onPress: () => {
+              navigation.navigate('CourseQuiz', { courseId });
+            },
+          },
+          {
+            text: 'あとで',
+            onPress: () => {
+              navigation.navigate('CourseDetail', { courseId });
+            },
+            style: 'cancel',
+          },
+        ],
+        { cancelable: false }
+      );
     }
   };
 
@@ -138,13 +157,29 @@ export default function CourseLearningScreen() {
         <Text style={styles.progress}>
           {currentPhraseIndex + 1} / {course.phrases.length}
         </Text>
-        <Button
-          mode="contained"
-          onPress={handleNext}
-          style={styles.nextButton}
-        >
-          {currentPhraseIndex < course.phrases.length - 1 ? '次へ' : '完了'}
-        </Button>
+        <View style={styles.buttonContainer}>
+          <Button
+            mode="outlined"
+            onPress={() => {
+              if (currentPhraseIndex > 0) {
+                setCurrentPhraseIndex(prev => prev - 1);
+              } else {
+                // 最初のフレーズの場合はコース詳細に戻る
+                navigation.navigate('CourseDetail', { courseId });
+              }
+            }}
+            style={[styles.navigationButton, styles.backButton]}
+          >
+            {currentPhraseIndex === 0 ? 'コース詳細に戻る' : '前へ'}
+          </Button>
+          <Button
+            mode="contained"
+            onPress={handleNext}
+            style={[styles.navigationButton, styles.nextButton]}
+          >
+            {currentPhraseIndex < course.phrases.length - 1 ? '次へ' : '完了'}
+          </Button>
+        </View>
       </View>
     </View>
   );
@@ -231,7 +266,19 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: '#666'
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  navigationButton: {
+    flex: 1,
+    marginHorizontal: 4,
+  },
+  backButton: {
+    borderColor: '#666',
+  },
   nextButton: {
-    marginTop: 8
-  }
+    marginLeft: 8,
+  },
 });
