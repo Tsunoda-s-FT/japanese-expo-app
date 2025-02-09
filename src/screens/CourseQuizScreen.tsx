@@ -16,15 +16,23 @@ const CourseQuizScreen: React.FC = () => {
   const navigation = useNavigation<CourseQuizNavProp>();
   const { courseId } = route.params;
 
+  // コース情報 & 問題リスト
   const [course, setCourse] = useState<Course | null>(null);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // ユーザーが選んだオプションや正誤表示の状態
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [sessionId, setSessionId] = useState<string | null>(null);
 
+  // スコア計算用
+  const [correctCount, setCorrectCount] = useState(0);
+
+  // ローディング中かどうか
+  const [loading, setLoading] = useState(true);
+
+  // クイズセッション管理
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const {
     markQuizCompleted,
     createNewQuizSession,
@@ -34,7 +42,12 @@ const CourseQuizScreen: React.FC = () => {
     getQuizSessionById,
   } = useProgress();
 
+  /**
+   * 1. コンポーネント初期マウント時にだけ「コースを読み込み & 新規セッションを生成」する
+   *   - 不必要に再実行しないために、useEffectの依存配列を空配列[]にする
+   */
   useEffect(() => {
+    // コース取得
     const foundCourse = getCourseById(courseId);
     if (foundCourse) {
       setCourse(foundCourse);
@@ -42,82 +55,80 @@ const CourseQuizScreen: React.FC = () => {
     }
     setLoading(false);
 
-    // 新しいクイズセッションを作成
+    // 新しいクイズセッションを1回だけ生成
     const newSessionId = createNewQuizSession(courseId);
     setSessionId(newSessionId);
 
-    // 戻るナビゲーションを無効化
+    // ナビゲーションの戻る操作を無効化 (ヘッダーバックとスワイプ戻り)
     navigation.setOptions({
       headerLeft: () => null,
       gestureEnabled: false,
     });
 
-    // beforeRemoveで離脱を検知
+    // 画面離脱(beforeRemove)で中断確認
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      // クイズが完了していない場合のみ確認
-      const session = sessionId ? getQuizSessionById(sessionId) : undefined;
-      if (session?.status === 'ongoing') {
-        e.preventDefault();
-
-        Alert.alert(
-          '確認',
-          'クイズを中断して他の画面に移動しますか？\n進捗は保存されません。',
-          [
-            {
-              text: '続ける',
-              style: 'cancel',
-              onPress: () => {},
-            },
-            {
-              text: '中断',
-              style: 'destructive',
-              onPress: () => {
-                if (sessionId) {
+      // セッションがまだ ongoing なら離脱をブロックして確認
+      if (sessionId) {
+        const session = getQuizSessionById(sessionId);
+        if (session?.status === 'ongoing') {
+          e.preventDefault();
+          Alert.alert(
+            '確認',
+            'クイズを中断して他の画面に移動しますか？\n進捗は保存されません。',
+            [
+              { text: '続ける', style: 'cancel' },
+              {
+                text: '中断',
+                style: 'destructive',
+                onPress: () => {
                   abortQuizSession(sessionId, currentIndex);
-                }
-                navigation.dispatch(e.data.action);
+                  navigation.dispatch(e.data.action);
+                },
               },
-            },
-          ]
-        );
+            ]
+          );
+        }
       }
     });
 
     // Android物理バックキーを無効化
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      const session = sessionId ? getQuizSessionById(sessionId) : undefined;
-      if (session?.status === 'ongoing') {
-        Alert.alert(
-          '確認',
-          'クイズを中断しますか？\n進捗は保存されません。',
-          [
-            {
-              text: 'キャンセル',
-              style: 'cancel',
-            },
-            {
-              text: '中断する',
-              style: 'destructive',
-              onPress: () => {
-                if (sessionId) {
+      if (sessionId) {
+        const session = getQuizSessionById(sessionId);
+        if (session?.status === 'ongoing') {
+          Alert.alert(
+            '確認',
+            'クイズを中断しますか？\n進捗は保存されません。',
+            [
+              { text: 'キャンセル', style: 'cancel' },
+              {
+                text: '中断する',
+                style: 'destructive',
+                onPress: () => {
                   abortQuizSession(sessionId, currentIndex);
-                }
-                navigation.navigate('CourseDetail', { courseId });
+                  navigation.navigate('CourseDetail', { courseId });
+                },
               },
-            },
-          ]
-        );
-        return true;
+            ]
+          );
+          return true; // BackHandlerをキャンセル
+        }
       }
-      return false;
+      return false; // sessionがなければデフォルト動作(戻る)
     });
 
+    // Cleanup: アンマウント時にリスナーを解除
     return () => {
       unsubscribe();
       backHandler.remove();
     };
-  }, [courseId, navigation, sessionId, currentIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); 
+  // ↑ 空配列にすることで、この処理を「1回だけ」実行
 
+  /**
+   * 2. 回答ボタンを押すと実行
+   */
   const handleSubmit = () => {
     if (selectedOption === null || !course || !sessionId) return;
 
@@ -126,29 +137,32 @@ const CourseQuizScreen: React.FC = () => {
 
     if (isCorrect) {
       setCorrectCount((prev) => prev + 1);
+      // コース進捗にもクイズ完了をマーク
       markQuizCompleted(courseId, currentQuestion.id);
     }
 
-    addAnswerToQuizSession(
-      sessionId,
-      currentQuestion.id,
-      selectedOption,
-      isCorrect
-    );
+    // セッションログに回答を保存
+    addAnswerToQuizSession(sessionId, currentQuestion.id, selectedOption, isCorrect);
 
+    // 解説を表示
     setShowExplanation(true);
   };
 
+  /**
+   * 3. 次へ or 最終問題なら結果画面へ
+   */
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
+      // 次の問題
       setCurrentIndex((prev) => prev + 1);
       setSelectedOption(null);
       setShowExplanation(false);
     } else {
+      // 最終問題に回答済み → セッションをcompletedに
       if (sessionId) {
         finalizeQuizSession(sessionId);
       }
-      // replaceを使用して戻れないようにする
+      // 結果画面へ (戻る操作で戻れないようreplace)
       navigation.replace('QuizResult', {
         courseId,
         correctCount,
@@ -157,6 +171,7 @@ const CourseQuizScreen: React.FC = () => {
     }
   };
 
+  // ロード中の表示
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -165,6 +180,7 @@ const CourseQuizScreen: React.FC = () => {
     );
   }
 
+  // 問題が無い場合の表示
   if (!course || questions.length === 0) {
     return (
       <View style={styles.errorContainer}>
@@ -173,20 +189,24 @@ const CourseQuizScreen: React.FC = () => {
     );
   }
 
+  // 現在の問題
   const currentQuestion = questions[currentIndex];
   const progress = (currentIndex + 1) / questions.length;
 
   return (
     <ScrollView style={styles.container}>
+      {/* プログレスバー */}
       <ProgressBar progress={progress} style={styles.progressBar} />
       <Text style={styles.progressText}>
         {currentIndex + 1} / {questions.length}
       </Text>
 
+      {/* 問題カード */}
       <Card style={styles.questionCard}>
         <Card.Content>
           <Text style={styles.question}>{currentQuestion.question}</Text>
 
+          {/* 選択肢 (RadioButton) */}
           <RadioButton.Group
             onValueChange={(val) => setSelectedOption(Number(val))}
             value={selectedOption?.toString() || ''}
@@ -202,16 +222,22 @@ const CourseQuizScreen: React.FC = () => {
             ))}
           </RadioButton.Group>
 
+          {/* 解説 */}
           {showExplanation && (
             <View style={styles.explanationBox}>
               <Text style={styles.explanationTitle}>解説:</Text>
-              <Text style={styles.explanationText}>
-                {currentQuestion.explanation}
-              </Text>
-              <Text style={[
-                styles.resultText,
-                { color: selectedOption === currentQuestion.answerIndex ? '#4CAF50' : '#F44336' }
-              ]}>
+              <Text style={styles.explanationText}>{currentQuestion.explanation}</Text>
+              <Text
+                style={[
+                  styles.resultText,
+                  {
+                    color:
+                      selectedOption === currentQuestion.answerIndex
+                        ? '#4CAF50'
+                        : '#F44336',
+                  },
+                ]}
+              >
                 {selectedOption === currentQuestion.answerIndex ? '正解！' : '不正解'}
               </Text>
             </View>
@@ -219,6 +245,7 @@ const CourseQuizScreen: React.FC = () => {
         </Card.Content>
       </Card>
 
+      {/* 回答 or 次へ ボタン */}
       {!showExplanation ? (
         <Button
           mode="contained"
@@ -229,11 +256,7 @@ const CourseQuizScreen: React.FC = () => {
           回答する
         </Button>
       ) : (
-        <Button
-          mode="contained"
-          onPress={handleNext}
-          style={styles.button}
-        >
+        <Button mode="contained" onPress={handleNext} style={styles.button}>
           {currentIndex < questions.length - 1 ? '次の問題へ' : '結果を見る'}
         </Button>
       )}
@@ -241,12 +264,10 @@ const CourseQuizScreen: React.FC = () => {
   );
 };
 
+export default CourseQuizScreen;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
-  },
+  container: { flex: 1, padding: 16, backgroundColor: '#f5f5f5' },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -306,5 +327,3 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
-
-export default CourseQuizScreen;
