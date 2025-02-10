@@ -80,10 +80,7 @@ const CourseQuizScreen: React.FC = () => {
               if (sessionId) {
                 abortQuizSession(sessionId, currentIndex);
               }
-              navigation.navigate('Main', {
-                screen: 'CourseDetail',
-                params: { courseId }
-              });
+              navigation.goBack();
             },
           },
         ],
@@ -94,7 +91,7 @@ const CourseQuizScreen: React.FC = () => {
 
     const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
     return () => backHandler.remove();
-  }, [courseId, currentIndex, sessionId]);
+  }, [courseId, currentIndex, sessionId, navigation]);
 
   /**
    * 回答ボタンを押すと実行

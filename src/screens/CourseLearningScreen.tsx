@@ -71,10 +71,7 @@ export default function CourseLearningScreen() {
     if (currentPhraseIndex > 0) {
       setCurrentPhraseIndex(currentPhraseIndex - 1);
     } else {
-      navigation.navigate('Main', {
-        screen: 'CourseDetail',
-        params: { courseId },
-      });
+      navigation.goBack();
     }
   };
 
@@ -92,10 +89,7 @@ export default function CourseLearningScreen() {
             text: '中断する',
             style: 'destructive',
             onPress: () => {
-              navigation.navigate('Main', {
-                screen: 'CourseDetail',
-                params: { courseId },
-              });
+              navigation.goBack();
             },
           },
         ]
@@ -104,7 +98,7 @@ export default function CourseLearningScreen() {
     });
 
     return () => backHandler.remove();
-  }, [navigation, courseId]);
+  }, [navigation]);
 
   const handlePlayAudio = (audio?: string) => {
     if (audio) {

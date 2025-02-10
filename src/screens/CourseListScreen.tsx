@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Card, Title, Paragraph, ActivityIndicator, ProgressBar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -7,19 +7,22 @@ import { MainStackParamList } from '../navigation/MainNavigator';
 import { Course } from '../types/contentTypes';
 import { getAllCourses } from '../services/contentService';
 import { useProgress } from '../context/ProgressContext';
+import { useFocusEffect } from '@react-navigation/native';
+import { useNavigationContext } from '../context/NavigationContext';
 
 type CourseListScreenNavProp = NativeStackNavigationProp<MainStackParamList, 'CourseList'>;
 
 const CourseListScreen: React.FC = () => {
   const navigation = useNavigation<CourseListScreenNavProp>();
   const { getCourseProgressRatio } = useProgress();
+  const { afterSessionCourseId, setAfterSessionCourseId } = useNavigationContext();
   const [courses, setCourses] = useState<Course[] | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = getAllCourses();
+        const data = await getAllCourses();
         setCourses(data);
       } catch (error) {
         console.error('Error loading courses:', error);
@@ -34,6 +37,15 @@ const CourseListScreen: React.FC = () => {
   const handleCoursePress = (courseId: string) => {
     navigation.navigate('CourseDetail', { courseId });
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (afterSessionCourseId) {
+        navigation.navigate('CourseDetail', { courseId: afterSessionCourseId });
+        setAfterSessionCourseId(null);
+      }
+    }, [afterSessionCourseId, navigation, setAfterSessionCourseId])
+  );
 
   if (loading) {
     return (

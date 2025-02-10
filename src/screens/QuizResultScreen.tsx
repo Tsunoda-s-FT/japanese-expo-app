@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { useProgress } from '../context/ProgressContext';
+import { useNavigation as useNavigationContext } from '../context/NavigationContext';
 
 type QuizResultScreenRouteProp = RouteProp<SessionStackParamList, 'QuizResult'>;
 type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
@@ -14,17 +15,17 @@ const QuizResultScreen: React.FC = () => {
   const navigation = useNavigation<RootNavProp>();
   const route = useRoute<QuizResultScreenRouteProp>();
   const { correctCount, totalCount, courseId } = route.params;
+  const { setAfterSessionCourseId } = useNavigationContext();
 
   const percentage = Math.round((correctCount / totalCount) * 100);
 
   const handleRetry = () => {
     if (!courseId) {
-      navigation.navigate('Main', {
-        screen: 'CourseList'
-      });
+      navigation.goBack(); // モーダルを閉じる
       return;
     }
 
+    // クイズを再チャレンジする場合は同じセッション内で遷移
     navigation.navigate('Session', {
       screen: 'CourseQuiz',
       params: { courseId }
@@ -32,17 +33,12 @@ const QuizResultScreen: React.FC = () => {
   };
 
   const handleBack = () => {
-    if (!courseId) {
-      navigation.navigate('Main', {
-        screen: 'CourseList'
-      });
-      return;
+    if (courseId) {
+      // コース詳細への遷移をセット
+      setAfterSessionCourseId(courseId);
     }
-
-    navigation.navigate('Main', {
-      screen: 'CourseDetail',
-      params: { courseId }
-    });
+    // モーダルを閉じる（MainStackに戻る）
+    navigation.goBack();
   };
 
   return (
