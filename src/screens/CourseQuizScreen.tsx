@@ -55,7 +55,8 @@ const CourseQuizScreen: React.FC = () => {
             if (sessionId) {
               abortQuizSession(sessionId, currentIndex);
             }
-            navigation.goBack();
+            // モーダル全体を閉じるために親ナビゲーションのgoBackを呼び出す
+            navigation.getParent()?.goBack();
           },
         },
       ]

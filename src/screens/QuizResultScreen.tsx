@@ -30,7 +30,8 @@ const QuizResultScreen: React.FC = () => {
   };
 
   const handleExit = () => {
-    navigation.goBack();
+    // モーダル全体を閉じるために親ナビゲーションのgoBackを呼び出す
+    navigation.getParent()?.goBack();
   };
 
   return (

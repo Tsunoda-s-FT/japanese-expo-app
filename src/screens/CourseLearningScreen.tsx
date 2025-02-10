@@ -27,7 +27,7 @@ export default function CourseLearningScreen() {
     const loadData = async () => {
       try {
         const data = await getCourseById(courseId);
-        setCourse(data);
+        setCourse(data ?? null);  // undefined の場合は null をセット
       } catch (error) {
         console.error('Error loading course:', error);
       } finally {
@@ -41,13 +41,20 @@ export default function CourseLearningScreen() {
   const handleNext = () => {
     if (!course) return;
 
+    const currentPhrase = course.phrases[currentPhraseIndex];
+    if (!currentPhrase) return;
+
     if (currentPhraseIndex < course.phrases.length - 1) {
       // 次のフレーズへ
-      markPhraseCompleted(courseId, course.phrases[currentPhraseIndex].id);
+      if (courseId) {
+        markPhraseCompleted(courseId, currentPhrase.id);
+      }
       setCurrentPhraseIndex(currentPhraseIndex + 1);
     } else {
       // 最後のフレーズを学習したらクイズへ
-      markPhraseCompleted(courseId, course.phrases[currentPhraseIndex].id);
+      if (courseId) {
+        markPhraseCompleted(courseId, currentPhrase.id);
+      }
       navigation.navigate('CourseQuiz', { courseId });
     }
   };
@@ -74,7 +81,8 @@ export default function CourseLearningScreen() {
           text: '終了する',
           style: 'destructive',
           onPress: () => {
-            navigation.goBack();
+            // モーダル全体を閉じるために親ナビゲーションのgoBackを呼び出す
+            navigation.getParent()?.goBack();
           },
         },
       ]
@@ -99,8 +107,24 @@ export default function CourseLearningScreen() {
   }
 
   const currentPhrase = course.phrases[currentPhraseIndex];
+  if (!currentPhrase) {
+    // フレーズが見つからない場合はエラー表示
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>フレーズが見つかりませんでした。</Text>
+      </View>
+    );
+  }
+
   const cp = courseProgressMap.get(courseId);
   const isPhraseLearned = cp?.learnedPhraseIds.has(currentPhrase.id) ?? false;
+
+  // 音声再生のハンドラー関数
+  const handlePlayAudio = (audioPath: string | undefined) => {
+    if (audioPath) {
+      playAudio(audioPath);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -114,7 +138,7 @@ export default function CourseLearningScreen() {
             {currentPhrase.audio && (
               <Button
                 mode="outlined"
-                onPress={() => playAudio(currentPhrase.audio)}
+                onPress={() => handlePlayAudio(currentPhrase.audio)}
                 style={styles.audioButton}
               >
                 音声を再生
@@ -133,7 +157,7 @@ export default function CourseLearningScreen() {
                       {example.audio && (
                         <Button
                           mode="text"
-                          onPress={() => playAudio(example.audio)}
+                          onPress={() => handlePlayAudio(example.audio)}
                           style={styles.exampleAudioButton}
                         >
                           例文の音声
