@@ -2,18 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Text, Button, ActivityIndicator, ProgressBar, Card, Title, Paragraph } from 'react-native-paper';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import { RootStackParamList } from '../navigation/RootNavigator';
+import { MainStackParamList } from '../navigation/MainNavigator';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getCourseById } from '../services/contentService';
 import { Course } from '../types/contentTypes';
 import { useProgress } from '../context/ProgressContext';
 
-type CourseDetailRouteProp = RouteProp<RootStackParamList, 'CourseDetail'>;
-type CourseDetailNavProp = NativeStackNavigationProp<RootStackParamList, 'CourseDetail'>;
+type CourseDetailRouteProp = RouteProp<MainStackParamList, 'CourseDetail'>;
+type RootNavProp = NativeStackNavigationProp<RootStackParamList, 'Main'>;
 
 const CourseDetailScreen: React.FC = () => {
   const route = useRoute<CourseDetailRouteProp>();
-  const navigation = useNavigation<CourseDetailNavProp>();
+  const navigation = useNavigation<RootNavProp>();
   const { courseId } = route.params;
 
   const [course, setCourse] = useState<Course | null>(null);
@@ -29,12 +30,25 @@ const CourseDetailScreen: React.FC = () => {
 
   const handleStartCourse = () => {
     if (!course) return;
-    navigation.navigate('CourseLearning', { courseId });
+    navigation.navigate('Session', {
+      screen: 'CourseLearning',
+      params: { courseId },
+    });
   };
 
   const handleStartQuiz = () => {
     if (!course) return;
-    navigation.navigate('CourseQuiz', { courseId });
+    navigation.navigate('Session', {
+      screen: 'CourseQuiz',
+      params: { courseId },
+    });
+  };
+
+  const handleViewQuizHistory = (sessionId: string) => {
+    navigation.navigate('Main', {
+      screen: 'QuizHistoryDetail',
+      params: { sessionId },
+    });
   };
 
   if (loading) {
@@ -118,11 +132,7 @@ const CourseDetailScreen: React.FC = () => {
               <TouchableOpacity
                 key={log.sessionId}
                 activeOpacity={0.8}
-                onPress={() => {
-                  navigation.navigate('QuizHistoryDetail', {
-                    sessionId: log.sessionId,
-                  });
-                }}
+                onPress={() => handleViewQuizHistory(log.sessionId)}
               >
                 <Card key={log.sessionId} style={styles.historyCard}>
                   <Card.Content>

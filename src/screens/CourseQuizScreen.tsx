@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert, BackHandler } from 'react-native';
-import { Text, Button, ActivityIndicator, ProgressBar, Card, RadioButton } from 'react-native-paper';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { View, StyleSheet, Alert, BackHandler } from 'react-native';
+import { Card, Title, Button, Text, ActivityIndicator, ProgressBar, RadioButton } from 'react-native-paper';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import { RootStackParamList } from '../navigation/RootNavigator';
+import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { getCourseById } from '../services/contentService';
-import { Course, QuizQuestion } from '../types/contentTypes';
 import { useProgress } from '../context/ProgressContext';
+import { Course, QuizQuestion } from '../types/contentTypes';
 
-type CourseQuizRouteProp = RouteProp<RootStackParamList, 'CourseQuiz'>;
-type CourseQuizNavProp = NativeStackNavigationProp<RootStackParamList, 'CourseQuiz'>;
+type CourseQuizScreenRouteProp = RouteProp<SessionStackParamList, 'CourseQuiz'>;
+type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
 
 const CourseQuizScreen: React.FC = () => {
-  const route = useRoute<CourseQuizRouteProp>();
-  const navigation = useNavigation<CourseQuizNavProp>();
+  const navigation = useNavigation<RootNavProp>();
+  const route = useRoute<CourseQuizScreenRouteProp>();
   const { courseId } = route.params;
+  const { 
+    markQuizCompleted,
+    createNewQuizSession,
+    addAnswerToQuizSession,
+    finalizeQuizSession,
+    abortQuizSession,
+    getQuizSessionById,
+  } = useProgress();
 
   // コース情報 & 問題リスト
   const [course, setCourse] = useState<Course | null>(null);
@@ -33,141 +42,98 @@ const CourseQuizScreen: React.FC = () => {
 
   // クイズセッション管理
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const {
-    markQuizCompleted,
-    createNewQuizSession,
-    addAnswerToQuizSession,
-    finalizeQuizSession,
-    abortQuizSession,
-    getQuizSessionById,
-  } = useProgress();
 
-  /**
-   * 1. コンポーネント初期マウント時にだけ「コースを読み込み & 新規セッションを生成」する
-   *   - 不必要に再実行しないために、useEffectの依存配列を空配列[]にする
-   */
   useEffect(() => {
-    // コース取得
-    const foundCourse = getCourseById(courseId);
-    if (foundCourse) {
-      setCourse(foundCourse);
-      setQuestions(foundCourse.quizQuestions);
-    }
-    setLoading(false);
-
-    // 新しいクイズセッションを1回だけ生成
-    const newSessionId = createNewQuizSession(courseId);
-    setSessionId(newSessionId);
-
-    // ナビゲーションの戻る操作を無効化 (ヘッダーバックとスワイプ戻り)
-    navigation.setOptions({
-      headerLeft: () => null,
-      gestureEnabled: false,
-    });
-
-    // 画面離脱(beforeRemove)で中断確認
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      // セッションがまだ ongoing なら離脱をブロックして確認
-      if (sessionId) {
-        const session = getQuizSessionById(sessionId);
-        if (session?.status === 'ongoing') {
-          e.preventDefault();
-          Alert.alert(
-            '確認',
-            'クイズを中断して他の画面に移動しますか？\n進捗は保存されません。',
-            [
-              { text: '続ける', style: 'cancel' },
-              {
-                text: '中断',
-                style: 'destructive',
-                onPress: () => {
-                  abortQuizSession(sessionId, currentIndex);
-                  navigation.dispatch(e.data.action);
-                },
-              },
-            ]
-          );
+    const loadData = async () => {
+      try {
+        const courseData = await getCourseById(courseId);
+        if (!courseData) {
+          console.error('Course not found:', courseId);
+          setLoading(false);
+          return;
         }
-      }
-    });
 
-    // Android物理バックキーを無効化
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (sessionId) {
-        const session = getQuizSessionById(sessionId);
-        if (session?.status === 'ongoing') {
-          Alert.alert(
-            '確認',
-            'クイズを中断しますか？\n進捗は保存されません。',
-            [
-              { text: 'キャンセル', style: 'cancel' },
-              {
-                text: '中断する',
-                style: 'destructive',
-                onPress: () => {
-                  abortQuizSession(sessionId, currentIndex);
-                  navigation.navigate('CourseDetail', { courseId });
-                },
-              },
-            ]
-          );
-          return true; // BackHandlerをキャンセル
-        }
-      }
-      return false; // sessionがなければデフォルト動作(戻る)
-    });
+        setCourse(courseData);
+        setQuestions(courseData.quizQuestions);
+        setLoading(false);
 
-    // Cleanup: アンマウント時にリスナーを解除
-    return () => {
-      unsubscribe();
-      backHandler.remove();
+        // 新しいクイズセッションを作成
+        const newSessionId = await createNewQuizSession(courseId);
+        setSessionId(newSessionId);
+      } catch (error) {
+        console.error('Error loading course data:', error);
+        setLoading(false);
+      }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
-  // ↑ 空配列にすることで、この処理を「1回だけ」実行
+
+    loadData();
+
+    // クイズ中断時の確認ダイアログ
+    const handleBackPress = () => {
+      Alert.alert(
+        '確認',
+        'クイズを中断しますか？\n進捗は保存されません。',
+        [
+          { text: 'キャンセル', style: 'cancel' },
+          {
+            text: '中断する',
+            onPress: () => {
+              if (sessionId) {
+                abortQuizSession(sessionId, currentIndex);
+              }
+              navigation.navigate('Main', {
+                screen: 'CourseDetail',
+                params: { courseId }
+              });
+            },
+          },
+        ],
+        { cancelable: true }
+      );
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => backHandler.remove();
+  }, [courseId, currentIndex, sessionId]);
 
   /**
-   * 2. 回答ボタンを押すと実行
+   * 回答ボタンを押すと実行
    */
-  const handleSubmit = () => {
-    if (selectedOption === null || !course || !sessionId) return;
+  const handleAnswer = async () => {
+    if (!questions[currentIndex] || !sessionId || selectedOption === null) return;
 
     const currentQuestion = questions[currentIndex];
     const isCorrect = selectedOption === currentQuestion.answerIndex;
-
     if (isCorrect) {
-      setCorrectCount((prev) => prev + 1);
-      // コース進捗にもクイズ完了をマーク
-      markQuizCompleted(courseId, currentQuestion.id);
+      setCorrectCount(prev => prev + 1);
     }
 
-    // セッションログに回答を保存
-    addAnswerToQuizSession(sessionId, currentQuestion.id, selectedOption, isCorrect);
+    // 回答を記録
+    await addAnswerToQuizSession(
+      sessionId,
+      currentQuestion.id,
+      selectedOption,
+      isCorrect
+    );
 
-    // 解説を表示
-    setShowExplanation(true);
-  };
-
-  /**
-   * 3. 次へ or 最終問題なら結果画面へ
-   */
-  const handleNext = async () => {
-    if (currentIndex < questions.length - 1) {
-      // 次の問題
-      setCurrentIndex((prev) => prev + 1);
-      setSelectedOption(null);
-      setShowExplanation(false);
-    } else {
-      // 最終問題に回答済み → セッションをcompletedに
-      if (sessionId) {
-        await finalizeQuizSession(sessionId);
-      }
-      // 結果画面へ (戻る操作で戻れないようreplace)
-      navigation.replace('QuizResult', {
-        courseId,
-        correctCount,
-        totalCount: questions.length,
+    // 最後の問題だった場合
+    if (currentIndex >= questions.length - 1) {
+      const finalCorrectCount = isCorrect ? correctCount + 1 : correctCount;
+      await finalizeQuizSession(sessionId);
+      
+      navigation.navigate('Session', {
+        screen: 'QuizResult',
+        params: {
+          correctCount: finalCorrectCount,
+          totalCount: questions.length,
+          courseId,
+        }
       });
+    } else {
+      // 次の問題へ
+      setCurrentIndex(prev => prev + 1);
+      setSelectedOption(null);
     }
   };
 
@@ -194,7 +160,7 @@ const CourseQuizScreen: React.FC = () => {
   const progress = (currentIndex + 1) / questions.length;
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {/* プログレスバー */}
       <ProgressBar progress={progress} style={styles.progressBar} />
       <Text style={styles.progressText}>
@@ -222,45 +188,18 @@ const CourseQuizScreen: React.FC = () => {
             ))}
           </RadioButton.Group>
 
-          {/* 解説 */}
-          {showExplanation && (
-            <View style={styles.explanationBox}>
-              <Text style={styles.explanationTitle}>解説:</Text>
-              <Text style={styles.explanationText}>{currentQuestion.explanation}</Text>
-              <Text
-                style={[
-                  styles.resultText,
-                  {
-                    color:
-                      selectedOption === currentQuestion.answerIndex
-                        ? '#4CAF50'
-                        : '#F44336',
-                  },
-                ]}
-              >
-                {selectedOption === currentQuestion.answerIndex ? '正解！' : '不正解'}
-              </Text>
-            </View>
-          )}
+          {/* 回答 or 次へ ボタン */}
+          <Button
+            mode="contained"
+            onPress={handleAnswer}
+            disabled={selectedOption === null}
+            style={styles.button}
+          >
+            回答する
+          </Button>
         </Card.Content>
       </Card>
-
-      {/* 回答 or 次へ ボタン */}
-      {!showExplanation ? (
-        <Button
-          mode="contained"
-          onPress={handleSubmit}
-          disabled={selectedOption === null}
-          style={styles.button}
-        >
-          回答する
-        </Button>
-      ) : (
-        <Button mode="contained" onPress={handleNext} style={styles.button}>
-          {currentIndex < questions.length - 1 ? '次の問題へ' : '結果を見る'}
-        </Button>
-      )}
-    </ScrollView>
+    </View>
   );
 };
 
@@ -300,28 +239,6 @@ const styles = StyleSheet.create({
   },
   radioItem: {
     marginVertical: 4,
-  },
-  explanationBox: {
-    backgroundColor: '#f0f0f0',
-    padding: 16,
-    marginTop: 16,
-    borderRadius: 8,
-  },
-  explanationTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  explanationText: {
-    fontSize: 14,
-    color: '#444',
-    marginBottom: 8,
-  },
-  resultText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 8,
   },
   button: {
     marginTop: 16,

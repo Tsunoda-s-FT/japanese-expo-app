@@ -3,18 +3,19 @@ import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Card, Title, Button, useTheme, Text, ActivityIndicator } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import { RootStackParamList } from '../navigation/RootNavigator';
+import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { getCourseById } from '../services/contentService';
 import { useProgress } from '../context/ProgressContext';
 import { Course, Phrase } from '../types/contentTypes';
 import { playAudio } from '../utils/audioUtils';
 
-type CourseLearningScreenRouteProp = RouteProp<RootStackParamList, 'CourseLearning'>;
-type CourseLearningScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type CourseLearningScreenRouteProp = RouteProp<SessionStackParamList, 'CourseLearning'>;
+type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function CourseLearningScreen() {
   const theme = useTheme();
-  const navigation = useNavigation<CourseLearningScreenNavigationProp>();
+  const navigation = useNavigation<RootNavProp>();
   const route = useRoute<CourseLearningScreenRouteProp>();
   const { courseId } = route.params;
   const { courseProgressMap, markPhraseCompleted } = useProgress();
@@ -49,15 +50,8 @@ export default function CourseLearningScreen() {
   const handleNext = () => {
     if (!course) return;
 
-    // 現在のフレーズを学習済みとしてマーク
-    const currentPhrase = course.phrases[currentPhraseIndex];
-    markPhraseCompleted(courseId, currentPhrase.id);
-
-    // 次のフレーズへ進む
-    if (currentPhraseIndex < course.phrases.length - 1) {
-      setCurrentPhraseIndex(prev => prev + 1);
-    } else {
-      // コース完了時、クイズを受けるか確認
+    // 最後のフレーズを学習し終わったらセッション完了ダイアログを出す
+    if (currentPhraseIndex >= course.phrases.length - 1) {
       Alert.alert(
         'コース学習完了',
         '学習おつかれさまでした！クイズを受けますか？',
@@ -65,19 +59,39 @@ export default function CourseLearningScreen() {
           {
             text: 'クイズを受ける',
             onPress: () => {
-              navigation.navigate('CourseQuiz', { courseId });
+              navigation.navigate('Session', {
+                screen: 'CourseQuiz',
+                params: { courseId }
+              });
             },
           },
           {
             text: 'あとで',
             onPress: () => {
-              navigation.navigate('CourseDetail', { courseId });
+              navigation.navigate('Main', {
+                screen: 'CourseDetail',
+                params: { courseId }
+              });
             },
             style: 'cancel',
           },
         ],
         { cancelable: false }
       );
+    } else {
+      // 次のフレーズへ移動
+      setCurrentPhraseIndex(prev => prev + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentPhraseIndex > 0) {
+      setCurrentPhraseIndex(prev => prev - 1);
+    } else {
+      navigation.navigate('Main', {
+        screen: 'CourseDetail',
+        params: { courseId }
+      });
     }
   };
 
@@ -160,14 +174,7 @@ export default function CourseLearningScreen() {
         <View style={styles.buttonContainer}>
           <Button
             mode="outlined"
-            onPress={() => {
-              if (currentPhraseIndex > 0) {
-                setCurrentPhraseIndex(prev => prev - 1);
-              } else {
-                // 最初のフレーズの場合はコース詳細に戻る
-                navigation.navigate('CourseDetail', { courseId });
-              }
-            }}
+            onPress={handleBack}
             style={[styles.navigationButton, styles.backButton]}
           >
             {currentPhraseIndex === 0 ? 'コース詳細に戻る' : '前へ'}

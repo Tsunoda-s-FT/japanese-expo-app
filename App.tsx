@@ -1,9 +1,8 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider, MD3LightTheme } from 'react-native-paper';
 import { ProgressProvider } from './src/context/ProgressContext';
 import { LanguageProvider } from './src/context/LanguageContext';
-import AppNavigator from './src/navigation/AppNavigator';
+import RootNavigator from './src/navigation/RootNavigator';
 
 const theme = {
   ...MD3LightTheme,
@@ -19,9 +18,7 @@ export default function App() {
     <PaperProvider theme={theme}>
       <ProgressProvider>
         <LanguageProvider>
-          <NavigationContainer>
-            <AppNavigator />
-          </NavigationContainer>
+          <RootNavigator />
         </LanguageProvider>
       </ProgressProvider>
     </PaperProvider>

@@ -1,67 +1,89 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Button, Card } from 'react-native-paper';
-import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import { Text, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/RootNavigator';
+import { SessionStackParamList } from '../navigation/SessionNavigator';
+import { useProgress } from '../context/ProgressContext';
 
-type QuizResultRouteProp = RouteProp<RootStackParamList, 'QuizResult'>;
-type QuizResultNavProp = NativeStackNavigationProp<RootStackParamList, 'QuizResult'>;
+type QuizResultScreenRouteProp = RouteProp<SessionStackParamList, 'QuizResult'>;
+type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
 
 const QuizResultScreen: React.FC = () => {
-  const route = useRoute<QuizResultRouteProp>();
-  const navigation = useNavigation<QuizResultNavProp>();
+  const navigation = useNavigation<RootNavProp>();
+  const route = useRoute<QuizResultScreenRouteProp>();
   const { correctCount, totalCount, courseId } = route.params;
 
-  const scorePercent = ((correctCount / totalCount) * 100).toFixed(0);
-  const getScoreMessage = (percent: number): string => {
-    if (percent === 100) return '完璧です！おめでとうございます！';
-    if (percent >= 80) return '素晴らしい成績です！';
-    if (percent >= 60) return 'よく頑張りました！';
-    return 'もう一度チャレンジしてみましょう！';
+  const percentage = Math.round((correctCount / totalCount) * 100);
+
+  const handleRetry = () => {
+    if (!courseId) {
+      navigation.navigate('Main', {
+        screen: 'CourseList'
+      });
+      return;
+    }
+
+    navigation.navigate('Session', {
+      screen: 'CourseQuiz',
+      params: { courseId }
+    });
+  };
+
+  const handleBack = () => {
+    if (!courseId) {
+      navigation.navigate('Main', {
+        screen: 'CourseList'
+      });
+      return;
+    }
+
+    navigation.navigate('Main', {
+      screen: 'CourseDetail',
+      params: { courseId }
+    });
   };
 
   return (
     <View style={styles.container}>
-      <Card style={styles.resultCard}>
+      <Card style={styles.card}>
         <Card.Content>
-          <Text variant="headlineMedium" style={styles.scoreText}>
-            {totalCount}問中 {correctCount}問正解！
-          </Text>
-          <Text variant="titleLarge" style={styles.percentText}>
-            正答率: {scorePercent}%
-          </Text>
-          <Text variant="titleMedium" style={styles.messageText}>
-            {getScoreMessage(Number(scorePercent))}
-          </Text>
+          <Title style={styles.title}>クイズ結果</Title>
+          <View style={styles.resultContainer}>
+            <Text style={styles.score}>{percentage}%</Text>
+            <Paragraph style={styles.detail}>
+              {totalCount}問中{correctCount}問正解
+            </Paragraph>
+          </View>
+
+          {percentage === 100 ? (
+            <Text style={styles.message}>完璧です！おめでとうございます！</Text>
+          ) : percentage >= 80 ? (
+            <Text style={styles.message}>素晴らしい成績です！</Text>
+          ) : percentage >= 60 ? (
+            <Text style={styles.message}>よく頑張りました！</Text>
+          ) : (
+            <Text style={styles.message}>もう一度チャレンジしてみましょう！</Text>
+          )}
         </Card.Content>
       </Card>
 
       <View style={styles.buttonContainer}>
-        {courseId ? (
-          <>
-            <Button
-              mode="contained"
-              style={styles.button}
-              onPress={() => navigation.navigate('CourseDetail', { courseId })}
-            >
-              コース詳細に戻る
-            </Button>
-            <Button
-              mode="outlined"
-              style={styles.button}
-              onPress={() => navigation.navigate('CourseQuiz', { courseId })}
-            >
-              もう一度チャレンジ
-            </Button>
-          </>
-        ) : (
+        <Button
+          mode="contained"
+          onPress={handleBack}
+          style={[styles.button, styles.backButton]}
+        >
+          {courseId ? 'コース詳細に戻る' : 'コース一覧に戻る'}
+        </Button>
+        {courseId && (
           <Button
             mode="contained"
-            style={styles.button}
-            onPress={() => navigation.navigate('CourseList')}
+            onPress={handleRetry}
+            style={[styles.button, styles.retryButton]}
           >
-            コース一覧に戻る
+            もう一度挑戦する
           </Button>
         )}
       </View>
@@ -73,33 +95,48 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f5f5f5'
+    backgroundColor: '#f5f5f5',
   },
-  resultCard: {
-    marginVertical: 16,
-    elevation: 4,
-    borderRadius: 8
+  card: {
+    marginBottom: 24,
   },
-  scoreText: {
+  title: {
+    fontSize: 24,
     textAlign: 'center',
     marginBottom: 16,
-    color: '#2196F3'
   },
-  percentText: {
-    textAlign: 'center',
-    marginBottom: 16,
-    color: '#4CAF50'
+  resultContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
   },
-  messageText: {
+  score: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#2196F3',
+  },
+  detail: {
+    fontSize: 18,
+    marginTop: 8,
+  },
+  message: {
+    fontSize: 18,
     textAlign: 'center',
-    color: '#666'
+    marginTop: 16,
+    color: '#4CAF50',
   },
   buttonContainer: {
-    marginTop: 24
+    flexDirection: 'column',
+    gap: 16,
   },
   button: {
-    marginBottom: 12
-  }
+    paddingVertical: 8,
+  },
+  backButton: {
+    backgroundColor: '#666',
+  },
+  retryButton: {
+    backgroundColor: '#2196F3',
+  },
 });
 
 export default QuizResultScreen;
