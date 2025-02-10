@@ -3,12 +3,12 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text, Card, Title, Paragraph, Divider } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/RootNavigator';
+import { MainStackParamList } from '../navigation/MainNavigator';
 import { useProgress } from '../context/ProgressContext';
 import { getCourseById } from '../services/contentService';
 import { QuizQuestion } from '../types/contentTypes';
 
-type QuizHistoryDetailRouteProp = RouteProp<RootStackParamList, 'QuizHistoryDetail'>;
+type QuizHistoryDetailRouteProp = RouteProp<MainStackParamList, 'QuizHistoryDetail'>;
 
 const QuizHistoryDetailScreen: React.FC = () => {
   const route = useRoute<QuizHistoryDetailRouteProp>();

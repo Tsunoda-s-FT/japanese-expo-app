@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, BackHandler } from 'react-native';
 import { Card, Title, Button, useTheme, Text, ActivityIndicator } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -27,7 +27,7 @@ export default function CourseLearningScreen() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const courseData = getCourseById(courseId);
+        const courseData = await getCourseById(courseId);
         if (!courseData) {
           setLoading(false);
           return;
@@ -44,52 +44,67 @@ export default function CourseLearningScreen() {
   }, [courseId]);
 
   const handleNext = () => {
-    if (!course) return;
+    if (!course) {
+      return;
+    }
 
-    // 最後のフレーズを学習し終わったらセッション完了ダイアログを出す
-    if (currentPhraseIndex >= course.phrases.length - 1) {
-      Alert.alert(
-        'コース学習完了',
-        '学習おつかれさまでした！クイズを受けますか？',
-        [
-          {
-            text: 'クイズを受ける',
-            onPress: () => {
-              navigation.navigate('Session', {
-                screen: 'CourseQuiz',
-                params: { courseId }
-              });
-            },
-          },
-          {
-            text: 'あとで',
-            onPress: () => {
-              navigation.navigate('Main', {
-                screen: 'CourseDetail',
-                params: { courseId }
-              });
-            },
-            style: 'cancel',
-          },
-        ],
-        { cancelable: false }
-      );
+    if (currentPhraseIndex < course.phrases.length - 1) {
+      const currentPhrase = course.phrases[currentPhraseIndex];
+      markPhraseCompleted(courseId, currentPhrase.id);
+      setCurrentPhraseIndex(currentPhraseIndex + 1);
     } else {
-      // 次のフレーズへ移動
-      setCurrentPhraseIndex(prev => prev + 1);
+      // 最後のフレーズの場合も完了を記録
+      const currentPhrase = course.phrases[currentPhraseIndex];
+      markPhraseCompleted(courseId, currentPhrase.id);
+      navigation.navigate('Session', {
+        screen: 'CourseQuiz',
+        params: { courseId },
+      });
     }
   };
 
   const handleBack = () => {
+    if (!course) {
+      return;
+    }
+
     if (currentPhraseIndex > 0) {
-      setCurrentPhraseIndex(prev => prev - 1);
+      setCurrentPhraseIndex(currentPhraseIndex - 1);
     } else {
       navigation.navigate('Main', {
         screen: 'CourseDetail',
-        params: { courseId }
+        params: { courseId },
       });
     }
   };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      Alert.alert(
+        '学習を中断しますか？',
+        '進捗は保存されますが、最初から始める必要があります。',
+        [
+          {
+            text: 'キャンセル',
+            style: 'cancel',
+          },
+          {
+            text: '中断する',
+            style: 'destructive',
+            onPress: () => {
+              navigation.navigate('Main', {
+                screen: 'CourseDetail',
+                params: { courseId },
+              });
+            },
+          },
+        ]
+      );
+      return true;
+    });
+
+    return () => backHandler.remove();
+  }, [navigation, courseId]);
 
   const handlePlayAudio = (audio?: string) => {
     if (audio) {
