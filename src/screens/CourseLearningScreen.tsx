@@ -6,7 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { getCourseById } from '../services/contentService';
 import { useProgress } from '../context/ProgressContext';
-import { Course, Phrase } from '../types/contentTypes';
+import { Course } from '../types/contentTypes';
 import { playAudio } from '../utils/audioUtils';
 
 type CourseLearningScreenRouteProp = RouteProp<SessionStackParamList, 'CourseLearning'>;
@@ -27,20 +27,18 @@ export default function CourseLearningScreen() {
     const loadData = async () => {
       try {
         const data = await getCourseById(courseId);
-        setCourse(data ?? null);  // undefined の場合は null をセット
+        setCourse(data ?? null);
       } catch (error) {
         console.error('Error loading course:', error);
       } finally {
         setLoading(false);
       }
     };
-
     loadData();
   }, [courseId]);
 
   const handleNext = () => {
     if (!course) return;
-
     const currentPhrase = course.phrases[currentPhraseIndex];
     if (!currentPhrase) return;
 
@@ -51,22 +49,22 @@ export default function CourseLearningScreen() {
       }
       setCurrentPhraseIndex(currentPhraseIndex + 1);
     } else {
-      // 最後のフレーズを学習したらクイズへ
+      // 最後のフレーズを学習した
       if (courseId) {
         markPhraseCompleted(courseId, currentPhrase.id);
       }
-      navigation.navigate('CourseQuiz', { courseId });
+      // 学習完了画面へ遷移
+      navigation.navigate('CourseLearningComplete', { courseId });
     }
   };
 
   const handlePrev = () => {
     if (!course) return;
-
     if (currentPhraseIndex > 0) {
-      // 前のフレーズに戻るだけ
+      // 前のフレーズに戻る
       setCurrentPhraseIndex(currentPhraseIndex - 1);
     } else {
-      // 先頭フレーズで"前へ"を押した場合 → セッション終了確認
+      // 先頭フレーズで"前へ"は「学習中断」扱い
       showExitConfirmation();
     }
   };
@@ -81,7 +79,6 @@ export default function CourseLearningScreen() {
           text: '終了する',
           style: 'destructive',
           onPress: () => {
-            // モーダル全体を閉じるために親ナビゲーションのgoBackを呼び出す
             navigation.getParent()?.goBack();
           },
         },
@@ -94,7 +91,6 @@ export default function CourseLearningScreen() {
       showExitConfirmation();
       return true;
     });
-
     return () => backHandler.remove();
   }, [navigation]);
 
@@ -108,7 +104,6 @@ export default function CourseLearningScreen() {
 
   const currentPhrase = course.phrases[currentPhraseIndex];
   if (!currentPhrase) {
-    // フレーズが見つからない場合はエラー表示
     return (
       <View style={styles.loadingContainer}>
         <Text>フレーズが見つかりませんでした。</Text>
@@ -116,10 +111,6 @@ export default function CourseLearningScreen() {
     );
   }
 
-  const cp = courseProgressMap.get(courseId);
-  const isPhraseLearned = cp?.learnedPhraseIds.has(currentPhrase.id) ?? false;
-
-  // 音声再生のハンドラー関数
   const handlePlayAudio = (audioPath: string | undefined) => {
     if (audioPath) {
       playAudio(audioPath);
@@ -173,23 +164,34 @@ export default function CourseLearningScreen() {
       </ScrollView>
 
       <View style={styles.footer}>
+        <Button
+          mode="outlined"
+          onPress={showExitConfirmation}
+          style={styles.exitButton}
+        >
+          学習を中断
+        </Button>
+
         <Text style={styles.progress}>
           {currentPhraseIndex + 1} / {course.phrases.length}
         </Text>
+
         <View style={styles.buttonContainer}>
-          <Button
-            mode="outlined"
-            onPress={handlePrev}
-            style={[styles.navigationButton, styles.backButton]}
-          >
-            前へ
-          </Button>
+          {currentPhraseIndex > 0 && (
+            <Button
+              mode="outlined"
+              onPress={handlePrev}
+              style={[styles.navigationButton, styles.backButton]}
+            >
+              前へ
+            </Button>
+          )}
           <Button
             mode="contained"
             onPress={handleNext}
             style={[styles.navigationButton, styles.nextButton]}
           >
-            {currentPhraseIndex < course.phrases.length - 1 ? '次へ' : 'クイズへ'}
+            {currentPhraseIndex < course.phrases.length - 1 ? '次へ' : '学習完了'}
           </Button>
         </View>
       </View>
@@ -262,6 +264,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#eee',
   },
+  exitButton: {
+    marginBottom: 8,
+    borderColor: '#666',
+  },
   progress: {
     textAlign: 'center',
     marginBottom: 8,
@@ -270,7 +276,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 8,
   },
   navigationButton: {
     flex: 1,
