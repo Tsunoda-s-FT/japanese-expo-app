@@ -3,7 +3,6 @@ import { View, StyleSheet, ScrollView, Alert, BackHandler } from 'react-native';
 import { Card, Title, Button, useTheme, Text, ActivityIndicator } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/RootNavigator';
 import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { getCourseById } from '../services/contentService';
 import { useProgress } from '../context/ProgressContext';
@@ -11,11 +10,11 @@ import { Course, Phrase } from '../types/contentTypes';
 import { playAudio } from '../utils/audioUtils';
 
 type CourseLearningScreenRouteProp = RouteProp<SessionStackParamList, 'CourseLearning'>;
-type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
+type SessionNavProp = NativeStackNavigationProp<SessionStackParamList, 'CourseLearning'>;
 
 export default function CourseLearningScreen() {
   const theme = useTheme();
-  const navigation = useNavigation<RootNavProp>();
+  const navigation = useNavigation<SessionNavProp>();
   const route = useRoute<CourseLearningScreenRouteProp>();
   const { courseId } = route.params;
   const { courseProgressMap, markPhraseCompleted } = useProgress();
@@ -27,15 +26,11 @@ export default function CourseLearningScreen() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const courseData = await getCourseById(courseId);
-        if (!courseData) {
-          setLoading(false);
-          return;
-        }
-
-        setCourse(courseData);
-        setLoading(false);
+        const data = await getCourseById(courseId);
+        setCourse(data);
       } catch (error) {
+        console.error('Error loading course:', error);
+      } finally {
         setLoading(false);
       }
     };
@@ -44,80 +39,61 @@ export default function CourseLearningScreen() {
   }, [courseId]);
 
   const handleNext = () => {
-    if (!course) {
-      return;
-    }
+    if (!course) return;
 
     if (currentPhraseIndex < course.phrases.length - 1) {
-      const currentPhrase = course.phrases[currentPhraseIndex];
-      markPhraseCompleted(courseId, currentPhrase.id);
+      // 次のフレーズへ
+      markPhraseCompleted(courseId, course.phrases[currentPhraseIndex].id);
       setCurrentPhraseIndex(currentPhraseIndex + 1);
     } else {
-      // 最後のフレーズの場合も完了を記録
-      const currentPhrase = course.phrases[currentPhraseIndex];
-      markPhraseCompleted(courseId, currentPhrase.id);
-      navigation.navigate('Session', {
-        screen: 'CourseQuiz',
-        params: { courseId },
-      });
+      // 最後のフレーズを学習したらクイズへ
+      markPhraseCompleted(courseId, course.phrases[currentPhraseIndex].id);
+      navigation.navigate('CourseQuiz', { courseId });
     }
   };
 
-  const handleBack = () => {
-    if (!course) {
-      return;
-    }
+  const handlePrev = () => {
+    if (!course) return;
 
     if (currentPhraseIndex > 0) {
+      // 前のフレーズに戻るだけ
       setCurrentPhraseIndex(currentPhraseIndex - 1);
     } else {
-      navigation.goBack();
+      // 先頭フレーズで"前へ"を押した場合 → セッション終了確認
+      showExitConfirmation();
     }
+  };
+
+  const showExitConfirmation = () => {
+    Alert.alert(
+      '学習を終了しますか？',
+      '学習を中断して呼び出し元の画面に戻ります',
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: '終了する',
+          style: 'destructive',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+      ]
+    );
   };
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      Alert.alert(
-        '学習を中断しますか？',
-        '進捗は保存されますが、最初から始める必要があります。',
-        [
-          {
-            text: 'キャンセル',
-            style: 'cancel',
-          },
-          {
-            text: '中断する',
-            style: 'destructive',
-            onPress: () => {
-              navigation.goBack();
-            },
-          },
-        ]
-      );
+      showExitConfirmation();
       return true;
     });
 
     return () => backHandler.remove();
   }, [navigation]);
 
-  const handlePlayAudio = (audio?: string) => {
-    if (audio) {
-      playAudio(audio);
-    }
-  };
-
-  if (loading) {
+  if (loading || !course) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
-      </View>
-    );
-  }
-
-  if (!course) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>コースが見つかりません。</Text>
       </View>
     );
   }
@@ -138,7 +114,7 @@ export default function CourseLearningScreen() {
             {currentPhrase.audio && (
               <Button
                 mode="outlined"
-                onPress={() => handlePlayAudio(currentPhrase.audio)}
+                onPress={() => playAudio(currentPhrase.audio)}
                 style={styles.audioButton}
               >
                 音声を再生
@@ -157,7 +133,7 @@ export default function CourseLearningScreen() {
                       {example.audio && (
                         <Button
                           mode="text"
-                          onPress={() => handlePlayAudio(example.audio)}
+                          onPress={() => playAudio(example.audio)}
                           style={styles.exampleAudioButton}
                         >
                           例文の音声
@@ -179,17 +155,17 @@ export default function CourseLearningScreen() {
         <View style={styles.buttonContainer}>
           <Button
             mode="outlined"
-            onPress={handleBack}
+            onPress={handlePrev}
             style={[styles.navigationButton, styles.backButton]}
           >
-            {currentPhraseIndex === 0 ? 'コース詳細に戻る' : '前へ'}
+            前へ
           </Button>
           <Button
             mode="contained"
             onPress={handleNext}
             style={[styles.navigationButton, styles.nextButton]}
           >
-            {currentPhraseIndex < course.phrases.length - 1 ? '次へ' : '完了'}
+            {currentPhraseIndex < course.phrases.length - 1 ? '次へ' : 'クイズへ'}
           </Button>
         </View>
       </View>
@@ -200,83 +176,72 @@ export default function CourseLearningScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5'
+    backgroundColor: '#f5f5f5',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    padding: 16
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center'
   },
   scrollView: {
     flex: 1,
-    padding: 16
+    padding: 16,
   },
   card: {
-    marginBottom: 16
+    marginBottom: 16,
   },
   phraseText: {
     fontSize: 24,
-    marginBottom: 8
+    marginBottom: 8,
   },
   reading: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 8
+    marginBottom: 8,
   },
   translation: {
     fontSize: 18,
-    marginBottom: 16
+    marginBottom: 16,
   },
   audioButton: {
-    marginBottom: 16
+    marginBottom: 16,
   },
   examplesContainer: {
-    marginTop: 16
+    marginTop: 16,
   },
   examplesTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8
+    marginBottom: 8,
   },
   exampleCard: {
-    marginBottom: 8
+    marginBottom: 8,
   },
   exampleJp: {
     fontSize: 16,
-    marginBottom: 4
+    marginBottom: 4,
   },
   exampleReading: {
     fontSize: 14,
     color: '#666',
-    marginBottom: 4
+    marginBottom: 4,
   },
   exampleTranslation: {
     fontSize: 14,
-    color: '#444'
+    color: '#444',
   },
   exampleAudioButton: {
-    marginTop: 4
+    marginTop: 4,
   },
   footer: {
     padding: 16,
-    backgroundColor: 'white',
     borderTopWidth: 1,
-    borderTopColor: '#eee'
+    borderTopColor: '#eee',
   },
   progress: {
     textAlign: 'center',
     marginBottom: 8,
-    color: '#666'
+    color: '#666',
   },
   buttonContainer: {
     flexDirection: 'row',

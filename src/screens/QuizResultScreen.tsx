@@ -6,7 +6,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { useProgress } from '../context/ProgressContext';
-import { useNavigation as useNavigationContext } from '../context/NavigationContext';
 
 type QuizResultScreenRouteProp = RouteProp<SessionStackParamList, 'QuizResult'>;
 type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
@@ -15,29 +14,22 @@ const QuizResultScreen: React.FC = () => {
   const navigation = useNavigation<RootNavProp>();
   const route = useRoute<QuizResultScreenRouteProp>();
   const { correctCount, totalCount, courseId } = route.params;
-  const { setAfterSessionCourseId } = useNavigationContext();
 
   const percentage = Math.round((correctCount / totalCount) * 100);
 
   const handleRetry = () => {
     if (!courseId) {
-      navigation.goBack(); // モーダルを閉じる
+      navigation.goBack();
       return;
     }
 
-    // クイズを再チャレンジする場合は同じセッション内で遷移
     navigation.navigate('Session', {
       screen: 'CourseQuiz',
       params: { courseId }
     });
   };
 
-  const handleBack = () => {
-    if (courseId) {
-      // コース詳細への遷移をセット
-      setAfterSessionCourseId(courseId);
-    }
-    // モーダルを閉じる（MainStackに戻る）
+  const handleExit = () => {
     navigation.goBack();
   };
 
@@ -47,31 +39,32 @@ const QuizResultScreen: React.FC = () => {
         <Card.Content>
           <Title style={styles.title}>クイズ結果</Title>
           <View style={styles.resultContainer}>
-            <Text style={styles.score}>{percentage}%</Text>
-            <Paragraph style={styles.detail}>
-              {totalCount}問中{correctCount}問正解
-            </Paragraph>
+            <Text style={styles.score}>
+              {correctCount} / {totalCount}
+            </Text>
+            <Text style={styles.percentage}>
+              正解率: {percentage}%
+            </Text>
           </View>
-
-          {percentage === 100 ? (
-            <Text style={styles.message}>完璧です！おめでとうございます！</Text>
-          ) : percentage >= 80 ? (
-            <Text style={styles.message}>素晴らしい成績です！</Text>
-          ) : percentage >= 60 ? (
-            <Text style={styles.message}>よく頑張りました！</Text>
-          ) : (
-            <Text style={styles.message}>もう一度チャレンジしてみましょう！</Text>
-          )}
+          <View style={styles.messageContainer}>
+            <Text style={styles.message}>
+              {percentage >= 80
+                ? 'おめでとうございます！素晴らしい成績です！'
+                : percentage >= 60
+                ? 'よく頑張りました！もう少し練習しましょう。'
+                : 'もう一度復習して挑戦してみましょう。'}
+            </Text>
+          </View>
         </Card.Content>
       </Card>
 
       <View style={styles.buttonContainer}>
         <Button
           mode="contained"
-          onPress={handleBack}
-          style={[styles.button, styles.backButton]}
+          onPress={handleExit}
+          style={[styles.button, styles.exitButton]}
         >
-          {courseId ? 'コース詳細に戻る' : 'コース一覧に戻る'}
+          セッションを終了
         </Button>
         {courseId && (
           <Button
@@ -79,7 +72,7 @@ const QuizResultScreen: React.FC = () => {
             onPress={handleRetry}
             style={[styles.button, styles.retryButton]}
           >
-            もう一度挑戦する
+            もう一度挑戦
           </Button>
         )}
       </View>
@@ -97,38 +90,42 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: 24,
     textAlign: 'center',
+    fontSize: 24,
     marginBottom: 16,
   },
   resultContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 16,
   },
   score: {
     fontSize: 48,
     fontWeight: 'bold',
     color: '#2196F3',
   },
-  detail: {
-    fontSize: 18,
+  percentage: {
+    fontSize: 20,
+    color: '#666',
     marginTop: 8,
   },
+  messageContainer: {
+    padding: 16,
+    backgroundColor: '#e3f2fd',
+    borderRadius: 8,
+  },
   message: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
-    marginTop: 16,
-    color: '#4CAF50',
+    color: '#1976d2',
   },
   buttonContainer: {
-    flexDirection: 'column',
     gap: 16,
   },
   button: {
     paddingVertical: 8,
   },
-  backButton: {
-    backgroundColor: '#666',
+  exitButton: {
+    backgroundColor: '#f44336',
   },
   retryButton: {
     backgroundColor: '#2196F3',

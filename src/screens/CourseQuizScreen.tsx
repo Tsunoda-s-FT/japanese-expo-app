@@ -42,6 +42,26 @@ const CourseQuizScreen: React.FC = () => {
   // クイズセッション管理
   const [sessionId, setSessionId] = useState<string | null>(null);
 
+  const showExitConfirmation = () => {
+    Alert.alert(
+      'クイズを中断しますか？',
+      'クイズを中断して呼び出し元の画面に戻ります',
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: '中断する',
+          style: 'destructive',
+          onPress: () => {
+            if (sessionId) {
+              abortQuizSession(sessionId, currentIndex);
+            }
+            navigation.goBack();
+          },
+        },
+      ]
+    );
+  };
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -67,31 +87,13 @@ const CourseQuizScreen: React.FC = () => {
 
     loadData();
 
-    // クイズ中断時の確認ダイアログ
-    const handleBackPress = () => {
-      Alert.alert(
-        '確認',
-        'クイズを中断しますか？\n進捗は保存されません。',
-        [
-          { text: 'キャンセル', style: 'cancel' },
-          {
-            text: '中断する',
-            onPress: () => {
-              if (sessionId) {
-                abortQuizSession(sessionId, currentIndex);
-              }
-              navigation.goBack();
-            },
-          },
-        ],
-        { cancelable: true }
-      );
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      showExitConfirmation();
       return true;
-    };
+    });
 
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
     return () => backHandler.remove();
-  }, [courseId, currentIndex, sessionId, navigation]);
+  }, [courseId, navigation, sessionId, currentIndex]);
 
   /**
    * 回答ボタンを押すと実行
