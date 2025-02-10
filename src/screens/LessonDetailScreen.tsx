@@ -3,12 +3,12 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Card, Title, Paragraph, ActivityIndicator } from 'react-native-paper';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getLessonById } from '../services/contentService';
 
-type LessonDetailRouteProp = RouteProp<RootStackParamList, 'LessonDetail'>;
-type LessonDetailNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LessonDetail'>;
+type LessonDetailRouteProp = RouteProp<MainStackParamList, 'LessonDetail'>;
+type LessonDetailNavigationProp = NativeStackNavigationProp<MainStackParamList, 'LessonDetail'>;
 
 const LessonDetailScreen: React.FC = () => {
   const route = useRoute<LessonDetailRouteProp>();

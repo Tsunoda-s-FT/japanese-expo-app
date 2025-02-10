@@ -3,11 +3,11 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Card, Title, Paragraph, ActivityIndicator, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getAllLessons } from '../services/contentService';
 
-type LessonListNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LessonList'>;
+type LessonListNavigationProp = NativeStackNavigationProp<MainStackParamList, 'LessonList'>;
 
 const LessonListScreen: React.FC = () => {
   const navigation = useNavigation<LessonListNavigationProp>();
@@ -16,10 +16,16 @@ const LessonListScreen: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await getAllLessons();
-      setLessons(data);
-      setLoading(false);
+      try {
+        const data = await getAllLessons();
+        setLessons(data);
+      } catch (error) {
+        console.error('Error loading lessons:', error);
+      } finally {
+        setLoading(false);
+      }
     };
+
     loadData();
   }, []);
 

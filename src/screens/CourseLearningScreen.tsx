@@ -25,21 +25,17 @@ export default function CourseLearningScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadData = () => {
+    const loadData = async () => {
       try {
-        console.log('Loading course data for ID:', courseId);
         const courseData = getCourseById(courseId);
         if (!courseData) {
-          console.error('Course not found:', courseId);
           setLoading(false);
           return;
         }
 
-        console.log('Course data loaded:', courseData);
         setCourse(courseData);
         setLoading(false);
       } catch (error) {
-        console.error('Error loading course data:', error);
         setLoading(false);
       }
     };

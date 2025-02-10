@@ -30,9 +30,8 @@ const CourseQuizScreen: React.FC = () => {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // ユーザーが選んだオプションや正誤表示の状態
+  // ユーザーが選んだオプション
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [showExplanation, setShowExplanation] = useState(false);
 
   // スコア計算用
   const [correctCount, setCorrectCount] = useState(0);
@@ -182,7 +181,6 @@ const CourseQuizScreen: React.FC = () => {
                 key={idx}
                 label={opt}
                 value={idx.toString()}
-                disabled={showExplanation}
                 style={styles.radioItem}
               />
             ))}

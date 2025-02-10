@@ -1,8 +1,9 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text, Card, Title, Paragraph, Divider } from 'react-native-paper';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/RootNavigator';
 import { useProgress } from '../context/ProgressContext';
 import { getCourseById } from '../services/contentService';
 import { QuizQuestion } from '../types/contentTypes';

@@ -3,15 +3,21 @@ import { LessonProgress, CourseProgress } from '../types/contentTypes';
 
 const PROGRESS_PREFIX = '@japanese_app_progress:';
 
+// デバッグログのユーティリティ関数
+const logDebug = (message: string, ...args: any[]) => {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[ProgressService] ${message}`, ...args);
+  }
+};
+
 export async function getLessonProgress(lessonId: string): Promise<LessonProgress | null> {
   try {
-    console.log('Getting progress for lesson:', lessonId);
+    logDebug('Getting progress for lesson:', lessonId);
     const key = `${PROGRESS_PREFIX}lesson_${lessonId}`;
     const data = await AsyncStorage.getItem(key);
-    console.log('Raw progress data:', data);
     
     if (!data) {
-      console.log('No progress data found, returning default');
+      logDebug('No progress data found for lesson:', lessonId);
       return {
         completedCourseIds: new Set<string>(),
         lastAccessedDate: new Date()
@@ -19,14 +25,14 @@ export async function getLessonProgress(lessonId: string): Promise<LessonProgres
     }
 
     const parsed = JSON.parse(data);
-    console.log('Parsed progress data:', parsed);
+    logDebug('Parsed progress data:', parsed);
     
     return {
       completedCourseIds: new Set(parsed.completedCourseIds),
       lastAccessedDate: new Date(parsed.lastAccessedDate)
     };
   } catch (error) {
-    console.error('Error getting lesson progress:', error);
+    logDebug('Error getting lesson progress:', error);
     return {
       completedCourseIds: new Set<string>(),
       lastAccessedDate: new Date()
@@ -36,28 +42,27 @@ export async function getLessonProgress(lessonId: string): Promise<LessonProgres
 
 export async function saveLessonProgress(lessonId: string, progress: LessonProgress): Promise<void> {
   try {
-    console.log('Saving progress for lesson:', lessonId, progress);
+    logDebug('Saving progress for lesson:', lessonId, progress);
     const key = `${PROGRESS_PREFIX}lesson_${lessonId}`;
     const data = {
       completedCourseIds: Array.from(progress.completedCourseIds),
       lastAccessedDate: progress.lastAccessedDate.toISOString()
     };
     await AsyncStorage.setItem(key, JSON.stringify(data));
-    console.log('Progress saved successfully');
+    logDebug('Lesson progress saved:', lessonId);
   } catch (error) {
-    console.error('Error saving lesson progress:', error);
+    logDebug('Error saving lesson progress:', error);
   }
 }
 
 export async function getCourseProgress(courseId: string): Promise<CourseProgress | null> {
   try {
-    console.log('Getting progress for course:', courseId);
+    logDebug('Getting progress for course:', courseId);
     const key = `${PROGRESS_PREFIX}course_${courseId}`;
     const data = await AsyncStorage.getItem(key);
-    console.log('Raw course progress data:', data);
     
     if (!data) {
-      console.log('No course progress data found, returning default');
+      logDebug('No progress data found for course:', courseId);
       return {
         learnedPhraseIds: new Set<string>(),
         completedQuizIds: new Set<string>(),
@@ -66,7 +71,7 @@ export async function getCourseProgress(courseId: string): Promise<CourseProgres
     }
 
     const parsed = JSON.parse(data);
-    console.log('Parsed course progress data:', parsed);
+    logDebug('Parsed course progress data:', parsed);
     
     return {
       learnedPhraseIds: new Set(parsed.learnedPhraseIds),
@@ -74,7 +79,7 @@ export async function getCourseProgress(courseId: string): Promise<CourseProgres
       lastAccessedDate: new Date(parsed.lastAccessedDate)
     };
   } catch (error) {
-    console.error('Error getting course progress:', error);
+    logDebug('Error getting course progress:', error);
     return {
       learnedPhraseIds: new Set<string>(),
       completedQuizIds: new Set<string>(),
@@ -85,7 +90,7 @@ export async function getCourseProgress(courseId: string): Promise<CourseProgres
 
 export async function saveCourseProgress(courseId: string, progress: CourseProgress): Promise<void> {
   try {
-    console.log('Saving progress for course:', courseId, progress);
+    logDebug('Saving progress for course:', courseId, progress);
     const key = `${PROGRESS_PREFIX}course_${courseId}`;
     const data = {
       learnedPhraseIds: Array.from(progress.learnedPhraseIds),
@@ -93,9 +98,9 @@ export async function saveCourseProgress(courseId: string, progress: CourseProgr
       lastAccessedDate: progress.lastAccessedDate.toISOString()
     };
     await AsyncStorage.setItem(key, JSON.stringify(data));
-    console.log('Course progress saved successfully');
+    logDebug('Course progress saved:', courseId);
   } catch (error) {
-    console.error('Error saving course progress:', error);
+    logDebug('Error saving course progress:', error);
   }
 }
 
