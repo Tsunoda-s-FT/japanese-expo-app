@@ -1,11 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Image } from 'react-native';
 import { Card, Title, Paragraph, ActivityIndicator } from 'react-native-paper';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getLessonById } from '../services/contentService';
+
+// 画像のマッピング
+const lessonImages: { [key: string]: any } = {
+  'ojigi_aisatsu_business_woman.png': require('../../assets/images/lessons/ojigi_aisatsu_business_woman.png'),
+  // 他の画像もここに追加
+};
+
+// 画像のパスから画像ソースを取得する関数
+const getImageSource = (path: string) => {
+  // パスからファイル名を抽出
+  const fileName = path.split('/').pop();
+  if (fileName && lessonImages[fileName]) {
+    return lessonImages[fileName];
+  }
+  // 該当する画像が見つからない場合はデフォルト画像を返すか、nullを返す
+  return null;
+};
 
 type LessonDetailRouteProp = RouteProp<MainStackParamList, 'LessonDetail'>;
 type LessonDetailNavigationProp = NativeStackNavigationProp<MainStackParamList, 'LessonDetail'>;
@@ -52,8 +69,8 @@ const LessonDetailScreen: React.FC = () => {
   return (
     <ScrollView style={styles.container}>
       {lesson.thumbnail && (
-        <Card.Cover
-          source={{ uri: lesson.thumbnail }}
+        <Image
+          source={getImageSource(lesson.thumbnail) || { uri: 'https://placehold.co/600x400/png' }}
           style={styles.thumbnail}
         />
       )}
@@ -109,7 +126,11 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   thumbnail: {
+    width: '100%',
     height: 200,
+    resizeMode: 'cover',
+    marginBottom: 16,
+    borderRadius: 8,
   },
   content: {
     padding: 16,

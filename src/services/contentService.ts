@@ -11,10 +11,11 @@ function transformContent(data: any): Content {
         // exampleSentences (snake_case -> camelCase) を変換
         const transformedExamples = (p.exampleSentences || []).map((ex: any) => ({
           id: ex.id || `example_${p.id}_${Math.random().toString(36).substr(2, 9)}`,
-          jpText: ex.jp_text,
+          jpText: ex.jpText,
           reading: ex.reading,
           translations: ex.translations,
-          audio: ex.audio
+          audio: ex.audio,
+          segments: ex.segments || []
         }));
         return {
           id: p.id,
@@ -23,7 +24,8 @@ function transformContent(data: any): Content {
           translations: p.translations,
           audio: p.audio,
           exampleSentences: transformedExamples,
-          words: p.words || []
+          words: p.words || [],
+          segments: p.segments || []
         };
       });
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Alert, BackHandler } from 'react-native';
+import { View, StyleSheet, Alert, BackHandler, ScrollView } from 'react-native';
 import { Card, Title, Button, Text, ActivityIndicator, ProgressBar, RadioButton } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -8,6 +8,8 @@ import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { getCourseById } from '../services/contentService';
 import { useProgress } from '../context/ProgressContext';
 import { Course, QuizQuestion } from '../types/contentTypes';
+import SegmentedText from '../components/SegmentedText';
+import { useTheme } from 'react-native-paper';
 
 type CourseQuizScreenRouteProp = RouteProp<SessionStackParamList, 'CourseQuiz'>;
 type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
@@ -24,6 +26,7 @@ const CourseQuizScreen: React.FC = () => {
     abortQuizSession,
     getQuizSessionById,
   } = useProgress();
+  const theme = useTheme();
 
   // コース情報 & 問題リスト
   const [course, setCourse] = useState<Course | null>(null);
@@ -71,6 +74,8 @@ const CourseQuizScreen: React.FC = () => {
     const loadData = async () => {
       try {
         const courseData = await getCourseById(courseId);
+        console.log('[CourseQuizScreen] getCourseById result:', JSON.stringify(courseData, null, 2));
+
         if (!courseData) {
           console.error('Course not found:', courseId);
           setLoading(false);
@@ -83,7 +88,7 @@ const CourseQuizScreen: React.FC = () => {
 
         // 新しいクイズセッションを作成（1回だけ）
         const newSessionId = await createNewQuizSession(courseId);
-        console.log('Created new quiz session:', newSessionId); // デバッグログ追加
+        console.log('[CourseQuizScreen] Created new quiz session:', newSessionId);
         setSessionId(newSessionId);
       } catch (error) {
         console.error('Error loading course data:', error);
@@ -99,7 +104,7 @@ const CourseQuizScreen: React.FC = () => {
     });
 
     return () => backHandler.remove();
-  }, [courseId, navigation]); // sessionIdとcurrentIndexを依存配列から削除
+  }, [courseId, navigation]);
 
   /**
    * 回答ボタンを押すと実行
@@ -170,6 +175,34 @@ const CourseQuizScreen: React.FC = () => {
     setIsCorrect(null);
   };
 
+  const renderQuestionText = () => {
+    if (!questions[currentIndex] || !course) return null;
+
+    const currentQuestion = questions[currentIndex];
+    console.log('[CourseQuizScreen] currentQuestion:', currentQuestion);
+
+    const linkedPhrase = course.phrases.find(p => p.id === currentQuestion.linkedPhraseId);
+    console.log('[CourseQuizScreen] linkedPhrase =', JSON.stringify(linkedPhrase, null, 2));
+
+    if (!linkedPhrase) {
+      console.log('[CourseQuizScreen] No linkedPhrase found for', currentQuestion.linkedPhraseId);
+      return null;
+    }
+
+    console.log('[CourseQuizScreen] linkedPhrase.segments:', linkedPhrase.segments);
+
+    return (
+      <View style={styles.questionContainer}>
+        {linkedPhrase.segments && linkedPhrase.segments.length > 0 ? (
+          <SegmentedText segments={linkedPhrase.segments} />
+        ) : (
+          <Text style={styles.phraseText}>{linkedPhrase.jpText}</Text>
+        )}
+        <Text style={styles.questionText}>{currentQuestion.questionSuffixJp}</Text>
+      </View>
+    );
+  };
+
   // ロード中の表示
   if (loading) {
     return (
@@ -195,65 +228,81 @@ const CourseQuizScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* プログレスバー */}
-      <ProgressBar progress={progress} style={styles.progressBar} />
+      <ProgressBar progress={progress} color={theme.colors.primary} style={styles.progressBar} />
       <Text style={styles.progressText}>
         {currentIndex + 1} / {questions.length}
       </Text>
 
-      {/* 問題カード */}
-      <Card style={styles.questionCard}>
-        <Card.Content>
-          <Text style={styles.question}>{currentQuestion.question}</Text>
+      <ScrollView style={styles.scrollView}>
+        <Card style={styles.card}>
+          <Card.Content>
+            {/* リンクされたフレーズの文節表示 */}
+            {course && currentQuestion && (
+              <View style={styles.questionContainer}>
+                {renderQuestionText()}
+                {/* 3. 選択肢 */}
+                <RadioButton.Group
+                  onValueChange={(value) => setSelectedOption(Number(value))}
+                  value={selectedOption?.toString() || ''}
+                >
+                  {currentQuestion.options.map((option, index) => (
+                    <RadioButton.Item
+                      key={index}
+                      label={option}
+                      value={index.toString()}
+                      disabled={isSubmitted}
+                      style={[
+                        styles.radioItem,
+                        isSubmitted && index === currentQuestion.answerIndex && styles.correctAnswer,
+                        isSubmitted && selectedOption === index && selectedOption !== currentQuestion.answerIndex && styles.wrongAnswer
+                      ]}
+                      labelStyle={[
+                        styles.radioLabel,
+                        isSubmitted && index === currentQuestion.answerIndex && styles.correctAnswerText,
+                        isSubmitted && selectedOption === index && selectedOption !== currentQuestion.answerIndex && styles.wrongAnswerText
+                      ]}
+                    />
+                  ))}
+                </RadioButton.Group>
 
-          {/* 選択肢 (RadioButton) */}
-          <RadioButton.Group
-            onValueChange={(val) => setSelectedOption(Number(val))}
-            value={selectedOption?.toString() || ''}
-          >
-            {currentQuestion.options.map((opt, idx) => (
-              <RadioButton.Item
-                key={idx}
-                label={opt}
-                value={idx.toString()}
-                rippleColor="transparent"
-                style={styles.radioItem}
-              />
-            ))}
-          </RadioButton.Group>
-
-          {/* 回答後の正誤判定と解説 */}
-          {isSubmitted && (
-            <View style={styles.resultContainer}>
-              <Text style={[styles.resultText, isCorrect ? styles.correctText : styles.incorrectText]}>
-                {isCorrect ? '正解！' : '不正解...'}
-              </Text>
-              <Text style={styles.explanation}>
-                {currentQuestion.explanation}
-              </Text>
-            </View>
-          )}
-
-          {/* 回答 or 次へ ボタン */}
-          {!isSubmitted ? (
-            <Button
-              mode="contained"
-              onPress={handleAnswer}
-              disabled={selectedOption === null}
-              style={styles.button}
-            >
-              回答する
-            </Button>
-          ) : (
-            <Button
-              mode="contained"
-              onPress={handleNext}
-              style={styles.button}
-            >
-              {currentIndex >= questions.length - 1 ? '結果を見る' : '次へ'}
-            </Button>
-          )}
-        </Card.Content>
-      </Card>
+                {/* 4. 回答/次へボタン */}
+                {!isSubmitted ? (
+                  <Button
+                    mode="contained"
+                    onPress={handleAnswer}
+                    disabled={selectedOption === null}
+                    style={styles.actionButton}
+                  >
+                    回答する
+                  </Button>
+                ) : (
+                  <>
+                    {/* 5. 解説 */}
+                    <View style={styles.explanationContainer}>
+                      <Text style={[
+                        styles.resultText,
+                        isCorrect ? styles.correctText : styles.incorrectText
+                      ]}>
+                        {isCorrect ? '正解！' : '不正解...'}
+                      </Text>
+                      <Text style={styles.explanationText}>
+                        {currentQuestion.explanation}
+                      </Text>
+                    </View>
+                    <Button
+                      mode="contained"
+                      onPress={handleNext}
+                      style={styles.actionButton}
+                    >
+                      {currentIndex < questions.length - 1 ? '次へ' : '結果を見る'}
+                    </Button>
+                  </>
+                )}
+              </View>
+            )}
+          </Card.Content>
+        </Card>
+      </ScrollView>
     </View>
   );
 };
@@ -261,7 +310,90 @@ const CourseQuizScreen: React.FC = () => {
 export default CourseQuizScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#f5f5f5' },
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  progressBar: {
+    marginVertical: 8,
+  },
+  progressText: {
+    textAlign: 'center',
+    marginBottom: 16,
+    color: '#666',
+  },
+  scrollView: {
+    flex: 1,
+    padding: 16,
+  },
+  card: {
+    marginBottom: 16,
+  },
+  questionContainer: {
+    marginBottom: 16,
+  },
+  phraseText: {
+    fontSize: 20,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  questionText: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  radioItem: {
+    marginVertical: 4,
+    borderRadius: 8,
+  },
+  radioLabel: {
+    fontSize: 16,
+  },
+  correctAnswer: {
+    backgroundColor: '#E8F5E9',
+  },
+  wrongAnswer: {
+    backgroundColor: '#FFEBEE',
+  },
+  correctAnswerText: {
+    color: '#2E7D32',
+  },
+  wrongAnswerText: {
+    color: '#C62828',
+  },
+  actionButton: {
+    marginTop: 24,
+  },
+  explanationContainer: {
+    marginTop: 24,
+    padding: 16,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+  },
+  resultText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  correctText: {
+    color: '#2E7D32',
+  },
+  incorrectText: {
+    color: '#C62828',
+  },
+  explanationText: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#333',
+  },
+  errorText: {
+    color: '#C62828',
+    textAlign: 'center',
+    fontSize: 16,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -272,54 +404,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-  },
-  progressBar: {
-    marginBottom: 8,
-  },
-  progressText: {
-    textAlign: 'center',
-    marginBottom: 16,
-    color: '#666',
-  },
-  questionCard: {
-    marginBottom: 16,
-  },
-  question: {
-    fontSize: 18,
-    marginBottom: 16,
-  },
-  radioItem: {
-    marginVertical: 4,
-    backgroundColor: 'transparent',
-  },
-  button: {
-    marginTop: 16,
-  },
-  resultContainer: {
-    marginTop: 16,
-    padding: 16,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 8,
-  },
-  resultText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  correctText: {
-    color: '#4CAF50',
-  },
-  incorrectText: {
-    color: '#F44336',
-  },
-  explanation: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#666',
   },
 });

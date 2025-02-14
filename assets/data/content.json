@@ -3,1916 +3,427 @@
     {
       "id": "lesson_greetings",
       "title": "あいさつ",
-      "description": "日本語の基本的なあいさつを学びます。",
+      "description": "N5レベルの基本挨拶表現",
       "category": "basic",
-      "thumbnail": "images/lessons/greetings.jpg",
-      "totalEstimatedTime": "45分",
+      "thumbnail": "images/lessons/ojigi_aisatsu_business_woman.png",
+      "totalEstimatedTime": "15分",
       "courses": [
         {
-          "id": "course_basic_greetings",
-          "title": "基本のあいさつ",
-          "description": "朝昼晩のあいさつをまとめたコース。日常でよく使う表現を学びます。",
+          "id": "course_greetings_new",
+          "title": "あいさつ(再設計)",
+          "description": "基本あいさつを学習し、クイズで意味を確認しましょう。",
           "level": "beginner",
           "estimatedTime": "15分",
-          "tags": ["greeting", "daily", "formal"],
+          "tags": ["greeting", "daily", "n5"],
+
           "phrases": [
             {
-              "id": "phrase_ohayou",
+              "id": "phrase_ohayou_gozaimasu",
               "jpText": "おはようございます",
               "reading": "おはようございます",
               "translations": {
-                "en": "Good morning"
+                "en": "Good morning (polite)"
               },
               "audio": "audio/ohayou_gozaimasu.mp3",
-              "exampleSentences": [
+              "segments": [
                 {
-                  "jp_text": "朝起(あさお)きたら「おはようございます」と言(い)います。",
-                  "reading": "あさ おきたら「おはようございます」と いいます。",
-                  "translations": {
-                    "en": "We say 'Good morning' when we wake up."
-                  },
-                  "audio": "audio/example_morning_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_konnichiwa",
-              "jpText": "こんにちは",
-              "reading": "こんにちは",
-              "translations": {
-                "en": "Hello / Good afternoon"
-              },
-              "audio": "audio/konnichiwa.mp3",
-              "exampleSentences": [
+                  "jpText": "おはよう",
+                  "reading": "おはよう",
+                  "partOfSpeech": "expression"
+                },
                 {
-                  "jp_text": "昼頃(ひるごろ)には「こんにちは」と挨拶(あいさつ)しましょう。",
-                  "reading": "ひるごろ には「こんにちは」と あいさつ しましょう。",
-                  "translations": {
-                    "en": "Around noon, say 'Hello'."
-                  },
-                  "audio": "audio/example_konnichiwa_1.mp3"
+                  "jpText": "ございます",
+                  "reading": "ございます",
+                  "partOfSpeech": "politeSuffix"
                 }
-              ]
-            },
-            {
-              "id": "phrase_konbanwa",
-              "jpText": "こんばんは",
-              "reading": "こんばんは",
-              "translations": {
-                "en": "Good evening"
-              },
-              "audio": "audio/konbanwa.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "夜(よる)に会(あ)った人(ひと)には「こんばんは」と声(こえ)をかけます。",
-                  "reading": "よる に あった ひと には「こんばんは」と こえ を かけます。",
-                  "translations": {
-                    "en": "When you meet someone at night, greet them with 'Good evening'."
-                  },
-                  "audio": "audio/example_konbanwa_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_oyasumi",
-              "jpText": "おやすみなさい",
-              "reading": "おやすみなさい",
-              "translations": {
-                "en": "Good night (before sleeping)"
-              },
-              "audio": "audio/oyasumi.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "寝(ね)る前(まえ)に「おやすみなさい」と言います。",
-                  "reading": "ねる まえ に「おやすみなさい」と いいます。",
-                  "translations": {
-                    "en": "You say 'Good night' before going to sleep."
-                  },
-                  "audio": "audio/example_oyasumi_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_arigato",
-              "jpText": "ありがとう",
-              "reading": "ありがとう",
-              "translations": {
-                "en": "Thank you"
-              },
-              "audio": "audio/arigato.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "何(なに)かをしてもらったら「ありがとう」と感謝(かんしゃ)を伝(つた)えましょう。",
-                  "reading": "なにか を して もらったら「ありがとう」と かんしゃ を つたえましょう。",
-                  "translations": {
-                    "en": "When someone does something for you, express gratitude by saying 'Thank you'."
-                  },
-                  "audio": "audio/example_arigato_1.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_greetings_1",
-              "question": "「おはようございます」の意味はどれ？",
-              "options": ["Good night", "Good afternoon", "Good morning", "Hello"],
-              "answerIndex": 2,
-              "explanation": "「おはようございます」は朝の挨拶で、英語の 'Good morning' に相当します。"
-            },
-            {
-              "id": "quiz_greetings_2",
-              "question": "昼に使うあいさつはどれ？",
-              "options": ["こんばんは", "おはようございます", "こんにちは", "はじめまして"],
-              "answerIndex": 2,
-              "explanation": "昼頃には「こんにちは」を使います。"
-            },
-            {
-              "id": "quiz_greetings_3",
-              "question": "「こんばんは」はいつ使う？",
-              "options": [
-                "朝早(はや)い時間",
-                "昼ごろ",
-                "夕方(ゆうがた)から夜(よる)",
-                "寝る前だけ"
               ],
-              "answerIndex": 2,
-              "explanation": "「こんばんは」は夕方以降のあいさつです。"
-            }
-          ]
-        },
-        {
-          "id": "course_business_greetings",
-          "title": "ビジネスのあいさつ",
-          "description": "仕事で使う丁寧なあいさつ表現を学びます。",
-          "level": "intermediate",
-          "estimatedTime": "20分",
-          "tags": ["business", "formal", "office"],
-          "phrases": [
-            {
-              "id": "phrase_ohayou_business",
-              "jpText": "おはようございます。今日(きょう)もよろしくお願(ねが)いします。",
-              "reading": "おはようございます。きょう も よろしく おねがいします。",
-              "translations": {
-                "en": "Good morning. I look forward to working with you today."
-              },
-              "audio": "audio/ohayou_business.mp3",
               "exampleSentences": [
                 {
-                  "jp_text": "オフィスに着(つ)いたら「おはようございます」と挨拶しましょう。",
-                  "reading": "オフィス に ついたら 「おはようございます」と あいさつ しましょう。",
+                  "id": "ex_ohayou_1",
+                  "jpText": "朝早(あさはや)く会(あ)ったら「おはようございます」と言(い)います。",
+                  "segments": [
+                    {
+                      "jpText": "朝早(あさはや)く",
+                      "reading": "あさはやく",
+                      "partOfSpeech": "adverb"
+                    },
+                    {
+                      "jpText": "会(あ)ったら",
+                      "reading": "あったら",
+                      "partOfSpeech": "verb"
+                    },
+                    {
+                      "jpText": "「おはようございます」と",
+                      "reading": "「おはようございます」と",
+                      "partOfSpeech": "expression"
+                    },
+                    {
+                      "jpText": "言(い)います",
+                      "reading": "いいます",
+                      "partOfSpeech": "verb"
+                    }
+                  ],
                   "translations": {
-                    "en": "When you arrive at the office, greet your colleagues with 'Good morning'."
-                  },
-                  "audio": "audio/example_business_1.mp3"
+                    "en": "When you meet someone early in the morning, say 'Good morning.'"
+                  }
                 }
               ]
             },
             {
-              "id": "phrase_otsukaresama",
-              "jpText": "お疲(つか)れ様(さま)です",
-              "reading": "おつかれさま です",
+              "id": "phrase_ogenki_desu_ka",
+              "jpText": "お元気ですかー！",
+              "reading": "おげんきですか",
               "translations": {
-                "en": "Hello/Good work (business greeting)"
+                "en": "How are you?"
               },
-              "audio": "audio/otsukaresama.mp3",
-              "exampleSentences": [
+              "audio": "audio/ogenki_desu_ka.mp3",
+              "segments": [
                 {
-                  "jp_text": "職場(しょくば)では、同僚(どうりょう)と会(あ)ったら「お疲れ様です」と声(こえ)をかけます。",
-                  "reading": "しょくば では、 どうりょう と あったら「おつかれさま です」と こえ を かけます。",
-                  "translations": {
-                    "en": "In the workplace, say 'Otsukaresama desu' when you meet your colleagues."
-                  },
-                  "audio": "audio/otsukaresama_example_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_osewani",
-              "jpText": "いつもお世話(せわ)になっております",
-              "reading": "いつも おせわ に なって おります",
-              "translations": {
-                "en": "Thank you for your continued support."
-              },
-              "audio": "audio/osewani.mp3",
-              "exampleSentences": [
+                  "jpText": "お元気",
+                  "reading": "おげんき",
+                  "partOfSpeech": "expression"
+                },
                 {
-                  "jp_text": "ビジネスメールの冒頭(ぼうとう)でよく使(つか)われる表現(ひょうげん)です。",
-                  "reading": "びじねすめーる の ぼうとう で よく つかわれる ひょうげん です。",
-                  "translations": {
-                    "en": "This phrase is often used at the beginning of business emails."
-                  },
-                  "audio": "audio/osewani_example_1.mp3"
+                  "jpText": "ですか",
+                  "reading": "ですか",
+                  "partOfSpeech": "copula"
                 }
-              ]
-            },
-            {
-              "id": "phrase_shitsureishimasu",
-              "jpText": "失礼(しつれい)します",
-              "reading": "しつれい します",
-              "translations": {
-                "en": "Excuse me (formal)."
-              },
-              "audio": "audio/shitsureishimasu.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "部屋(へや)に入(はい)るときや退出(たいしゅつ)するときに使います。",
-                  "reading": "へや に はいる とき や たいしゅつ する とき に つかいます。",
-                  "translations": {
-                    "en": "Used when entering or leaving a room in a formal setting."
-                  },
-                  "audio": "audio/shitsureishimasu_example_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_yoroshiku_onegai_shimasu",
-              "jpText": "よろしくお願(ねが)いします",
-              "reading": "よろしく おねがいします",
-              "translations": {
-                "en": "I look forward to working with you / Thank you in advance"
-              },
-              "audio": "audio/yoroshiku_onegai_shimasu.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "仕事(しごと)を依頼(いらい)するときや自己紹介(じこしょうかい)の締(し)めに使います。",
-                  "reading": "しごと を いらい する とき や じこしょうかい の しめ に つかいます。",
-                  "translations": {
-                    "en": "Used when requesting tasks or at the end of a self-introduction."
-                  },
-                  "audio": "audio/yoroshiku_onegai_example_1.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_business_1",
-              "question": "ビジネスの朝のあいさつとして最も丁寧なのは？",
-              "options": [
-                "おはよう",
-                "おはようございます",
-                "よろしくね",
-                "こんにちは"
               ],
-              "answerIndex": 1,
-              "explanation": "ビジネスシーンでは「おはようございます」が適切です。"
-            },
-            {
-              "id": "quiz_business_2",
-              "question": "「お疲れ様です」はどんな場面(ばめん)で使う？",
-              "options": [
-                "家族に初めて会うとき",
-                "朝の挨拶として",
-                "職場で同僚や上司に会ったとき",
-                "寝る前"
-              ],
-              "answerIndex": 2,
-              "explanation": "「お疲れ様です」は職場など、ビジネスシーンで同僚や上司に対して使います。"
-            }
-          ]
-        },
-        {
-          "id": "course_informal_greetings",
-          "title": "カジュアルなあいさつ",
-          "description": "友人同士や親しい間柄で使う、くだけた表現を学びます。",
-          "level": "beginner",
-          "estimatedTime": "10分",
-          "tags": ["greeting", "casual"],
-          "phrases": [
-            {
-              "id": "phrase_osu",
-              "jpText": "おっす",
-              "reading": "おっす",
-              "translations": {
-                "en": "Hey! (Very casual greeting among friends)"
-              },
-              "audio": "audio/osu_greeting.mp3",
               "exampleSentences": [
                 {
-                  "jp_text": "友達(ともだち)に会(あ)ったとき「おっす」と言うこともあります。",
-                  "reading": "ともだち に あった とき「おっす」と いう こと も あります。",
+                  "id": "ex_ogenki_1",
+                  "jpText": "久(ひさ)しぶりに会(あ)った人(ひと)に「お元気ですか」と聞(き)きます。",
+                  "segments": [
+                    {
+                      "jpText": "久(ひさ)しぶりに",
+                      "reading": "ひさしぶりに",
+                      "partOfSpeech": "adverb"
+                    },
+                    {
+                      "jpText": "会(あ)った人(ひと)に",
+                      "reading": "あった ひと に",
+                      "partOfSpeech": "verb"
+                    },
+                    {
+                      "jpText": "「お元気ですか」と",
+                      "reading": "「おげんきですか」と",
+                      "partOfSpeech": "expression"
+                    },
+                    {
+                      "jpText": "聞(き)きます",
+                      "reading": "ききます",
+                      "partOfSpeech": "verb"
+                    }
+                  ],
                   "translations": {
-                    "en": "You may say 'Ossu' when meeting friends."
-                  },
-                  "audio": "audio/example_informal_1.mp3"
+                    "en": "When you meet someone after a long time, you ask 'How are you?'"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "phrase_arigatou_gozaimasu",
+              "jpText": "ありがとうございます",
+              "reading": "ありがとうございます",
+              "translations": {
+                "en": "Thank you (polite)"
+              },
+              "audio": "audio/arigatou_gozaimasu.mp3",
+              "segments": [
+                {
+                  "jpText": "ありがとう",
+                  "reading": "ありがとう",
+                  "partOfSpeech": "expression"
+                },
+                {
+                  "jpText": "ございます",
+                  "reading": "ございます",
+                  "partOfSpeech": "politeSuffix"
+                }
+              ],
+              "exampleSentences": [
+                {
+                  "id": "ex_arigatou_1",
+                  "jpText": "何(なに)かしてもらったら「ありがとうございます」と感謝(かんしゃ)しましょう。",
+                  "segments": [
+                    {
+                      "jpText": "何(なに)かしてもらったら",
+                      "reading": "なにかしてもらったら",
+                      "partOfSpeech": "verb"
+                    },
+                    {
+                      "jpText": "「ありがとうございます」と",
+                      "reading": "「ありがとうございます」と",
+                      "partOfSpeech": "expression"
+                    },
+                    {
+                      "jpText": "感謝(かんしゃ)しましょう",
+                      "reading": "かんしゃ しましょう",
+                      "partOfSpeech": "verb"
+                    }
+                  ],
+                  "translations": {
+                    "en": "When someone does something for you, express gratitude by saying 'Thank you.'"
+                  }
                 }
               ]
             },
             {
               "id": "phrase_hisashiburi",
-              "jpText": "久(ひさ)しぶり",
+              "jpText": "久しぶり",
               "reading": "ひさしぶり",
               "translations": {
                 "en": "Long time no see"
               },
               "audio": "audio/hisashiburi.mp3",
-              "exampleSentences": [
+              "segments": [
                 {
-                  "jp_text": "久しぶりに会った友達(ともだち)に「久しぶり！」と元気(げんき)よく言います。",
-                  "reading": "ひさしぶり に あった ともだち に「ひさしぶり！」と げんきよく いいます。",
-                  "translations": {
-                    "en": "When you see a friend you haven't seen in a while, say 'Hisashiburi!' cheerfully."
-                  },
-                  "audio": "audio/example_informal_2.mp3"
+                  "jpText": "久しぶり",
+                  "reading": "ひさしぶり",
+                  "partOfSpeech": "expression"
                 }
-              ]
-            },
-            {
-              "id": "phrase_genki",
-              "jpText": "元気(げんき)？",
-              "reading": "げんき？",
-              "translations": {
-                "en": "How are you? (casual)"
-              },
-              "audio": "audio/genki.mp3",
+              ],
               "exampleSentences": [
                 {
-                  "jp_text": "友達同士(どうし)で「元気？」と気軽(きがる)に聞(き)きます。",
-                  "reading": "ともだちどうし で「げんき？」と きがる に ききます。",
+                  "id": "ex_hisashiburi_1",
+                  "jpText": "友達(ともだち)に久(ひさ)しぶりに会(あ)ったときは「久しぶり！」と言(い)う。",
+                  "segments": [
+                    {
+                      "jpText": "友達(ともだち)に",
+                      "reading": "ともだち に",
+                      "partOfSpeech": "noun"
+                    },
+                    {
+                      "jpText": "久(ひさ)しぶりに会(あ)ったときは",
+                      "reading": "ひさしぶり に あった とき は",
+                      "partOfSpeech": "verb"
+                    },
+                    {
+                      "jpText": "「久しぶり！」と",
+                      "reading": "「ひさしぶり！」と",
+                      "partOfSpeech": "expression"
+                    },
+                    {
+                      "jpText": "言(い)う",
+                      "reading": "いう",
+                      "partOfSpeech": "verb"
+                    }
+                  ],
                   "translations": {
-                    "en": "Among friends, we casually ask 'Genki?'"
-                  },
-                  "audio": "audio/genki_example_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_yo",
-              "jpText": "よー",
-              "reading": "よー",
-              "translations": {
-                "en": "Yo! (very casual)"
-              },
-              "audio": "audio/yo_greeting.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "友達を見(み)かけたら「よー」と声(こえ)をかけることがある。",
-                  "reading": "ともだち を みかけたら「よー」と こえ を かける こと が ある。",
-                  "translations": {
-                    "en": "Sometimes you just say 'Yo!' when you spot a friend."
-                  },
-                  "audio": "audio/yo_greeting_example_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_yahho",
-              "jpText": "やっほー",
-              "reading": "やっほー",
-              "translations": {
-                "en": "Hi! (playful, casual)"
-              },
-              "audio": "audio/yahho.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "気(き)の置(お)けない友人(ゆうじん)には「やっほー」と明(あか)るく呼(よ)びかける。",
-                  "reading": "き の おけない ゆうじん には「やっほー」と あかるく よびかける。",
-                  "translations": {
-                    "en": "For close friends, a cheerful 'Yahho!' is sometimes used."
-                  },
-                  "audio": "audio/yahho_example_1.mp3"
+                    "en": "When you see a friend after a long time, say 'Long time no see!'"
+                  }
                 }
               ]
             }
           ],
+
           "quizQuestions": [
             {
-              "id": "quiz_informal_1",
-              "question": "「おっす」はどんなときに使う？",
+              "id": "quiz_greetings_1",
+              "linkedPhraseId": "phrase_ohayou_gozaimasu",
+              "questionSuffixJp": "の意味は？",
               "options": [
-                "家族に対して",
-                "ビジネスシーン",
-                "親しい友人同士",
-                "初対面(しょたいめん)の人"
+                "Good morning (polite)",
+                "Good evening",
+                "Thank you",
+                "Long time no see"
               ],
-              "answerIndex": 2,
-              "explanation": "「おっす」はかなりフランクなので、親しい友人の間で使われます。"
+              "answerIndex": 0,
+              "explanation": "朝の挨拶です。"
             },
             {
-              "id": "quiz_informal_2",
-              "question": "久しぶりに会った友達に使う表現は？",
+              "id": "quiz_greetings_2",
+              "linkedPhraseId": "phrase_ogenki_desu_ka",
+              "questionSuffixJp": "の意味は？",
               "options": [
-                "こんにちは",
-                "久しぶり",
-                "おはようございます",
-                "失礼します"
+                "How are you?",
+                "Hello",
+                "Thank you",
+                "Long time no see"
               ],
-              "answerIndex": 1,
-              "explanation": "長い間会っていなかった友達には「久しぶり」が最適です。"
+              "answerIndex": 0,
+              "explanation": "相手の状態を尋ねる定番表現。"
+            },
+            {
+              "id": "quiz_greetings_3",
+              "linkedPhraseId": "phrase_arigatou_gozaimasu",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "Thank you (polite)",
+                "I'm sorry",
+                "Good evening",
+                "Long time no see"
+              ],
+              "answerIndex": 0,
+              "explanation": "丁寧なお礼。"
+            },
+            {
+              "id": "quiz_greetings_4",
+              "linkedPhraseId": "phrase_hisashiburi",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "Long time no see",
+                "How are you?",
+                "Thank you!",
+                "Good morning"
+              ],
+              "answerIndex": 0,
+              "explanation": "久しぶりに会ったときの挨拶。"
             }
           ]
         }
       ]
     },
+
     {
-      "id": "lesson_self_intro",
-      "title": "自己紹介",
-      "description": "日本語での自己紹介の仕方を学びます。",
-      "category": "basic",
-      "thumbnail": "images/lessons/self_intro.jpg",
-      "totalEstimatedTime": "30分",
+      "id": "lesson_business",
+      "title": "ビジネスマナー",
+      "description": "N4レベルの敬語表現・やりとり",
+      "category": "business",
+      "thumbnail": "images/lessons/business.jpg",
+      "totalEstimatedTime": "20分",
       "courses": [
         {
-          "id": "course_basic_self_intro",
-          "title": "基本の自己紹介",
-          "description": "名前・出身(しゅっしん)・趣味(しゅみ)などの自己紹介フレーズを学びます。",
-          "level": "beginner",
-          "estimatedTime": "15分",
-          "tags": ["self-introduction", "daily", "casual"],
-          "phrases": [
-            {
-              "id": "phrase_watashi_wa",
-              "jpText": "私は山田(やまだ)です",
-              "reading": "わたし は やまだ です",
-              "translations": {
-                "en": "I am Yamada"
-              },
-              "audio": "audio/watashi_wa_tanaka.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "初(はじ)めまして。私は山田です。",
-                  "reading": "はじめまして。わたし は やまだ です。",
-                  "translations": {
-                    "en": "Nice to meet you. I'm Yamada."
-                  },
-                  "audio": "audio/example_intro_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_shusshin",
-              "jpText": "私の出身(しゅっしん)は東京(とうきょう)です",
-              "reading": "わたし の しゅっしん は とうきょう です",
-              "translations": {
-                "en": "I am from Tokyo"
-              },
-              "audio": "audio/my_hometown_tokyo.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "私は東京出身なので、おすすめの場所(ばしょ)をたくさん知(し)っています。",
-                  "reading": "わたし は とうきょう しゅっしん なので、 おすすめ の ばしょ を たくさん しっています。",
-                  "translations": {
-                    "en": "I'm from Tokyo, so I know many recommended places."
-                  },
-                  "audio": "audio/example_intro_2.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_nansai",
-              "jpText": "私は25歳(にじゅうごさい)です",
-              "reading": "わたし は にじゅうごさい です",
-              "translations": {
-                "en": "I am 25 years old"
-              },
-              "audio": "audio/my_age_25.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "年齢(ねんれい)を言(い)うときは「私は○○歳です」と言います。",
-                  "reading": "ねんれい を いう とき は「わたし は ○○さい です」と いいます。",
-                  "translations": {
-                    "en": "When stating your age, say 'I am __ years old.'"
-                  },
-                  "audio": "audio/my_age_25_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_suki",
-              "jpText": "音楽(おんがく)が好(す)きです",
-              "reading": "おんがく が すき です",
-              "translations": {
-                "en": "I like music"
-              },
-              "audio": "audio/i_like_music.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "私はジャズ音楽が特(とく)に好きです。",
-                  "reading": "わたし は じゃず おんがく が とくに すき です。",
-                  "translations": {
-                    "en": "I especially like jazz music."
-                  },
-                  "audio": "audio/i_like_music_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_yoroshiku_intro",
-              "jpText": "よろしくお願いします",
-              "reading": "よろしく おねがいします",
-              "translations": {
-                "en": "Nice to meet you / I look forward to knowing you"
-              },
-              "audio": "audio/yoroshiku_intro.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "自己紹介の最後(さいご)に「よろしくお願いします」と言うと丁寧(ていねい)です。",
-                  "reading": "じこしょうかい の さいご に「よろしく おねがいします」と いう と ていねい です。",
-                  "translations": {
-                    "en": "It's polite to say 'Yoroshiku onegai shimasu' at the end of a self-introduction."
-                  },
-                  "audio": "audio/yoroshiku_intro_example.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_self_intro_1",
-              "question": "「私は山田です」の正しい英訳はどれ？",
-              "options": [
-                "I am Yamada.",
-                "He is Yamada.",
-                "They are Yamada.",
-                "You are Yamada."
-              ],
-              "answerIndex": 0,
-              "explanation": "「私は山田です」は “I am Yamada.” に対応します。"
-            },
-            {
-              "id": "quiz_self_intro_2",
-              "question": "「出身」は英語でどう言う？",
-              "options": [
-                "Name",
-                "Hobby",
-                "Hometown",
-                "Occupation"
-              ],
-              "answerIndex": 2,
-              "explanation": "「出身 (しゅっしん)」は自分の生まれ育(そだ)った場所を表します。英語では「hometown」です。"
-            },
-            {
-              "id": "quiz_self_intro_3",
-              "question": "自己紹介の最後に言うとよい表現は？",
-              "options": [
-                "こんにちは",
-                "おはよう",
-                "よろしくお願いします",
-                "いただきます"
-              ],
-              "answerIndex": 2,
-              "explanation": "自己紹介の締めには「よろしくお願いします」を使うと丁寧です。"
-            }
-          ]
-        },
-        {
-          "id": "course_self_intro_expanded",
-          "title": "自己紹介（詳細）",
-          "description": "趣味や職業(しょくぎょう)など、より詳しい自己紹介を練習します。",
+          "id": "course_business_new",
+          "title": "ビジネス表現(再設計)",
+          "description": "職場でよく使う敬語フレーズとクイズ",
           "level": "intermediate",
-          "estimatedTime": "15分",
-          "tags": ["self-introduction", "daily", "semi-formal"],
-          "phrases": [
-            {
-              "id": "phrase_shumi",
-              "jpText": "私の趣味(しゅみ)は読書(どくしょ)です",
-              "reading": "わたし の しゅみ は どくしょ です",
-              "translations": {
-                "en": "My hobby is reading books."
-              },
-              "audio": "audio/hobby_reading.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "読書は新(あたら)しい知識(ちしき)を得(え)るのに最適(さいてき)です。",
-                  "reading": "どくしょ は あたらしい ちしき を える のに さいてき です。",
-                  "translations": {
-                    "en": "Reading is ideal for gaining new knowledge."
-                  },
-                  "audio": "audio/hobby_reading_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_shigoto",
-              "jpText": "私は会社員(かいしゃいん)をしています",
-              "reading": "わたし は かいしゃいん を して います",
-              "translations": {
-                "en": "I work as a company employee."
-              },
-              "audio": "audio/im_an_office_worker.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "平日(へいじつ)は会社(かいしゃ)で働(はたら)いています。",
-                  "reading": "へいじつ は かいしゃ で はたらいています。",
-                  "translations": {
-                    "en": "I work at a company on weekdays."
-                  },
-                  "audio": "audio/im_an_office_worker_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_gakusei",
-              "jpText": "私は大学生(だいがくせい)です",
-              "reading": "わたし は だいがくせい です",
-              "translations": {
-                "en": "I am a college student."
-              },
-              "audio": "audio/im_a_college_student.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "毎日(まいにち)勉強(べんきょう)とアルバイトで忙(いそが)しいです。",
-                  "reading": "まいにち べんきょう と あるばいと で いそがしい です。",
-                  "translations": {
-                    "en": "Every day I'm busy with studies and a part-time job."
-                  },
-                  "audio": "audio/im_a_college_student_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_genki_desu",
-              "jpText": "元気(げんき)です",
-              "reading": "げんき です",
-              "translations": {
-                "en": "I'm doing well."
-              },
-              "audio": "audio/genki_desu.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "初対面(しょたいめん)で「お元気ですか？」と聞(き)かれたら「元気です」と答(こた)えられます。",
-                  "reading": "しょたいめん で「おげんき です か？」と きかれたら「げんき です」と こたえられます。",
-                  "translations": {
-                    "en": "If someone asks 'How are you?' at first meeting, you can reply 'I'm doing well'."
-                  },
-                  "audio": "audio/genki_desu_example_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_douzo_yoroshiku",
-              "jpText": "どうぞよろしくお願(ねが)いします",
-              "reading": "どうぞ よろしく おねがいします",
-              "translations": {
-                "en": "It's nice to meet you (polite)."
-              },
-              "audio": "audio/douzo_yoroshiku.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "丁寧(ていねい)な自己紹介をするときに役立(やくだ)つ表現(ひょうげん)です。",
-                  "reading": "ていねい な じこしょうかい を する とき に やくだつ ひょうげん です。",
-                  "translations": {
-                    "en": "A useful expression for a polite self-introduction."
-                  },
-                  "audio": "audio/douzo_yoroshiku_example_1.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_self_intro_4",
-              "question": "「私の趣味は読書です」の読み方は？",
-              "options": [
-                "わたし の しゅみ は どくしょ です",
-                "わたし の たのしみ は どくしょ です",
-                "わたし の しゅみ は どきょう です",
-                "わたし の たしみ は どくしょ です"
-              ],
-              "answerIndex": 0,
-              "explanation": "「趣味(しゅみ)」「読書(どくしょ)」の読み方に注意。"
-            },
-            {
-              "id": "quiz_self_intro_5",
-              "question": "「どうぞよろしくお願いします」はどのような場面で使う？",
-              "options": [
-                "相手を呼び止めるとき",
-                "自己紹介の最後や取引開始(とりひきかいし)時など",
-                "謝罪(しゃざい)するとき",
-                "別れ際(わかれぎわ)のあいさつ"
-              ],
-              "answerIndex": 1,
-              "explanation": "人と初めて会ったり、これから仕事をお願いしたりするときの表現です。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "lesson_family",
-      "title": "家族・人称",
-      "description": "家族に関する単語や、他人(たにん)を指(さ)す表現を学びます。",
-      "category": "basic",
-      "thumbnail": "images/lessons/family.jpg",
-      "totalEstimatedTime": "40分",
-      "courses": [
-        {
-          "id": "course_family_basic",
-          "title": "家族の呼(よ)び方",
-          "description": "父(ちち)・母(はは)・兄(あに)などの基本的な呼び方を学習します。",
-          "level": "beginner",
-          "estimatedTime": "15分",
-          "tags": ["family", "n5"],
-          "phrases": [
-            {
-              "id": "phrase_chichi",
-              "jpText": "父",
-              "reading": "ちち",
-              "translations": {
-                "en": "Father (my own)"
-              },
-              "audio": "audio/family_chichi.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "私の父は毎朝(まいあさ)5時(ごじ)に起(お)きます。",
-                  "reading": "わたし の ちち は まいあさ ごじ に おきます。",
-                  "translations": {
-                    "en": "My father wakes up at 5 AM every morning."
-                  },
-                  "audio": "audio/family_chichi_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_haha",
-              "jpText": "母",
-              "reading": "はは",
-              "translations": {
-                "en": "Mother (my own)"
-              },
-              "audio": "audio/family_haha.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "母は料理(りょうり)がとても上手(じょうず)です。",
-                  "reading": "はは は りょうり が とても じょうず です。",
-                  "translations": {
-                    "en": "My mother is very good at cooking."
-                  },
-                  "audio": "audio/family_haha_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_ani",
-              "jpText": "兄",
-              "reading": "あに",
-              "translations": {
-                "en": "Older brother (my own)"
-              },
-              "audio": "audio/family_ani.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "兄は大学生(だいがくせい)です。",
-                  "reading": "あに は だいがくせい です。",
-                  "translations": {
-                    "en": "My older brother is a college student."
-                  },
-                  "audio": "audio/family_ani_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_ane",
-              "jpText": "姉(あね)",
-              "reading": "あね",
-              "translations": {
-                "en": "Older sister (my own)"
-              },
-              "audio": "audio/family_ane.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "姉は会社員(かいしゃいん)をしています。",
-                  "reading": "あね は かいしゃいん を して います。",
-                  "translations": {
-                    "en": "My older sister works as an office employee."
-                  },
-                  "audio": "audio/family_ane_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_imouto",
-              "jpText": "妹(いもうと)",
-              "reading": "いもうと",
-              "translations": {
-                "en": "Younger sister (my own)"
-              },
-              "audio": "audio/family_imouto.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "私の妹はまだ小学生(しょうがくせい)です。",
-                  "reading": "わたし の いもうと は まだ しょうがくせい です。",
-                  "translations": {
-                    "en": "My younger sister is still an elementary school student."
-                  },
-                  "audio": "audio/family_imouto_example.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_family_1",
-              "question": "自分の「兄」を他人に紹介するときはどの言葉が正しい？",
-              "options": [
-                "お兄さん",
-                "兄",
-                "兄さん",
-                "おにいちゃん"
-              ],
-              "answerIndex": 1,
-              "explanation": "他人に紹介するときは「兄」を使います。自分の兄を「お兄さん」とは言いません。"
-            },
-            {
-              "id": "quiz_family_2_add",
-              "question": "自分の姉を紹介するときに使うのはどれ？",
-              "options": [
-                "お姉さん",
-                "あね",
-                "あに",
-                "おねえちゃま"
-              ],
-              "answerIndex": 1,
-              "explanation": "自分の姉は「姉（あね）」といいます。"
-            }
-          ]
-        },
-        {
-          "id": "course_family_terms_for_others",
-          "title": "敬称(けいしょう)・他人を指す言い方",
-          "description": "よその家族・上司(じょうし)などに対する言い方を学びます。",
-          "level": "intermediate",
-          "estimatedTime": "25分",
-          "tags": ["family", "keigo", "n4"],
-          "phrases": [
-            {
-              "id": "phrase_otousan",
-              "jpText": "お父さん",
-              "reading": "おとうさん",
-              "translations": {
-                "en": "Father (someone else's / polite)"
-              },
-              "audio": "audio/family_otousan.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "田中(たなか)さんのお父さんはお元気(げんき)ですか？",
-                  "reading": "たなか さん の おとうさん は おげんき です か？",
-                  "translations": {
-                    "en": "Is Mr. Tanaka's father doing well?"
-                  },
-                  "audio": "audio/family_otousan_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_okaasan",
-              "jpText": "お母(かあ)さん",
-              "reading": "おかあさん",
-              "translations": {
-                "en": "Mother (someone else's / polite)"
-              },
-              "audio": "audio/family_okaasan.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "友達(ともだち)のお母さんに挨拶(あいさつ)するときは「お母さん、こんにちは」と言うことが多い。",
-                  "reading": "ともだち の おかあさん に あいさつ するとき は「おかあさん、こんにちは」と いう こと が おおい。",
-                  "translations": {
-                    "en": "When greeting your friend's mother, you often say 'Okaasan, konnichiwa'."
-                  },
-                  "audio": "audio/family_okaasan_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_oniisan",
-              "jpText": "お兄(にい)さん",
-              "reading": "おにいさん",
-              "translations": {
-                "en": "Older brother (someone else's / polite)"
-              },
-              "audio": "audio/family_oniisan.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "佐藤(さとう)さんのお兄さんは大学生(だいがくせい)ですか？",
-                  "reading": "さとう さん の おにいさん は だいがくせい です か？",
-                  "translations": {
-                    "en": "Is Mr. Sato's older brother a college student?"
-                  },
-                  "audio": "audio/family_oniisan_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_goshujin",
-              "jpText": "ご主人(しゅじん)",
-              "reading": "ごしゅじん",
-              "translations": {
-                "en": "Husband (someone else's / polite)"
-              },
-              "audio": "audio/family_goshujin.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "奥様(おくさま)とご主人はいつ日本(にほん)へ来(き)たのですか？",
-                  "reading": "おくさま と ごしゅじん は いつ にほん へ きた の です か？",
-                  "translations": {
-                    "en": "When did you and your husband come to Japan?"
-                  },
-                  "audio": "audio/family_goshujin_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_okusan",
-              "jpText": "奥(おく)さん",
-              "reading": "おくさん",
-              "translations": {
-                "en": "Wife (someone else's / polite)"
-              },
-              "audio": "audio/family_okusan.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "田中さんの奥さんはとても優(やさ)しい方(かた)ですね。",
-                  "reading": "たなかさん の おくさん は とても やさしい かた です ね。",
-                  "translations": {
-                    "en": "Mr. Tanaka's wife is really kind."
-                  },
-                  "audio": "audio/family_okusan_example.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_family_2",
-              "question": "他人(たにん)の母親を指すとき、丁寧なのは？",
-              "options": [
-                "母",
-                "お母さん",
-                "はは",
-                "おふくろ"
-              ],
-              "answerIndex": 1,
-              "explanation": "他人の母を指すときは「お母さん」と呼ぶのが一般的です。"
-            },
-            {
-              "id": "quiz_family_3",
-              "question": "他人の奥(おく)さんを呼ぶときの表現はどれ？",
-              "options": [
-                "妻(つま)",
-                "彼女(かのじょ)",
-                "奥さん",
-                "お嫁(よめ)さん"
-              ],
-              "answerIndex": 2,
-              "explanation": "丁寧に言うなら「奥さん」、あるいは「奥様(おくさま)」を使います。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "lesson_shopping",
-      "title": "買い物",
-      "description": "お店やレジでのやりとり、値段(ねだん)の聞き方などを学びます。",
-      "category": "daily",
-      "thumbnail": "images/lessons/shopping.jpg",
-      "totalEstimatedTime": "40分",
-      "courses": [
-        {
-          "id": "course_shopping_expressions",
-          "title": "買い物表現",
-          "description": "値段を尋(たず)ねたり、欲(ほ)しい商品(しょうひん)を伝(つた)えるフレーズ。",
-          "level": "beginner",
           "estimatedTime": "20分",
-          "tags": ["shopping", "n5"],
+          "tags": ["business", "formal", "n4"],
+
           "phrases": [
             {
-              "id": "phrase_ikura",
-              "jpText": "これはいくらですか？",
-              "reading": "これ は いくら です か？",
+              "id": "phrase_otsukare_sama_desu",
+              "jpText": "お疲れ様です",
+              "reading": "おつかれさまです",
               "translations": {
-                "en": "How much is this?"
+                "en": "Good work / Hello (workplace)"
               },
-              "audio": "audio/shopping_ikura.mp3",
+              "audio": "audio/otsukaresama_desu.mp3",
+              "segments": [
+                {
+                  "jpText": "お疲れ様",
+                  "reading": "おつかれさま",
+                  "partOfSpeech": "expression"
+                },
+                {
+                  "jpText": "です",
+                  "reading": "です",
+                  "partOfSpeech": "copula"
+                }
+              ],
               "exampleSentences": [
                 {
-                  "jp_text": "店員(てんいん)に値段(ねだん)を確認(かくにん)するときは「これはいくらですか？」と聞きます。",
-                  "reading": "てんいん に ねだん を かくにん するとき は「これ は いくら です か？」と ききます。",
+                  "id": "ex_otsukare_1",
+                  "jpText": "職場(しょくば)で同僚(どうりょう)に会(あ)ったら「お疲れ様です」と声(こえ)をかけましょう。",
+                  "segments": [
+                    {
+                      "jpText": "職場(しょくば)で",
+                      "reading": "しょくば で",
+                      "partOfSpeech": "noun"
+                    },
+                    {
+                      "jpText": "同僚(どうりょう)に会(あ)ったら",
+                      "reading": "どうりょう に あったら",
+                      "partOfSpeech": "verb"
+                    },
+                    {
+                      "jpText": "「お疲れ様です」と",
+                      "reading": "「おつかれさまです」と",
+                      "partOfSpeech": "expression"
+                    },
+                    {
+                      "jpText": "声(こえ)をかけましょう",
+                      "reading": "こえ を かけましょう",
+                      "partOfSpeech": "verb"
+                    }
+                  ],
                   "translations": {
-                    "en": "Ask the clerk, 'How much is this?' to check the price."
-                  },
-                  "audio": "audio/shopping_ikura_example.mp3"
+                    "en": "When you see your colleagues at work, greet them by saying 'Otsukare-sama desu'."
+                  }
                 }
               ]
             },
             {
-              "id": "phrase_misetekudasai",
-              "jpText": "それを見(み)せてください",
-              "reading": "それ を みせて ください",
+              "id": "phrase_shitsurei_shimasu",
+              "jpText": "失礼します",
+              "reading": "しつれいします",
               "translations": {
-                "en": "Please show me that."
+                "en": "Excuse me (formal)"
               },
-              "audio": "audio/shopping_show_me.mp3",
-              "exampleSentences": [
+              "audio": "audio/shitsurei_shimasu.mp3",
+              "segments": [
                 {
-                  "jp_text": "遠(とお)くにある商品(しょうひん)を見たいときは「見せてください」と言いましょう。",
-                  "reading": "とおく に ある しょうひん を みたい とき は「みせて ください」と いいましょう。",
-                  "translations": {
-                    "en": "When you want to see a product that's far away, say 'Please show me that.'"
-                  },
-                  "audio": "audio/shopping_show_me_example.mp3"
+                  "jpText": "失礼",
+                  "reading": "しつれい",
+                  "partOfSpeech": "noun"
+                },
+                {
+                  "jpText": "します",
+                  "reading": "します",
+                  "partOfSpeech": "verb"
                 }
-              ]
-            },
-            {
-              "id": "phrase_kore_kudasai",
-              "jpText": "これをください",
-              "reading": "これ を ください",
-              "translations": {
-                "en": "I'll take this, please."
-              },
-              "audio": "audio/shopping_kore_kudasai.mp3",
+              ],
               "exampleSentences": [
                 {
-                  "jp_text": "商品を買うときに直接(ちょくせつ)店員に伝えるフレーズ。",
-                  "reading": "しょうひん を かう とき に ちょくせつ てんいん に つたえる ふれーず。",
+                  "id": "ex_shitsurei_1",
+                  "jpText": "部屋(へや)に入(はい)るときや退室(たいしつ)するときに「失礼します」と言(い)います。",
+                  "segments": [
+                    {
+                      "jpText": "部屋(へや)に入(はい)るときや",
+                      "reading": "へや に はいる とき や",
+                      "partOfSpeech": "verb"
+                    },
+                    {
+                      "jpText": "退室(たいしつ)するときに",
+                      "reading": "たいしつ する とき に",
+                      "partOfSpeech": "verb"
+                    },
+                    {
+                      "jpText": "「失礼します」と",
+                      "reading": "「しつれいします」と",
+                      "partOfSpeech": "expression"
+                    },
+                    {
+                      "jpText": "言(い)います",
+                      "reading": "いいます",
+                      "partOfSpeech": "verb"
+                    }
+                  ],
                   "translations": {
-                    "en": "A direct phrase to tell the clerk you want to buy the item."
-                  },
-                  "audio": "audio/shopping_kore_kudasai_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_chotto_takainodesu",
-              "jpText": "ちょっと高(たか)いのですが…",
-              "reading": "ちょっと たかい の です が…",
-              "translations": {
-                "en": "It's a bit expensive..."
-              },
-              "audio": "audio/shopping_chotto_takai.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "値段が予算(よさん)より高いときに使(つか)う表現。",
-                  "reading": "ねだん が よさん より たかい とき に つかう ひょうげん。",
-                  "translations": {
-                    "en": "Use this when the price is higher than your budget."
-                  },
-                  "audio": "audio/shopping_chotto_takai_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_arimasu_ka",
-              "jpText": "〜はありますか？",
-              "reading": "〜 は あります か？",
-              "translations": {
-                "en": "Do you have ~ ?"
-              },
-              "audio": "audio/shopping_arimasu_ka.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "例えば「Sサイズはありますか？」と在庫(ざいこ)を聞くときに使います。",
-                  "reading": "たとえば「Sさいず は あります か？」と ざいこ を きく とき に つかいます。",
-                  "translations": {
-                    "en": "Use this to check if something is in stock, e.g. 'Do you have size S?'"
-                  },
-                  "audio": "audio/shopping_arimasu_ka_example.mp3"
+                    "en": "You say 'Shitsurei shimasu' when entering or leaving a room in a formal setting."
+                  }
                 }
               ]
             }
           ],
+
           "quizQuestions": [
             {
-              "id": "quiz_shopping_1",
-              "question": "値段をたずねる表現はどれ？",
+              "id": "quiz_business_1",
+              "linkedPhraseId": "phrase_otsukare_sama_desu",
+              "questionSuffixJp": "の意味は？",
               "options": [
-                "すみません、しっていますか？",
-                "これはいくらですか？",
-                "これをください。",
-                "それを見せてください。"
-              ],
-              "answerIndex": 1,
-              "explanation": "値段を聞くときの定番フレーズは「これはいくらですか？」です。"
-            },
-            {
-              "id": "quiz_shopping_2_expanded",
-              "question": "欲しい商品を買うときに店員に言うとよいのは？",
-              "options": [
-                "見せてください",
-                "あげますよ",
-                "これをください",
-                "おいくらですか"
-              ],
-              "answerIndex": 2,
-              "explanation": "実際に購入したいときには「これをください」を使います。"
-            }
-          ]
-        },
-        {
-          "id": "course_shopping_cashier",
-          "title": "レジ・会計",
-          "description": "レジでの会話、支払い方法(しはらいほうほう)などの表現を学びます。",
-          "level": "beginner",
-          "estimatedTime": "20分",
-          "tags": ["shopping", "cashier", "n5"],
-          "phrases": [
-            {
-              "id": "phrase_onegaishimasu",
-              "jpText": "これをお願いします",
-              "reading": "これ を おねがいします",
-              "translations": {
-                "en": "I'll take this, please."
-              },
-              "audio": "audio/shopping_please_take.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "欲しい商品が決(き)まったら「これをお願いします」と店員に伝(つた)えます。",
-                  "reading": "ほしい しょうひん が きまったら「これ を おねがいします」と てんいん に つたえます。",
-                  "translations": {
-                    "en": "When you've decided on the item you want, say 'I'll take this, please' to the clerk."
-                  },
-                  "audio": "audio/shopping_please_take_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_betsubetsu",
-              "jpText": "お会計(かいけい)は別々(べつべつ)で",
-              "reading": "おかいけい は べつべつ で",
-              "translations": {
-                "en": "We'll pay separately."
-              },
-              "audio": "audio/shopping_separate.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "友達(ともだち)と一緒(いっしょ)の場合(ばあい)は「お会計は別々で」と言うことができます。",
-                  "reading": "ともだち と いっしょ の ばあい は「おかいけい は べつべつ で」と いう こと が できます。",
-                  "translations": {
-                    "en": "When you're with friends, you can say 'We'll pay separately.'"
-                  },
-                  "audio": "audio/shopping_separate_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_card_de",
-              "jpText": "カードで払(はら)えますか？",
-              "reading": "かーど で はらえます か？",
-              "translations": {
-                "en": "Can I pay by card?"
-              },
-              "audio": "audio/shopping_card_de.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "カード支払いに対応(たいおう)しているか確認(かくにん)するときの表現。",
-                  "reading": "かーど しはらい に たいおう している か かくにん するとき の ひょうげん。",
-                  "translations": {
-                    "en": "Use this to check if they accept credit card payment."
-                  },
-                  "audio": "audio/shopping_card_de_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_point_card",
-              "jpText": "ポイントカードはありますか？",
-              "reading": "ぽいんと かーど は あります か？",
-              "translations": {
-                "en": "Do you have a point/rewards card?"
-              },
-              "audio": "audio/shopping_point_card.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "ポイントを貯(た)められる店(みせ)かどうか聞(き)くときに使う。",
-                  "reading": "ぽいんと を ためられる みせ か どうか きく とき に つかう。",
-                  "translations": {
-                    "en": "Use this when you want to ask if the store has a rewards program."
-                  },
-                  "audio": "audio/shopping_point_card_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_fukuro_irimasen",
-              "jpText": "袋(ふくろ)はいりません",
-              "reading": "ふくろ は いりません",
-              "translations": {
-                "en": "I don't need a bag."
-              },
-              "audio": "audio/shopping_no_bag.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "エコバッグを持(も)っているなら「袋はいりません」と言ってもいいです。",
-                  "reading": "えこばっぐ を もっている なら「ふくろ は いりません」と いって も いい です。",
-                  "translations": {
-                    "en": "If you have an eco-bag, you can say 'I don't need a bag.'"
-                  },
-                  "audio": "audio/shopping_no_bag_example.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_shopping_2",
-              "question": "「お会計は別々で」と言うのはどんな状況(じょうきょう)？",
-              "options": [
-                "一人で買い物するとき",
-                "友達と割(わ)り勘(かん)にしたいとき",
-                "店員に道(みち)を聞きたいとき",
-                "大きな袋が欲しいとき"
-              ],
-              "answerIndex": 1,
-              "explanation": "友達同士などで支払いを分けたいときに使います。"
-            },
-            {
-              "id": "quiz_shopping_3",
-              "question": "「カードで払えますか？」の英訳は？",
-              "options": [
-                "Do you accept credit card?",
-                "Can I get a discount?",
-                "Is there any warranty?",
-                "How can I carry it?"
+                "Good work / Hello (workplace)",
+                "Thank you (polite)",
+                "Long time no see",
+                "Excuse me"
               ],
               "answerIndex": 0,
-              "explanation": "「カードで払えますか？」= 'Do you accept credit card?' が自然です。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "lesson_dates_times",
-      "title": "日付・時間",
-      "description": "日付や時間の言い方・尋(たず)ね方を学びます。",
-      "category": "basic",
-      "thumbnail": "images/lessons/dates_times.jpg",
-      "totalEstimatedTime": "30分",
-      "courses": [
-        {
-          "id": "course_basic_dates",
-          "title": "日付の読み方",
-          "description": "月日(がっぴ)や曜日(ようび)などの基本を学ぶ。",
-          "level": "beginner",
-          "estimatedTime": "15分",
-          "tags": ["dates", "n5"],
-          "phrases": [
-            {
-              "id": "phrase_kyou",
-              "jpText": "今日は何月何日(なんがつなんにち)ですか？",
-              "reading": "きょう は なんがつ なんにち です か？",
-              "translations": {
-                "en": "What month and day is it today?"
-              },
-              "audio": "audio/dates_today.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "今日は5月10日(とおか)です。",
-                  "reading": "きょう は ごがつ とおか です。",
-                  "translations": {
-                    "en": "Today is May 10th."
-                  },
-                  "audio": "audio/dates_example_1.mp3"
-                }
-              ]
+              "explanation": "職場でよく使う挨拶・ねぎらい。"
             },
             {
-              "id": "phrase_suiyoubi",
-              "jpText": "水曜日(すいようび)",
-              "reading": "すいようび",
-              "translations": {
-                "en": "Wednesday"
-              },
-              "audio": "audio/dates_wednesday.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "水曜日は学校(がっこう)が休(やす)みです。",
-                  "reading": "すいようび は がっこう が やすみ です。",
-                  "translations": {
-                    "en": "I have no school on Wednesday."
-                  },
-                  "audio": "audio/dates_example_2.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_ashita",
-              "jpText": "明日(あした)は何日(なんにち)ですか？",
-              "reading": "あした は なんにち です か？",
-              "translations": {
-                "en": "What day is tomorrow?"
-              },
-              "audio": "audio/dates_ashita.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "今日は10日だから、明日は11日ですね。",
-                  "reading": "きょう は とおか だ から、 あした は じゅういちにち です ね。",
-                  "translations": {
-                    "en": "Because today is the 10th, tomorrow will be the 11th."
-                  },
-                  "audio": "audio/dates_ashita_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_doyoubi",
-              "jpText": "土曜日(どようび)",
-              "reading": "どようび",
-              "translations": {
-                "en": "Saturday"
-              },
-              "audio": "audio/dates_saturday.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "土曜日はアルバイトがあります。",
-                  "reading": "どようび は あるばいと が あります。",
-                  "translations": {
-                    "en": "I have a part-time job on Saturday."
-                  },
-                  "audio": "audio/dates_saturday_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_nan_nichi",
-              "jpText": "何日(なんにち)休(やす)みですか？",
-              "reading": "なんにち やすみ です か？",
-              "translations": {
-                "en": "How many days off do you have?"
-              },
-              "audio": "audio/dates_nan_nichi.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "休みが何日あるか聞くときに使います。",
-                  "reading": "やすみ が なんにち ある か きく とき に つかいます。",
-                  "translations": {
-                    "en": "Used when asking how many days off you have."
-                  },
-                  "audio": "audio/dates_nan_nichi_example.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_dates_1",
-              "question": "「5月10日(とおか)」の正しい読みはどれ？",
+              "id": "quiz_business_2",
+              "linkedPhraseId": "phrase_shitsurei_shimasu",
+              "questionSuffixJp": "の意味は？",
               "options": [
-                "ごがつ じゅうにち",
-                "ごがつ じゅうか",
-                "ごがつ とおか",
-                "いつか"
-              ],
-              "answerIndex": 2,
-              "explanation": "「10日」は「とおか」と読みます。"
-            },
-            {
-              "id": "quiz_dates_2_more",
-              "question": "「土曜日」はどれ？",
-              "options": [
-                "どようび",
-                "にちようび",
-                "どかようび",
-                "すいようび"
+                "Excuse me (formal)",
+                "I'm sorry",
+                "Welcome back!",
+                "Thank you in advance"
               ],
               "answerIndex": 0,
-              "explanation": "土曜日は「どようび」です。"
-            }
-          ]
-        },
-        {
-          "id": "course_basic_times",
-          "title": "時間の読み方",
-          "description": "「何時(なんじ)ですか？」など、時刻(じこく)の表現を学ぶ。",
-          "level": "beginner",
-          "estimatedTime": "15分",
-          "tags": ["time", "n5"],
-          "phrases": [
-            {
-              "id": "phrase_nanji",
-              "jpText": "今(いま)何時ですか？",
-              "reading": "いま なんじ です か？",
-              "translations": {
-                "en": "What time is it now?"
-              },
-              "audio": "audio/time_now.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "今は午後(ごご)3時(さんじ)です。",
-                  "reading": "いま は ごご さんじ です。",
-                  "translations": {
-                    "en": "It's 3:00 PM now."
-                  },
-                  "audio": "audio/time_example_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_gogo",
-              "jpText": "午後(ごご)1時(いちじ)",
-              "reading": "ごご いちじ",
-              "translations": {
-                "en": "1:00 PM"
-              },
-              "audio": "audio/time_gogo_ichiji.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "午後1時から会議(かいぎ)があります。",
-                  "reading": "ごご いちじ から かいぎ が あります。",
-                  "translations": {
-                    "en": "There is a meeting from 1:00 PM."
-                  },
-                  "audio": "audio/time_gogo_ichiji_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_gozen",
-              "jpText": "午前(ごぜん)10時(じゅうじ)",
-              "reading": "ごぜん じゅうじ",
-              "translations": {
-                "en": "10:00 AM"
-              },
-              "audio": "audio/time_gozen_juuji.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "午前10時に駅(えき)で会(あ)いましょう。",
-                  "reading": "ごぜん じゅうじ に えき で あいましょう。",
-                  "translations": {
-                    "en": "Let's meet at the station at 10:00 AM."
-                  },
-                  "audio": "audio/time_gozen_juuji_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_han",
-              "jpText": "〜時半(じはん)",
-              "reading": "〜じ はん",
-              "translations": {
-                "en": "Half past ~"
-              },
-              "audio": "audio/time_han.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "今は8時半(はちじはん)です。",
-                  "reading": "いま は はちじはん です。",
-                  "translations": {
-                    "en": "It's 8:30 right now."
-                  },
-                  "audio": "audio/time_han_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_yoru",
-              "jpText": "夜(よる)11時(じゅういちじ)",
-              "reading": "よる じゅういちじ",
-              "translations": {
-                "en": "11:00 PM (at night)"
-              },
-              "audio": "audio/time_yoru_juuichiji.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "夜11時には寝(ね)たいです。",
-                  "reading": "よる じゅういちじ に は ねたい です。",
-                  "translations": {
-                    "en": "I want to go to bed by 11:00 PM."
-                  },
-                  "audio": "audio/time_yoru_juuichiji_example.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_time_1",
-              "question": "「今何時ですか？」に対する返事として最も自然なのは？",
-              "options": [
-                "午後3時です。",
-                "三時分です。",
-                "三時間です。",
-                "今日三時です。"
-              ],
-              "answerIndex": 0,
-              "explanation": "時刻の答え方は「〜時です」が自然です。たとえば「午後3時です」。"
-            },
-            {
-              "id": "quiz_time_2",
-              "question": "「〜時半」はどう読む？",
-              "options": [
-                "〜じはん",
-                "〜じばん",
-                "〜じ ほん",
-                "〜とき なか"
-              ],
-              "answerIndex": 0,
-              "explanation": "「半(はん)」は「はん」と読み、「〜時半」で「〜じはん」となります。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "lesson_directions",
-      "title": "道案内",
-      "description": "場所(ばしょ)を尋(たず)ねるときや、方向(ほうこう)を示(しめ)す表現。",
-      "category": "daily",
-      "thumbnail": "images/lessons/directions.jpg",
-      "totalEstimatedTime": "30分",
-      "courses": [
-        {
-          "id": "course_asking_directions",
-          "title": "道(みち)をたずねる",
-          "description": "目的地(もくてきち)までの行き方を聞く表現。",
-          "level": "intermediate",
-          "estimatedTime": "15分",
-          "tags": ["directions", "travel", "n4"],
-          "phrases": [
-            {
-              "id": "phrase_doko",
-              "jpText": "駅(えき)はどこですか？",
-              "reading": "えき は どこ です か？",
-              "translations": {
-                "en": "Where is the station?"
-              },
-              "audio": "audio/directions_station.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "すみません、駅はどこですか？と人(ひと)に聞(き)きます。",
-                  "reading": "すみません、 えき は どこ です か？ と ひと に ききます。",
-                  "translations": {
-                    "en": "Excuse me, I ask someone, 'Where is the station?'"
-                  },
-                  "audio": "audio/directions_station_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_migi",
-              "jpText": "右(みぎ)に曲(ま)がってください",
-              "reading": "みぎ に まがって ください",
-              "translations": {
-                "en": "Please turn right."
-              },
-              "audio": "audio/directions_turn_right.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "交差点(こうさてん)を右に曲がると、駅があります。",
-                  "reading": "こうさてん を みぎ に まがる と、 えき が あります。",
-                  "translations": {
-                    "en": "If you turn right at the intersection, you'll find the station."
-                  },
-                  "audio": "audio/directions_turn_right_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_hidari",
-              "jpText": "左(ひだり)に曲(ま)がる",
-              "reading": "ひだり に まがる",
-              "translations": {
-                "en": "Turn left."
-              },
-              "audio": "audio/directions_turn_left.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "コンビニの角(かど)を左に曲がってください。",
-                  "reading": "こんびに の かど を ひだり に まがって ください。",
-                  "translations": {
-                    "en": "Please turn left at the corner of the convenience store."
-                  },
-                  "audio": "audio/directions_turn_left_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_masugu",
-              "jpText": "まっすぐ行(い)ってください",
-              "reading": "まっすぐ いって ください",
-              "translations": {
-                "en": "Go straight ahead."
-              },
-              "audio": "audio/directions_go_straight.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "まっすぐ行くと、大きい橋(はし)があります。",
-                  "reading": "まっすぐ いく と、 おおきい はし が あります。",
-                  "translations": {
-                    "en": "If you go straight, there's a big bridge."
-                  },
-                  "audio": "audio/directions_go_straight_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_yukkuri",
-              "jpText": "もう少(すこ)しゆっくり話(はな)してもらえますか？",
-              "reading": "もうすこし ゆっくり はなして もらえます か？",
-              "translations": {
-                "en": "Could you speak a little slower?"
-              },
-              "audio": "audio/directions_yukkuri.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "道を教(おし)えてもらうとき、相手が早口(はやくち)ならこう聞きましょう。",
-                  "reading": "みち を おしえて もらう とき、 あいて が はやくち なら こう ききましょう。",
-                  "translations": {
-                    "en": "When asking directions, if the other person speaks quickly, ask them to speak slower."
-                  },
-                  "audio": "audio/directions_yukkuri_example.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_directions_1",
-              "question": "「右(みぎ)に曲(ま)がる」の反対は？",
-              "options": [
-                "左に曲がる",
-                "左にかかる",
-                "左にわたる",
-                "右に戻る"
-              ],
-              "answerIndex": 0,
-              "explanation": "「右(みぎ)」の反対は「左(ひだり)」です。"
-            },
-            {
-              "id": "quiz_directions_2",
-              "question": "「まっすぐ行ってください」はどんな意味？",
-              "options": [
-                "すぐに戻ってください",
-                "前に曲がってください",
-                "走ってください",
-                "前方(ぜんぽう)に進(すす)んでください"
-              ],
-              "answerIndex": 3,
-              "explanation": "「まっすぐ行く」は「前方に進む」という意味です。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "lesson_food_restaurant",
-      "title": "食事・レストラン",
-      "description": "飲食店(いんしょくてん)での注文(ちゅうもん)やメニューの読み方など。",
-      "category": "daily",
-      "thumbnail": "images/lessons/food.jpg",
-      "totalEstimatedTime": "40分",
-      "courses": [
-        {
-          "id": "course_restaurant_order",
-          "title": "レストランで注文",
-          "description": "店員(てんいん)とやりとりしながら、食事(しょくじ)を注文するフレーズ。",
-          "level": "beginner",
-          "estimatedTime": "20分",
-          "tags": ["restaurant", "food", "n5"],
-          "phrases": [
-            {
-              "id": "phrase_menu_onegaishimasu",
-              "jpText": "メニューをお願いします",
-              "reading": "めにゅー を おねがいします",
-              "translations": {
-                "en": "Could I have the menu, please?"
-              },
-              "audio": "audio/restaurant_menu.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "席(せき)に案内(あんない)されたら、まず「メニューをお願いします」と店員に言いましょう。",
-                  "reading": "せき に あんない されたら、 まず「めにゅー を おねがいします」と てんいん に いいましょう。",
-                  "translations": {
-                    "en": "After being shown to your seat, first say 'Could I have the menu, please?' to the waiter."
-                  },
-                  "audio": "audio/restaurant_menu_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_water",
-              "jpText": "水(みず)をください",
-              "reading": "みず を ください",
-              "translations": {
-                "en": "Water, please."
-              },
-              "audio": "audio/restaurant_water.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "のどが渇(かわ)いているときは「水をください」と言いましょう。",
-                  "reading": "のど が かわいている とき は「みず を ください」と いいましょう。",
-                  "translations": {
-                    "en": "If you're thirsty, say 'Water, please.'"
-                  },
-                  "audio": "audio/restaurant_water_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_kore_to_are",
-              "jpText": "これとあれをください",
-              "reading": "これ と あれ を ください",
-              "translations": {
-                "en": "I'd like this and that, please."
-              },
-              "audio": "audio/restaurant_kore_to_are.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "複数(ふくすう)の料理(りょうり)を注文(ちゅうもん)するときに使います。",
-                  "reading": "ふくすう の りょうり を ちゅうもん するとき に つかいます。",
-                  "translations": {
-                    "en": "Use this when ordering multiple dishes."
-                  },
-                  "audio": "audio/restaurant_kore_to_are_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_eigo_menu",
-              "jpText": "英語(えいご)のメニューはありますか？",
-              "reading": "えいご の めにゅー は あります か？",
-              "translations": {
-                "en": "Do you have an English menu?"
-              },
-              "audio": "audio/restaurant_eigo_menu.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "日本語(にほんご)が苦手(にがて)な場合(ばあい)、英語のメニューがあるか確認(かくにん)しましょう。",
-                  "reading": "にほんご が にがて な ばあい、 えいご の めにゅー が ある か かくにん しましょう。",
-                  "translations": {
-                    "en": "If you're not good at Japanese, ask if they have an English menu."
-                  },
-                  "audio": "audio/restaurant_eigo_menu_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_onaka_suita",
-              "jpText": "お腹(なか)すいた",
-              "reading": "おなか すいた",
-              "translations": {
-                "en": "I'm hungry."
-              },
-              "audio": "audio/restaurant_onaka_suita.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "友達(ともだち)と食事(しょくじ)に行(い)くとき、まず「お腹すいたね」と話(はな)す。",
-                  "reading": "ともだち と しょくじ に いく とき、 まず「おなか すいた ね」と はなす。",
-                  "translations": {
-                    "en": "When going out to eat with friends, you might say 'I'm hungry' first."
-                  },
-                  "audio": "audio/restaurant_onaka_suita_example.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_restaurant_1",
-              "question": "「メニューをお願いします」の自然なタイミングは？",
-              "options": [
-                "席に案内されたとき",
-                "店に入る前",
-                "食べ終わった後",
-                "会計が済んだ後"
-              ],
-              "answerIndex": 0,
-              "explanation": "席に案内された直後にメニューを頼むのが自然です。"
-            },
-            {
-              "id": "quiz_restaurant_2_added",
-              "question": "「英語のメニューはありますか？」はどんなときに使う？",
-              "options": [
-                "日本語がわからないとき",
-                "注文が決まったとき",
-                "デザートが欲しいとき",
-                "お腹がすいたとき"
-              ],
-              "answerIndex": 0,
-              "explanation": "日本語に自信がないとき、英語メニューがあるか店員に確認するためのフレーズです。"
-            }
-          ]
-        },
-        {
-          "id": "course_eating_expressions",
-          "title": "食事中の表現",
-          "description": "「いただきます」「ごちそうさま」など、日本独特(どくとく)の表現を学びます。",
-          "level": "beginner",
-          "estimatedTime": "20分",
-          "tags": ["food", "culture", "n5"],
-          "phrases": [
-            {
-              "id": "phrase_itadakimasu",
-              "jpText": "いただきます",
-              "reading": "いただきます",
-              "translations": {
-                "en": "Let's eat (Thank you for the meal)"
-              },
-              "audio": "audio/itadakimasu.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "食事(しょくじ)を始(はじ)める前(まえ)に「いただきます」と言います。",
-                  "reading": "しょくじ を はじめる まえ に「いただきます」と いいます。",
-                  "translations": {
-                    "en": "Before you start your meal, you say 'Itadakimasu'."
-                  },
-                  "audio": "audio/example_itadakimasu_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_gochisousama",
-              "jpText": "ごちそうさまでした",
-              "reading": "ごちそうさまでした",
-              "translations": {
-                "en": "Thank you for the meal (after finishing)"
-              },
-              "audio": "audio/gochisousama.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "食べ終(お)わった後(あと)に「ごちそうさまでした」と言います。",
-                  "reading": "たべおわった あと に「ごちそうさまでした」と いいます。",
-                  "translations": {
-                    "en": "After finishing your meal, you say 'Gochisousama deshita'."
-                  },
-                  "audio": "audio/example_gochisousama_1.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_omori",
-              "jpText": "大盛(おおも)りにできますか？",
-              "reading": "おおもり に できます か？",
-              "translations": {
-                "en": "Can I get a large portion?"
-              },
-              "audio": "audio/restaurant_omori.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "お腹がすいているときは、大盛りにできるかどうか尋(たず)ねましょう。",
-                  "reading": "おなか が すいている とき は、 おおもり に できる か どうか たずねましょう。",
-                  "translations": {
-                    "en": "When you're really hungry, ask if you can get a large portion."
-                  },
-                  "audio": "audio/restaurant_omori_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_okawari",
-              "jpText": "おかわりできますか？",
-              "reading": "おかわり できます か？",
-              "translations": {
-                "en": "Can I get a refill?"
-              },
-              "audio": "audio/restaurant_okawari.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "ご飯(はん)や味噌汁(みそしる)のおかわりが無料(むりょう)の場合(ばあい)もあります。",
-                  "reading": "ごはん や みそしる の おかわり が むりょう の ばあい も あります。",
-                  "translations": {
-                    "en": "Sometimes you can get free refills of rice or miso soup."
-                  },
-                  "audio": "audio/restaurant_okawari_example.mp3"
-                }
-              ]
-            },
-            {
-              "id": "phrase_sumimasen",
-              "jpText": "すみません",
-              "reading": "すみません",
-              "translations": {
-                "en": "Excuse me (to call the waiter)"
-              },
-              "audio": "audio/restaurant_sumimasen.mp3",
-              "exampleSentences": [
-                {
-                  "jp_text": "店員(てんいん)を呼(よ)ぶときは「すみません」と言いましょう。",
-                  "reading": "てんいん を よぶ とき は「すみません」と いいましょう。",
-                  "translations": {
-                    "en": "Say 'Sumimasen' to call the waiter."
-                  },
-                  "audio": "audio/restaurant_sumimasen_example.mp3"
-                }
-              ]
-            }
-          ],
-          "quizQuestions": [
-            {
-              "id": "quiz_restaurant_2",
-              "question": "食事を始める前に言う言葉は？",
-              "options": [
-                "いただきます",
-                "ごちそうさま",
-                "おつかれさま",
-                "おやすみなさい"
-              ],
-              "answerIndex": 0,
-              "explanation": "食事前には「いただきます」、食事後には「ごちそうさまでした」を言います。"
-            },
-            {
-              "id": "quiz_restaurant_3",
-              "question": "店員を呼ぶときに使う一言は？",
-              "options": [
-                "おはよう",
-                "おかわり",
-                "すみません",
-                "ありがとう"
-              ],
-              "answerIndex": 2,
-              "explanation": "レストランなどで店員を呼ぶときは「すみません」が一般的です。"
+              "explanation": "部屋に入るとき・出るときなどに使う丁寧表現。"
             }
           ]
         }

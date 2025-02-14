@@ -7,6 +7,23 @@ import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getAllLessons } from '../services/contentService';
 
+// 画像のマッピング
+const lessonImages: { [key: string]: any } = {
+  'ojigi_aisatsu_business_woman.png': require('../../assets/images/lessons/ojigi_aisatsu_business_woman.png'),
+  // 他の画像もここに追加
+};
+
+// 画像のパスから画像ソースを取得する関数
+const getImageSource = (path: string) => {
+  // パスからファイル名を抽出
+  const fileName = path.split('/').pop();
+  if (fileName && lessonImages[fileName]) {
+    return lessonImages[fileName];
+  }
+  // 該当する画像が見つからない場合はデフォルト画像を返すか、nullを返す
+  return null;
+};
+
 type LessonListNavigationProp = NativeStackNavigationProp<MainStackParamList, 'LessonList'>;
 
 const LessonListScreen: React.FC = () => {
@@ -59,7 +76,10 @@ const LessonListScreen: React.FC = () => {
           onPress={() => handleLessonPress(lesson.id)}
         >
           {lesson.thumbnail && (
-            <Card.Cover source={{ uri: lesson.thumbnail }} />
+            <Card.Cover 
+              source={getImageSource(lesson.thumbnail) || { uri: 'https://placehold.co/600x400/png' }}
+              style={styles.cardCover}
+            />
           )}
           <Card.Content>
             <Title>{lesson.title}</Title>
@@ -97,6 +117,10 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 16,
+  },
+  cardCover: {
+    height: 200,
+    backgroundColor: '#f8f8f8',
   },
   description: {
     marginTop: 8,
