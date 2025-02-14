@@ -9,6 +9,8 @@ import { useProgress } from '../context/ProgressContext';
 import { Course } from '../types/contentTypes';
 import { playAudio } from '../utils/audioUtils';
 import SegmentedText from '../components/SegmentedText';
+import AudioButton from '../components/AudioButton';
+import RecordingButton from '../components/RecordingButton';
 import { useTheme } from 'react-native-paper';
 
 type CourseLearningScreenRouteProp = RouteProp<SessionStackParamList, 'CourseLearning'>;
@@ -111,31 +113,20 @@ export default function CourseLearningScreen() {
     );
   }
 
-  const currentPhrase = course.phrases[currentIndex];
-  console.log('[CourseLearningScreen] currentPhrase:', JSON.stringify(currentPhrase, null, 2));
+  const currentPhrase = course?.phrases[currentIndex];
 
-  if (!currentPhrase) {
-    console.log('[CourseLearningScreen] No phrase found at index', currentIndex);
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>フレーズが見つかりませんでした。</Text>
-      </View>
-    );
-  }
-
-  const progress = (currentIndex + 1) / course.phrases.length;
-
-  // audio再生したい場合に呼ぶ関数
-  const handlePlayAudio = (audioPath?: string) => {
-    if (audioPath) {
-      playAudio(audioPath);
+  const handlePlayAudio = () => {
+    if (currentPhrase?.audio) {
+      playAudio(currentPhrase.audio);
+    } else {
+      console.log('No audio path for this phrase');
     }
   };
 
   return (
     <View style={styles.container}>
       {/* プログレスバー */}
-      <ProgressBar progress={progress} color={theme.colors.primary} style={styles.progressBar} />
+      <ProgressBar progress={(currentIndex + 1) / course.phrases.length} color={theme.colors.primary} style={styles.progressBar} />
       <Text style={styles.progressText}>
         {currentIndex + 1} / {course.phrases.length}
       </Text>
@@ -145,7 +136,7 @@ export default function CourseLearningScreen() {
           <Card.Content>
             {/* フレーズ */}
             <View style={styles.phraseContainer}>
-              {currentPhrase.segments && currentPhrase.segments.length > 0 ? (
+              {currentPhrase?.segments && currentPhrase.segments.length > 0 ? (
                 <SegmentedText segments={currentPhrase.segments} />
               ) : (
                 <Title style={styles.phraseText}>{currentPhrase.jpText}</Title>
@@ -153,16 +144,10 @@ export default function CourseLearningScreen() {
               <Text style={styles.meaningText}>{currentPhrase.translations.en}</Text>
             </View>
 
-            {/* 音声ボタン */}
-            {currentPhrase.audio && (
-              <Button
-                mode="outlined"
-                onPress={() => handlePlayAudio(currentPhrase.audio)}
-                style={styles.audioButton}
-              >
-                音声を再生
-              </Button>
-            )}
+            <View style={styles.audioButtonContainer}>
+              <AudioButton onPress={handlePlayAudio} />
+              <RecordingButton />
+            </View>
 
             {/* 例文 */}
             {currentPhrase.exampleSentences && currentPhrase.exampleSentences.length > 0 && (
@@ -195,7 +180,7 @@ export default function CourseLearningScreen() {
       </ScrollView>
 
       {/* ナビゲーションボタン */}
-      <View style={styles.buttonContainer}>
+      <View style={styles.navigationButtonContainer}>
         <Button
           mode="contained"
           onPress={handlePrevious}
@@ -255,8 +240,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 12,
   },
-  audioButton: {
-    marginBottom: 16,
+  audioButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 16,
+    paddingHorizontal: 16,
   },
   examplesContainer: {
     marginTop: 24,
@@ -293,7 +281,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: '#444',
   },
-  buttonContainer: {
+  navigationButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 16,
