@@ -64,6 +64,7 @@ export async function getCourseProgress(courseId: string): Promise<CourseProgres
     if (!data) {
       logDebug('No progress data found for course:', courseId);
       return {
+        courseId,
         learnedPhraseIds: new Set<string>(),
         completedQuizIds: new Set<string>(),
         lastAccessedDate: new Date()
@@ -74,6 +75,7 @@ export async function getCourseProgress(courseId: string): Promise<CourseProgres
     logDebug('Parsed course progress data:', parsed);
     
     return {
+      courseId,
       learnedPhraseIds: new Set(parsed.learnedPhraseIds),
       completedQuizIds: new Set(parsed.completedQuizIds),
       lastAccessedDate: new Date(parsed.lastAccessedDate)
@@ -81,6 +83,7 @@ export async function getCourseProgress(courseId: string): Promise<CourseProgres
   } catch (error) {
     logDebug('Error getting course progress:', error);
     return {
+      courseId,
       learnedPhraseIds: new Set<string>(),
       completedQuizIds: new Set<string>(),
       lastAccessedDate: new Date()
@@ -93,6 +96,7 @@ export async function saveCourseProgress(courseId: string, progress: CourseProgr
     logDebug('Saving progress for course:', courseId, progress);
     const key = `${PROGRESS_PREFIX}course_${courseId}`;
     const data = {
+      courseId,
       learnedPhraseIds: Array.from(progress.learnedPhraseIds),
       completedQuizIds: Array.from(progress.completedQuizIds),
       lastAccessedDate: progress.lastAccessedDate.toISOString()
@@ -107,6 +111,7 @@ export async function saveCourseProgress(courseId: string, progress: CourseProgr
 // フレーズを学習済みとしてマーク
 export async function markPhraseAsLearned(courseId: string, phraseId: string): Promise<void> {
   const progress = await getCourseProgress(courseId) || {
+    courseId,
     learnedPhraseIds: new Set<string>(),
     completedQuizIds: new Set<string>(),
     lastAccessedDate: new Date()
@@ -121,6 +126,7 @@ export async function markPhraseAsLearned(courseId: string, phraseId: string): P
 // クイズを完了済みとしてマーク
 export async function markQuizAsCompleted(courseId: string, quizId: string): Promise<void> {
   const progress = await getCourseProgress(courseId) || {
+    courseId,
     learnedPhraseIds: new Set<string>(),
     completedQuizIds: new Set<string>(),
     lastAccessedDate: new Date()

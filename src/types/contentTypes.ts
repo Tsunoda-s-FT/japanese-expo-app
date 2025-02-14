@@ -38,6 +38,7 @@ export interface Translations {
 export interface ExampleSentence {
   id: string;
   jpText: string;
+  reading?: string;      // 追加：読み仮名
   segments?: Segment[];
   translations: Translations;
   audio?: string;
@@ -47,6 +48,7 @@ export interface ExampleSentence {
 export interface Phrase {
   id: string;
   jpText: string;
+  reading?: string;      // 追加：読み仮名
   segments?: Segment[];
   translations: Translations;
   audio?: string;
@@ -84,8 +86,9 @@ export interface QuizAnswer {
 
 export interface CourseProgress {
   courseId: string;
-  completedPhrases: string[];
-  quizResults: QuizResult[];
+  learnedPhraseIds: Set<string>;     // 変更：学習済みフレーズIDのSet
+  completedQuizIds: Set<string>;     // 追加：完了済みクイズIDのSet
+  lastAccessedDate: Date;            // 追加：最終アクセス日時
 }
 
 export interface LessonProgress {

@@ -57,7 +57,7 @@ const QuizHistoryDetailScreen: React.FC = () => {
         }
 
         // questionData があれば問題文・解説等を表示
-        const questionText = questionData?.question || '問題文が見つかりません';
+        const questionText = questionData?.questionSuffixJp || '問題文が見つかりません';
         const explanation = questionData?.explanation || '';
         const options = questionData?.options || [];
         const correctOptionIndex = questionData?.answerIndex ?? -1;

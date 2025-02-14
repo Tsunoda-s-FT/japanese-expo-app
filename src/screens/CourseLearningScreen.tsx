@@ -111,6 +111,14 @@ export default function CourseLearningScreen() {
     );
   }
 
+  useEffect(() => {
+    if (currentPhrase?.segments) {
+      console.log('[CourseLearningScreen] segments length=', currentPhrase.segments.length);
+    } else {
+      console.log('[CourseLearningScreen] segments is undefined or null');
+    }
+  }, [currentPhrase?.segments]);
+
   const progress = (currentIndex + 1) / course.phrases.length;
 
   // audio再生したい場合に呼ぶ関数
@@ -123,10 +131,6 @@ export default function CourseLearningScreen() {
   return (
     <View style={styles.container}>
       {/* プログレスバー */}
-      {currentPhrase.segments
-        ? console.log('[CourseLearningScreen] segments length=', currentPhrase.segments.length)
-        : console.log('[CourseLearningScreen] segments is undefined or null')
-      }
       <ProgressBar progress={progress} color={theme.colors.primary} style={styles.progressBar} />
       <Text style={styles.progressText}>
         {currentIndex + 1} / {course.phrases.length}

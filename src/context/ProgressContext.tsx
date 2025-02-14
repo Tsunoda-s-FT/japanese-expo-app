@@ -71,6 +71,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
               lastAccessedDate: string;
             };
             newMap.set(courseId, {
+              courseId,
               learnedPhraseIds: new Set(v.learnedPhraseIds),
               completedQuizIds: new Set(v.completedQuizIds),
               lastAccessedDate: new Date(v.lastAccessedDate),
@@ -126,6 +127,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setCourseProgressMap((prev) => {
       const newMap = new Map(prev);
       const progress = newMap.get(courseId) || {
+        courseId,
         learnedPhraseIds: new Set<string>(),
         completedQuizIds: new Set<string>(),
         lastAccessedDate: new Date(),
@@ -142,6 +144,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setCourseProgressMap((prev) => {
       const newMap = new Map(prev);
       const progress = newMap.get(courseId) || {
+        courseId,
         learnedPhraseIds: new Set<string>(),
         completedQuizIds: new Set<string>(),
         lastAccessedDate: new Date(),
