@@ -32,6 +32,10 @@ const CourseQuizScreen: React.FC = () => {
 
   // ユーザーが選んだオプション
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  // 回答済みかどうか
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  // 今の問題が正解だったかどうか
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
   // スコア計算用
   const [correctCount, setCorrectCount] = useState(0);
@@ -77,8 +81,9 @@ const CourseQuizScreen: React.FC = () => {
         setQuestions(courseData.quizQuestions);
         setLoading(false);
 
-        // 新しいクイズセッションを作成
+        // 新しいクイズセッションを作成（1回だけ）
         const newSessionId = await createNewQuizSession(courseId);
+        console.log('Created new quiz session:', newSessionId); // デバッグログ追加
         setSessionId(newSessionId);
       } catch (error) {
         console.error('Error loading course data:', error);
@@ -94,46 +99,75 @@ const CourseQuizScreen: React.FC = () => {
     });
 
     return () => backHandler.remove();
-  }, [courseId, navigation, sessionId, currentIndex]);
+  }, [courseId, navigation]); // sessionIdとcurrentIndexを依存配列から削除
 
   /**
    * 回答ボタンを押すと実行
    */
   const handleAnswer = async () => {
-    if (!questions[currentIndex] || !sessionId || selectedOption === null) return;
+    if (!questions[currentIndex] || !sessionId || selectedOption === null) {
+      console.log('Answer validation failed:', { // デバッグログ追加
+        hasQuestion: !!questions[currentIndex],
+        sessionId,
+        selectedOption,
+      });
+      return;
+    }
 
     const currentQuestion = questions[currentIndex];
-    const isCorrect = selectedOption === currentQuestion.answerIndex;
-    if (isCorrect) {
+    const correct = selectedOption === currentQuestion.answerIndex;
+    
+    if (correct) {
       setCorrectCount(prev => prev + 1);
     }
 
+    setIsCorrect(correct);
+    setIsSubmitted(true);
+
     // 回答を記録
+    console.log('Recording answer:', { // デバッグログ追加
+      sessionId,
+      questionId: currentQuestion.id,
+      selectedOption,
+      correct,
+    });
     await addAnswerToQuizSession(
       sessionId,
       currentQuestion.id,
       selectedOption,
-      isCorrect
+      correct
     );
+  };
 
+  /**
+   * 次の問題へ進むボタンを押すと実行
+   */
+  const handleNext = async () => {
     // 最後の問題だった場合
     if (currentIndex >= questions.length - 1) {
-      const finalCorrectCount = isCorrect ? correctCount + 1 : correctCount;
+      if (!sessionId) {
+        console.error('Cannot finalize quiz: sessionId is null');
+        return;
+      }
+      
       await finalizeQuizSession(sessionId);
       
       navigation.navigate('Session', {
         screen: 'QuizResult',
         params: {
-          correctCount: finalCorrectCount,
+          correctCount,
           totalCount: questions.length,
           courseId,
         }
       });
-    } else {
-      // 次の問題へ
-      setCurrentIndex(prev => prev + 1);
-      setSelectedOption(null);
+      return;
     }
+
+    // 次の問題へ
+    setCurrentIndex(prev => prev + 1);
+    setSelectedOption(null);
+    setIsSubmitted(false);
+    setIsCorrect(null);
   };
 
   // ロード中の表示
@@ -181,20 +215,43 @@ const CourseQuizScreen: React.FC = () => {
                 key={idx}
                 label={opt}
                 value={idx.toString()}
+                rippleColor="transparent"
                 style={styles.radioItem}
               />
             ))}
           </RadioButton.Group>
 
+          {/* 回答後の正誤判定と解説 */}
+          {isSubmitted && (
+            <View style={styles.resultContainer}>
+              <Text style={[styles.resultText, isCorrect ? styles.correctText : styles.incorrectText]}>
+                {isCorrect ? '正解！' : '不正解...'}
+              </Text>
+              <Text style={styles.explanation}>
+                {currentQuestion.explanation}
+              </Text>
+            </View>
+          )}
+
           {/* 回答 or 次へ ボタン */}
-          <Button
-            mode="contained"
-            onPress={handleAnswer}
-            disabled={selectedOption === null}
-            style={styles.button}
-          >
-            回答する
-          </Button>
+          {!isSubmitted ? (
+            <Button
+              mode="contained"
+              onPress={handleAnswer}
+              disabled={selectedOption === null}
+              style={styles.button}
+            >
+              回答する
+            </Button>
+          ) : (
+            <Button
+              mode="contained"
+              onPress={handleNext}
+              style={styles.button}
+            >
+              {currentIndex >= questions.length - 1 ? '結果を見る' : '次へ'}
+            </Button>
+          )}
         </Card.Content>
       </Card>
     </View>
@@ -237,8 +294,32 @@ const styles = StyleSheet.create({
   },
   radioItem: {
     marginVertical: 4,
+    backgroundColor: 'transparent',
   },
   button: {
     marginTop: 16,
+  },
+  resultContainer: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 8,
+  },
+  resultText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  correctText: {
+    color: '#4CAF50',
+  },
+  incorrectText: {
+    color: '#F44336',
+  },
+  explanation: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#666',
   },
 });
