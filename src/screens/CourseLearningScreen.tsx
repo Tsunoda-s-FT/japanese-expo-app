@@ -27,6 +27,7 @@ export default function CourseLearningScreen() {
 
   useEffect(() => {
     const loadData = async () => {
+      if (!courseId) return;
       try {
         const data = await getCourseById(courseId);
         console.log('[CourseLearningScreen] getCourseById result:', JSON.stringify(data, null, 2));
@@ -39,6 +40,25 @@ export default function CourseLearningScreen() {
     };
     loadData();
   }, [courseId]);
+
+  useEffect(() => {
+    if (!navigation) return;
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      showExitConfirmation();
+      return true;
+    });
+    return () => backHandler.remove();
+  }, [navigation]);
+
+  useEffect(() => {
+    if (!course || currentIndex < 0 || currentIndex >= course.phrases.length) return;
+    const currentPhrase = course.phrases[currentIndex];
+    if (currentPhrase?.segments) {
+      console.log('[CourseLearningScreen] segments length=', currentPhrase.segments.length);
+    } else {
+      console.log('[CourseLearningScreen] segments is undefined or null');
+    }
+  }, [course, currentIndex]);
 
   const handleNext = () => {
     if (!course) return;
@@ -82,14 +102,6 @@ export default function CourseLearningScreen() {
     );
   };
 
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      showExitConfirmation();
-      return true;
-    });
-    return () => backHandler.remove();
-  }, [navigation]);
-
   if (loading || !course) {
     console.log('[CourseLearningScreen] course is null or undefined');
     return (
@@ -110,14 +122,6 @@ export default function CourseLearningScreen() {
       </View>
     );
   }
-
-  useEffect(() => {
-    if (currentPhrase?.segments) {
-      console.log('[CourseLearningScreen] segments length=', currentPhrase.segments.length);
-    } else {
-      console.log('[CourseLearningScreen] segments is undefined or null');
-    }
-  }, [currentPhrase?.segments]);
 
   const progress = (currentIndex + 1) / course.phrases.length;
 
