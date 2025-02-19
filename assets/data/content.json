@@ -40,15 +40,15 @@
               "exampleSentences": [
                 {
                   "id": "ex_ohayou_1",
-                  "jpText": "朝早(あさはや)く会(あ)ったら「おはようございます」と言(い)います。",
+                  "jpText": "朝早く会ったら「おはようございます」と言います。",
                   "segments": [
                     {
-                      "jpText": "朝早(あさはや)く",
+                      "jpText": "朝早く",
                       "reading": "あさはやく",
                       "partOfSpeech": "adverb"
                     },
                     {
-                      "jpText": "会(あ)ったら",
+                      "jpText": "会ったら",
                       "reading": "あったら",
                       "partOfSpeech": "verb"
                     },
@@ -58,7 +58,7 @@
                       "partOfSpeech": "expression"
                     },
                     {
-                      "jpText": "言(い)います",
+                      "jpText": "言います",
                       "reading": "いいます",
                       "partOfSpeech": "verb"
                     }
@@ -92,15 +92,15 @@
               "exampleSentences": [
                 {
                   "id": "ex_ogenki_1",
-                  "jpText": "久(ひさ)しぶりに会(あ)った人(ひと)に「お元気ですか」と聞(き)きます。",
+                  "jpText": "久しぶりに会った人に「お元気ですか」と聞きます。",
                   "segments": [
                     {
-                      "jpText": "久(ひさ)しぶりに",
+                      "jpText": "久しぶりに",
                       "reading": "ひさしぶりに",
                       "partOfSpeech": "adverb"
                     },
                     {
-                      "jpText": "会(あ)った人(ひと)に",
+                      "jpText": "会った人に",
                       "reading": "あった ひと に",
                       "partOfSpeech": "verb"
                     },
@@ -110,7 +110,7 @@
                       "partOfSpeech": "expression"
                     },
                     {
-                      "jpText": "聞(き)きます",
+                      "jpText": "聞きます",
                       "reading": "ききます",
                       "partOfSpeech": "verb"
                     }
@@ -144,10 +144,10 @@
               "exampleSentences": [
                 {
                   "id": "ex_arigatou_1",
-                  "jpText": "何(なに)かしてもらったら「ありがとうございます」と感謝(かんしゃ)しましょう。",
+                  "jpText": "何かしてもらったら「ありがとうございます」と感謝しましょう。",
                   "segments": [
                     {
-                      "jpText": "何(なに)かしてもらったら",
+                      "jpText": "何かしてもらったら",
                       "reading": "なにかしてもらったら",
                       "partOfSpeech": "verb"
                     },
@@ -157,7 +157,7 @@
                       "partOfSpeech": "expression"
                     },
                     {
-                      "jpText": "感謝(かんしゃ)しましょう",
+                      "jpText": "感謝しましょう",
                       "reading": "かんしゃ しましょう",
                       "partOfSpeech": "verb"
                     }
@@ -186,15 +186,15 @@
               "exampleSentences": [
                 {
                   "id": "ex_hisashiburi_1",
-                  "jpText": "友達(ともだち)に久(ひさ)しぶりに会(あ)ったときは「久しぶり！」と言(い)う。",
+                  "jpText": "友達に久しぶりに会ったときは「久しぶり！」と言う。",
                   "segments": [
                     {
-                      "jpText": "友達(ともだち)に",
+                      "jpText": "友達に",
                       "reading": "ともだち に",
                       "partOfSpeech": "noun"
                     },
                     {
-                      "jpText": "久(ひさ)しぶりに会(あ)ったときは",
+                      "jpText": "久しぶりに会ったときは",
                       "reading": "ひさしぶり に あった とき は",
                       "partOfSpeech": "verb"
                     },
@@ -204,7 +204,7 @@
                       "partOfSpeech": "expression"
                     },
                     {
-                      "jpText": "言(い)う",
+                      "jpText": "言う",
                       "reading": "いう",
                       "partOfSpeech": "verb"
                     }
@@ -315,15 +315,15 @@
               "exampleSentences": [
                 {
                   "id": "ex_otsukare_1",
-                  "jpText": "職場(しょくば)で同僚(どうりょう)に会(あ)ったら「お疲れ様です」と声(こえ)をかけましょう。",
+                  "jpText": "職場で同僚に会ったら「お疲れ様です」と声をかけましょう。",
                   "segments": [
                     {
-                      "jpText": "職場(しょくば)で",
+                      "jpText": "職場で",
                       "reading": "しょくば で",
                       "partOfSpeech": "noun"
                     },
                     {
-                      "jpText": "同僚(どうりょう)に会(あ)ったら",
+                      "jpText": "同僚に会ったら",
                       "reading": "どうりょう に あったら",
                       "partOfSpeech": "verb"
                     },
@@ -333,7 +333,7 @@
                       "partOfSpeech": "expression"
                     },
                     {
-                      "jpText": "声(こえ)をかけましょう",
+                      "jpText": "声をかけましょう",
                       "reading": "こえ を かけましょう",
                       "partOfSpeech": "verb"
                     }
@@ -367,15 +367,15 @@
               "exampleSentences": [
                 {
                   "id": "ex_shitsurei_1",
-                  "jpText": "部屋(へや)に入(はい)るときや退室(たいしつ)するときに「失礼します」と言(い)います。",
+                  "jpText": "部屋に入るときや退室するときに「失礼します」と言います。",
                   "segments": [
                     {
-                      "jpText": "部屋(へや)に入(はい)るときや",
+                      "jpText": "部屋に入るときや",
                       "reading": "へや に はいる とき や",
                       "partOfSpeech": "verb"
                     },
                     {
-                      "jpText": "退室(たいしつ)するときに",
+                      "jpText": "退室するときに",
                       "reading": "たいしつ する とき に",
                       "partOfSpeech": "verb"
                     },
@@ -385,7 +385,7 @@
                       "partOfSpeech": "expression"
                     },
                     {
-                      "jpText": "言(い)います",
+                      "jpText": "言います",
                       "reading": "いいます",
                       "partOfSpeech": "verb"
                     }

@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { Button, useTheme } from 'react-native-paper';
+// src/components/RecordingButton.tsx
 
-const RecordingButton: React.FC = () => {
-  const theme = useTheme();
+import React, { useState } from 'react';
+import { StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { Button } from 'react-native-paper';
+
+export interface RecordingButtonProps {
+  phraseId?: string;                      // どのフレーズに対する録音か識別したい場合
+  style?: StyleProp<ViewStyle>;           // スタイル上書き用
+}
+
+const RecordingButton: React.FC<RecordingButtonProps> = ({ phraseId, style }) => {
   const [isRecording, setIsRecording] = useState(false);
 
   const handleToggleRecording = () => {
     if (!isRecording) {
-      // 録音開始（将来的にAPI開始）
-      console.log('Start recording...');
+      console.log(`Start recording for phrase: ${phraseId || '(unknown)'}`);
+      // ここで録音API開始の処理など
     } else {
-      // 録音停止＆評価（将来的にAPI送信）
-      console.log('Stop recording. Evaluate...');
+      console.log(`Stop recording for phrase: ${phraseId || '(unknown)'}`);
+      // 録音停止→評価API送信など
     }
     setIsRecording((prev) => !prev);
   };
@@ -22,30 +28,28 @@ const RecordingButton: React.FC = () => {
       mode="contained"
       icon={isRecording ? 'stop-circle' : 'microphone'}
       onPress={handleToggleRecording}
-      style={[
-        styles.button,
-        isRecording && styles.recordingMode,
-      ]}
+      style={[styles.button, style, isRecording && styles.recordingState]}
       labelStyle={styles.label}
-      accessibilityLabel={isRecording ? '録音を停止' : '録音を開始'}
     >
       {isRecording ? '録音中...' : '録音開始'}
     </Button>
   );
 };
 
+export default RecordingButton;
+
 const styles = StyleSheet.create({
   button: {
     borderRadius: 24,
     marginVertical: 8,
-    backgroundColor: '#2196F3',  // 通常時の色
-  },
-  recordingMode: {
-    backgroundColor: '#e53935',  // 録音中は赤系に
+    backgroundColor: '#2196F3',
   },
   label: {
     fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  recordingState: {
+    backgroundColor: '#F44336',
   },
 });
-
-export default RecordingButton;

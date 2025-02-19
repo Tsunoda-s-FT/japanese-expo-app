@@ -1,60 +1,49 @@
 // src/components/SegmentedText.tsx
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text } from 'react-native-paper';
 
-interface Segment {
+import React from 'react';
+import { View, Text, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+
+// Segmentの型定義(既存の contentTypes と整合するならそちらをimportしてもOK)
+export interface Segment {
   jpText: string;
   reading?: string;
   partOfSpeech?: string;
 }
 
-interface SegmentedTextProps {
+// コンポーネント用のPropsに style?: StyleProp<ViewStyle> を追加
+export interface SegmentedTextProps {
   segments: Segment[];
+  style?: StyleProp<ViewStyle>;
 }
 
-const SegmentedText: React.FC<SegmentedTextProps> = ({ segments }) => {
-  // ログを追加:
-  console.log('[SegmentedText] rendered with segments:', JSON.stringify(segments, null, 2));
+const SegmentedText: React.FC<SegmentedTextProps> = ({ segments, style }) => {
+  if (!segments || segments.length === 0) {
+    return null;
+  }
 
   return (
-    <View style={styles.container}>
-      {segments.map((seg, index) => {
-        const bgColor = getColorByPartOfSpeech(seg.partOfSpeech);
-        const readingStr = seg.reading ?? '';
-
-        // 各文節ごとにログを追加
-        console.log(`[SegmentedText] segment #${index} = jpText="${seg.jpText}", reading="${seg.reading}", partOfSpeech="${seg.partOfSpeech}"`);
-
-        return (
-          <View key={index} style={[styles.segmentBox, { backgroundColor: bgColor }]}>
-            <Text style={styles.furigana}>{readingStr}</Text>
-            <Text style={styles.jpText}>{seg.jpText}</Text>
-          </View>
-        );
-      })}
+    <View style={[styles.container, style]}>
+      {segments.map((seg, index) => (
+        <View key={index} style={[styles.segmentBox, getStyleByPartOfSpeech(seg.partOfSpeech)]}>
+          <Text style={styles.reading}>{seg.reading}</Text>
+          <Text style={styles.jpText}>{seg.jpText}</Text>
+        </View>
+      ))}
     </View>
   );
 };
 
-function getColorByPartOfSpeech(pos?: string): string {
+// パートオブスピーチによって色分けする例 (必要に応じてカスタマイズ)
+function getStyleByPartOfSpeech(pos?: string) {
   switch (pos) {
     case 'expression':
-      return '#C8E6C9';
+      return { backgroundColor: '#C8E6C9' };
     case 'verb':
-      return '#FFE0B2';
+      return { backgroundColor: '#FFE0B2' };
     case 'noun':
-      return '#BBDEFB';
-    case 'auxVerb':
-    case 'copula':
-    case 'politeSuffix':
-      return '#F0F4C3';
-    case 'adverb':
-      return '#FFECB3';
-    case 'question':
-      return '#F8BBD0';
+      return { backgroundColor: '#BBDEFB' };
     default:
-      return '#E0E0E0';
+      return { backgroundColor: '#F5F5F5' };
   }
 }
 
@@ -62,25 +51,24 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginVertical: 8,
   },
   segmentBox: {
     margin: 4,
-    paddingHorizontal: 6,
     paddingVertical: 4,
-    borderRadius: 4,
+    paddingHorizontal: 6,
+    borderRadius: 6,
   },
-  furigana: {
+  reading: {
     fontSize: 12,
-    color: '#666',
+    color: '#555',
     textAlign: 'center',
   },
   jpText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
     textAlign: 'center',
-  }
+    color: '#333',
+  },
 });
 
 export default SegmentedText;
