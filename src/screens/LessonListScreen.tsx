@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Text, Title } from 'react-native-paper';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getAllLessons } from '../services/contentService';
 import { useLanguage } from '../context/LanguageContext';
-import AppCard from '../components/ui/AppCard';
 import AppLoading from '../components/ui/AppLoading';
-import { colors, spacing } from '../theme/theme';
+import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { commonStyles } from '../theme/styles';
 
 // 画像のマッピング
@@ -72,26 +72,37 @@ const LessonListScreen: React.FC = () => {
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <Title style={styles.header}>レッスン一覧</Title>
 
-      {lessons.map((lesson) => (
-        <AppCard
-          key={lesson.id}
-          onPress={() => handleLessonPress(lesson.id)}
-        >
-          {lesson.thumbnail && (
-            <Image
-              source={getImageSource(lesson.thumbnail) || { uri: 'https://placehold.co/600x400/png' }}
-              style={styles.thumbnail}
-            />
-          )}
-          <View style={styles.cardContent}>
-            <Text style={styles.title}>{lesson.title}</Text>
-            <Text style={styles.description}>{lesson.description}</Text>
-            <Text style={styles.meta}>
-              所要時間: {lesson.totalEstimatedTime} • コース数: {lesson.courses.length}
-            </Text>
-          </View>
-        </AppCard>
-      ))}
+      <View style={styles.lessonGrid}>
+        {lessons.map((lesson) => (
+          <TouchableOpacity
+            key={lesson.id}
+            onPress={() => handleLessonPress(lesson.id)}
+            style={styles.lessonCard}
+            activeOpacity={0.7}
+          >
+            {lesson.thumbnail && (
+              <Image
+                source={getImageSource(lesson.thumbnail) || { uri: 'https://placehold.co/600x400/png' }}
+                style={styles.thumbnail}
+              />
+            )}
+            <View style={styles.cardOverlay}>
+              <View style={styles.cardContent}>
+                <Text style={styles.title}>{lesson.title}</Text>
+                <Text style={styles.description} numberOfLines={2}>
+                  {lesson.description}
+                </Text>
+                <View style={styles.metaContainer}>
+                  <Icon name="clock-outline" size={14} color="#fff" />
+                  <Text style={styles.meta}>{lesson.totalEstimatedTime}</Text>
+                  <Icon name="book-outline" size={14} color="#fff" style={styles.metaIcon} />
+                  <Text style={styles.meta}>{lesson.courses.length}</Text>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
     </ScrollView>
   );
 };
@@ -111,32 +122,64 @@ const styles = StyleSheet.create({
     color: colors.text,
     textAlign: 'center',
   },
+  lessonGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
+  },
+  lessonCard: {
+    width: '48%',
+    aspectRatio: 0.8,
+    marginBottom: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: 'rgba(0,0,0,0.2)',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 3,
+  },
   thumbnail: {
     width: '100%',
-    height: 160,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    resizeMode: 'cover',
-    marginBottom: spacing.sm,
+    height: '100%',
+    position: 'absolute',
+  },
+  cardOverlay: {
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    flex: 1,
+    justifyContent: 'flex-end',
   },
   cardContent: {
-    padding: spacing.sm,
+    padding: 12,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: spacing.xs,
+    color: '#fff',
+    marginBottom: 4,
+    textShadowColor: 'rgba(0,0,0,0.8)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
   description: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: spacing.sm,
+    fontSize: 12,
+    color: '#fff',
+    marginBottom: 8,
+    opacity: 0.9,
+  },
+  metaContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   meta: {
     fontSize: 12,
-    color: colors.textSecondary,
+    color: '#fff',
+    marginLeft: 4,
   },
+  metaIcon: {
+    marginLeft: 12,
+  }
 });
 
 export default LessonListScreen;

@@ -3,27 +3,27 @@ import { DefaultTheme } from '@react-navigation/native';
 
 // カラーパレット
 export const colors = {
-  // メインカラー（現在のオレンジから学習アプリに適した青系に変更）
-  primary: '#4A6FE5',
-  primaryDark: '#3257D1',
-  primaryLight: '#7C95EA',
+  // メインカラーをより鮮やかで学習アプリに合う配色に
+  primary: '#6A5ACD', // スレートブルー
+  primaryDark: '#483D8B',
+  primaryLight: '#B39DDB',
   
-  // アクセントカラー
-  accent: '#FF9F43',
+  // アクセントカラーを明るくして学習モチベーションを高める
+  accent: '#FF6B6B', // 明るい赤
   
-  // 機能色
+  // 機能色はそのままでコントラストを改善
   success: '#4CAF50',
   error: '#F44336',
   warning: '#FFC107',
-  info: '#2196F3',
+  info: '#42A5F5',
   
-  // 背景色と表面色
+  // 背景と表面色をより柔らかくする
   surface: '#FFFFFF',
-  background: '#F5F7FA',
+  background: '#F8F9FA',
   card: '#FFFFFF',
   
-  // テキスト色
-  text: '#333333',
+  // テキスト色のコントラストを改善
+  text: '#424242',
   textSecondary: '#757575',
   textLight: '#FFFFFF',
   

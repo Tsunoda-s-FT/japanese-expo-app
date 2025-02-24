@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Alert, BackHandler, ScrollView } from 'react-native';
-import { Text, Card, RadioButton } from 'react-native-paper';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, StyleSheet, Alert, BackHandler, ScrollView, TouchableOpacity, Animated } from 'react-native';
+import { Text, Card } from 'react-native-paper';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
@@ -49,6 +50,33 @@ const CourseQuizScreen: React.FC = () => {
 
   // クイズセッション管理
   const [sessionId, setSessionId] = useState<string | null>(null);
+
+  // アニメーション用の状態
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.9)).current;
+  
+  // 選択肢をタップした時のアニメーション
+  const animateSelection = () => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 7,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+  
+  // 初期値にリセット
+  const resetAnimation = () => {
+    fadeAnim.setValue(0);
+    scaleAnim.setValue(0.9);
+  };
 
   const showExitConfirmation = () => {
     Alert.alert(
@@ -103,6 +131,13 @@ const CourseQuizScreen: React.FC = () => {
     return () => backHandler.remove();
   }, [courseId]);
 
+  // 選択肢がタップされた時の処理
+  const handleOptionPress = (index: number) => {
+    setSelectedOption(index);
+    resetAnimation();
+    animateSelection();
+  };
+
   const handleAnswer = async () => {
     if (!questions[currentIndex] || !sessionId || selectedOption === null) {
       return;
@@ -153,6 +188,7 @@ const CourseQuizScreen: React.FC = () => {
     setSelectedOption(null);
     setIsSubmitted(false);
     setIsCorrect(null);
+    resetAnimation();
   };
 
   if (loading) {
@@ -207,32 +243,40 @@ const CourseQuizScreen: React.FC = () => {
                 <Text style={styles.questionText}>{currentQuestion.questionSuffixJp}</Text>
 
                 {/* Options */}
-                <RadioButton.Group
-                  onValueChange={(value) => setSelectedOption(Number(value))}
-                  value={selectedOption?.toString() || ''}
-                >
-                  {currentQuestion.options.map((option, index) => (
-                    <View 
-                      key={index} 
-                      style={[
-                        styles.radioItem,
-                        isSubmitted && index === currentQuestion.answerIndex && styles.correctAnswer,
-                        isSubmitted && selectedOption === index && selectedOption !== currentQuestion.answerIndex && styles.wrongAnswer
-                      ]}
-                    >
-                      <RadioButton.Item
-                        label={option}
-                        value={index.toString()}
-                        disabled={isSubmitted}
-                        labelStyle={[
-                          styles.radioLabel,
-                          isSubmitted && index === currentQuestion.answerIndex && styles.correctAnswerText,
-                          isSubmitted && selectedOption === index && selectedOption !== currentQuestion.answerIndex && styles.wrongAnswerText
-                        ]}
-                      />
+                {currentQuestion.options.map((option, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.optionButton,
+                      selectedOption === index && styles.selectedOption,
+                      isSubmitted && index === currentQuestion.answerIndex && styles.correctOption,
+                      isSubmitted && selectedOption === index && selectedOption !== currentQuestion.answerIndex && styles.incorrectOption
+                    ]}
+                    onPress={() => handleOptionPress(index)}
+                    disabled={isSubmitted}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.optionContent}>
+                      <Text style={styles.optionLetter}>
+                        {String.fromCharCode(65 + index)}
+                      </Text>
+                      <Text style={[
+                        styles.optionText,
+                        selectedOption === index && styles.selectedOptionText,
+                        isSubmitted && index === currentQuestion.answerIndex && styles.correctOptionText,
+                        isSubmitted && selectedOption === index && selectedOption !== currentQuestion.answerIndex && styles.incorrectOptionText
+                      ]}>
+                        {option}
+                      </Text>
                     </View>
-                  ))}
-                </RadioButton.Group>
+                    {isSubmitted && index === currentQuestion.answerIndex && (
+                      <Icon name="check-circle" size={24} color={colors.success} style={styles.resultIcon} />
+                    )}
+                    {isSubmitted && selectedOption === index && selectedOption !== currentQuestion.answerIndex && (
+                      <Icon name="close-circle" size={24} color={colors.error} style={styles.resultIcon} />
+                    )}
+                  </TouchableOpacity>
+                ))}
 
                 {/* Answer / Next button */}
                 {!isSubmitted ? (
@@ -245,25 +289,42 @@ const CourseQuizScreen: React.FC = () => {
                   />
                 ) : (
                   <>
-                    {/* Explanation */}
-                    <View style={styles.explanationContainer}>
-                      <Text style={[
-                        styles.resultText,
-                        isCorrect ? styles.correctText : styles.incorrectText
+                    {/* Explanation with animation */}
+                    <Animated.View 
+                      style={[
+                        styles.feedbackContainer,
+                        {
+                          opacity: fadeAnim,
+                          transform: [{ scale: scaleAnim }]
+                        }
+                      ]}
+                    >
+                      <View style={[
+                        styles.feedbackHeader,
+                        isCorrect ? styles.correctFeedback : styles.incorrectFeedback
                       ]}>
-                        {isCorrect ? '正解！' : '不正解...'}
-                      </Text>
-                      <Text style={styles.explanationText}>
-                        {currentQuestion.explanation}
-                      </Text>
-                    </View>
-                    <AppButton
-                      label={currentIndex < questions.length - 1 ? '次へ' : '結果を見る'}
-                      onPress={handleNext}
-                      variant="primary"
-                      icon="arrow-right"
-                      style={styles.actionButton}
-                    />
+                        <Icon 
+                          name={isCorrect ? "check-circle" : "alert-circle"} 
+                          size={28} 
+                          color="#fff" 
+                        />
+                        <Text style={styles.feedbackTitle}>
+                          {isCorrect ? '正解！' : '不正解...'}
+                        </Text>
+                      </View>
+                      <View style={styles.explanationContainer}>
+                        <Text style={styles.explanationText}>
+                          {currentQuestion.explanation}
+                        </Text>
+                      </View>
+                      <AppButton 
+                        label={currentIndex < questions.length - 1 ? '次へ' : '結果を見る'} 
+                        onPress={handleNext}
+                        variant="primary"
+                        icon={currentIndex < questions.length - 1 ? "arrow-right" : "flag-checkered"}
+                        style={styles.nextButton}
+                      />
+                    </Animated.View>
                   </>
                 )}
               </View>
@@ -282,109 +343,156 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     padding: spacing.md,
+    paddingBottom: spacing.sm,
     backgroundColor: colors.surface,
-    elevation: 2,
+    ...shadows.small,
   },
   questionCounter: {
-    textAlign: 'center',
-    fontSize: 16,
+    fontSize: 14,
     color: colors.textSecondary,
-    marginBottom: spacing.sm,
+    textAlign: 'center',
+    marginBottom: spacing.xs,
   },
   scrollView: {
     flex: 1,
-    padding: spacing.md,
   },
   card: {
-    marginBottom: spacing.md,
-    borderRadius: 12,
-    backgroundColor: colors.surface,
+    margin: spacing.md,
+    borderRadius: borderRadius.lg,
     ...shadows.medium,
   },
   questionContainer: {
-    padding: spacing.sm,
+    paddingVertical: spacing.sm,
   },
   phraseContainer: {
-    alignItems: 'center',
+    marginBottom: spacing.lg,
     backgroundColor: colors.background,
     padding: spacing.md,
     borderRadius: borderRadius.md,
-    marginBottom: spacing.md,
   },
   phraseText: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 18,
     textAlign: 'center',
+    color: colors.text,
+    fontWeight: '600',
   },
   questionText: {
-    fontSize: 18,
-    color: colors.textSecondary,
-    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.text,
     marginBottom: spacing.lg,
+    textAlign: 'center',
   },
-  radioItem: {
-    marginVertical: 4,
-    borderRadius: borderRadius.md,
+  optionButton: {
+    borderRadius: 12,
+    marginVertical: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
     backgroundColor: colors.surface,
-    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 2,
     borderColor: colors.border,
-    marginBottom: spacing.sm,
+    elevation: 2,
   },
-  radioLabel: {
+  optionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  optionLetter: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: colors.background,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    marginRight: 12,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  optionText: {
     fontSize: 16,
     color: colors.text,
+    flex: 1,
   },
-  correctAnswer: {
-    backgroundColor: '#E8F5E9',
+  selectedOption: {
+    borderColor: colors.primary,
+    backgroundColor: colors.primary + '10', // 10% opacity
+  },
+  selectedOptionText: {
+    color: colors.primary,
+    fontWeight: 'bold',
+  },
+  correctOption: {
     borderColor: colors.success,
+    backgroundColor: colors.success + '10',
   },
-  wrongAnswer: {
-    backgroundColor: '#FFEBEE',
-    borderColor: colors.error,
-  },
-  correctAnswerText: {
+  correctOptionText: {
     color: colors.success,
+    fontWeight: 'bold',
   },
-  wrongAnswerText: {
+  incorrectOption: {
+    borderColor: colors.error,
+    backgroundColor: colors.error + '10',
+  },
+  incorrectOptionText: {
     color: colors.error,
+    fontWeight: 'bold',
+  },
+  resultIcon: {
+    marginLeft: 8,
   },
   actionButton: {
     marginTop: spacing.lg,
   },
-  explanationContainer: {
-    marginTop: spacing.md,
-    padding: spacing.md,
-    backgroundColor: colors.background,
+  feedbackContainer: {
+    marginTop: spacing.lg,
     borderRadius: borderRadius.md,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.accent,
+    overflow: 'hidden',
+    ...shadows.small,
   },
-  resultText: {
-    fontSize: 20,
+  feedbackHeader: {
+    padding: spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  correctFeedback: {
+    backgroundColor: colors.success,
+  },
+  incorrectFeedback: {
+    backgroundColor: colors.error,
+  },
+  feedbackTitle: {
+    color: 'white',
+    fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: spacing.sm,
+    marginLeft: spacing.sm,
   },
-  correctText: {
-    color: colors.success,
-  },
-  incorrectText: {
-    color: colors.error,
+  explanationContainer: {
+    padding: spacing.md,
+    backgroundColor: colors.surface,
   },
   explanationText: {
     fontSize: 16,
-    lineHeight: 24,
     color: colors.text,
+    lineHeight: 24,
+  },
+  nextButton: {
+    margin: spacing.md,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: spacing.md,
+    padding: spacing.lg,
   },
   errorText: {
-    color: colors.error,
+    color: colors.textSecondary,
     fontSize: 16,
+    textAlign: 'center',
   },
 });
 
