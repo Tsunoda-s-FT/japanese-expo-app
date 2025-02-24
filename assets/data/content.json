@@ -428,6 +428,559 @@
           ]
         }
       ]
+    },
+
+    {
+      "id": "lesson_restaurant",
+      "title": "飲食店",
+      "description": "飲食店で使う基本表現を学び、クイズで理解を深めましょう。",
+      "category": "restaurant",
+      "thumbnail": "images/lessons/restaurant.jpg",
+      "totalEstimatedTime": "20分",
+      "courses": [
+        {
+          "id": "course_restaurant_expressions",
+          "title": "飲食店の表現",
+          "description": "飲食店での会話に必要なフレーズを学び、クイズで確認します。",
+          "level": "beginner",
+          "estimatedTime": "20分",
+          "tags": ["restaurant", "daily", "n5"],
+          "phrases": [
+            {
+              "id": "phrase_irasshaimase",
+              "jpText": "いらっしゃいませ",
+              "reading": "いらっしゃいませ",
+              "translations": {
+                "en": "Welcome"
+              },
+              "audio": "audio/irasshaimase.mp3",
+              "segments": [
+                {
+                  "jpText": "いらっしゃいませ",
+                  "reading": "いらっしゃいませ",
+                  "partOfSpeech": "expression"
+                }
+              ],
+              "exampleSentences": [
+                {
+                  "id": "ex_irasshaimase_1",
+                  "jpText": "お店に入るときは「いらっしゃいませ」と言います。",
+                  "segments": [
+                    {
+                      "jpText": "お店に入るときは",
+                      "reading": "おみせ に はいる とき は",
+                      "partOfSpeech": "expression"
+                    },
+                    {
+                      "jpText": "いらっしゃいませ",
+                      "reading": "いらっしゃいませ",
+                      "partOfSpeech": "expression"
+                    }
+                  ],
+                  "translations": {
+                    "en": "When entering a store, say 'Welcome'."
+                  }
+                }
+              ]
+            },
+            {
+              "id": "phrase_menu_onegaishimasu",
+              "jpText": "メニューをお願いします",
+              "reading": "めにゅーをおねがいします",
+              "translations": {
+                "en": "Menu, please"
+              },
+              "audio": "audio/menu_onegaishimasu.mp3",
+              "segments": [
+                {
+                  "jpText": "メニュー",
+                  "reading": "めにゅー",
+                  "partOfSpeech": "noun"
+                },
+                {
+                  "jpText": "をお願いします",
+                  "reading": "をおねがいします",
+                  "partOfSpeech": "expression"
+                }
+              ],
+              "exampleSentences": [
+                {
+                  "id": "ex_menu_1",
+                  "jpText": "席に着いたら、メニューをお願いしますと言います。",
+                  "segments": [
+                    {
+                      "jpText": "席に着いたら",
+                      "reading": "せき に ついたら",
+                      "partOfSpeech": "verb"
+                    },
+                    {
+                      "jpText": "メニューをお願いします",
+                      "reading": "めにゅーをおねがいします",
+                      "partOfSpeech": "expression"
+                    }
+                  ],
+                  "translations": {
+                    "en": "When seated, ask for the menu by saying 'Menu, please'."
+                  }
+                }
+              ]
+            },
+            {
+              "id": "phrase_osusume_nan_desu_ka",
+              "jpText": "おすすめは何ですか？",
+              "reading": "おすすめはなんですか",
+              "translations": {
+                "en": "What do you recommend?"
+              },
+              "audio": "audio/osusume_nan_desu_ka.mp3",
+              "segments": [
+                {
+                  "jpText": "おすすめ",
+                  "reading": "おすすめ",
+                  "partOfSpeech": "noun"
+                },
+                {
+                  "jpText": "は何ですか？",
+                  "reading": "はなんですか",
+                  "partOfSpeech": "expression"
+                }
+              ],
+              "exampleSentences": [
+                {
+                  "id": "ex_osusume_1",
+                  "jpText": "初めてのレストランでは、おすすめは何ですか？と聞きましょう。",
+                  "segments": [
+                    {
+                      "jpText": "初めてのレストランでは",
+                      "reading": "はじめてのれすとらんでは",
+                      "partOfSpeech": "expression"
+                    },
+                    {
+                      "jpText": "おすすめは何ですか？",
+                      "reading": "おすすめはなんですか",
+                      "partOfSpeech": "expression"
+                    }
+                  ],
+                  "translations": {
+                    "en": "At a new restaurant, ask 'What do you recommend?'"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "phrase_okaikei_onegaishimasu",
+              "jpText": "お会計をお願いします",
+              "reading": "おかいけいをおねがいします",
+              "translations": {
+                "en": "The bill, please"
+              },
+              "audio": "audio/okaikei_onegaishimasu.mp3",
+              "segments": [
+                {
+                  "jpText": "お会計",
+                  "reading": "おかいけい",
+                  "partOfSpeech": "noun"
+                },
+                {
+                  "jpText": "をお願いします",
+                  "reading": "をおねがいします",
+                  "partOfSpeech": "expression"
+                }
+              ],
+              "exampleSentences": [
+                {
+                  "id": "ex_okaikei_1",
+                  "jpText": "食事が終わったら、お会計をお願いしますと言います。",
+                  "segments": [
+                    {
+                      "jpText": "食事が終わったら",
+                      "reading": "しょくじが おわったら",
+                      "partOfSpeech": "verb"
+                    },
+                    {
+                      "jpText": "お会計をお願いします",
+                      "reading": "おかいけいをおねがいします",
+                      "partOfSpeech": "expression"
+                    }
+                  ],
+                  "translations": {
+                    "en": "After the meal, say 'The bill, please'."
+                  }
+                }
+              ]
+            },
+            {
+              "id": "phrase_gochisousama_deshita",
+              "jpText": "ごちそうさまでした",
+              "reading": "ごちそうさまでした",
+              "translations": {
+                "en": "Thank you for the meal"
+              },
+              "audio": "audio/gochisousama_deshita.mp3",
+              "segments": [
+                {
+                  "jpText": "ごちそうさまでした",
+                  "reading": "ごちそうさまでした",
+                  "partOfSpeech": "expression"
+                }
+              ],
+              "exampleSentences": [
+                {
+                  "id": "ex_gochisousama_1",
+                  "jpText": "食事が終わったら、ごちそうさまでしたと言いましょう。",
+                  "segments": [
+                    {
+                      "jpText": "食事が終わったら",
+                      "reading": "しょくじが おわったら",
+                      "partOfSpeech": "verb"
+                    },
+                    {
+                      "jpText": "ごちそうさまでした",
+                      "reading": "ごちそうさまでした",
+                      "partOfSpeech": "expression"
+                    }
+                  ],
+                  "translations": {
+                    "en": "After finishing your meal, say 'Thank you for the meal'."
+                  }
+                }
+              ]
+            },
+            {
+              "id": "phrase_mouippin_onegaishimasu",
+              "jpText": "もう一品お願いします",
+              "reading": "もういっぴんおねがいします",
+              "translations": {
+                "en": "One more dish, please"
+              },
+              "audio": "audio/mouippin_onegaishimasu.mp3",
+              "segments": [
+                {
+                  "jpText": "もう一品",
+                  "reading": "もういっぴん",
+                  "partOfSpeech": "expression"
+                },
+                {
+                  "jpText": "お願いします",
+                  "reading": "おねがいします",
+                  "partOfSpeech": "expression"
+                }
+              ],
+              "exampleSentences": [
+                {
+                  "id": "ex_mouippin_1",
+                  "jpText": "料理が美味しいと感じたら、もう一品お願いしますと言いましょう。",
+                  "segments": [
+                    {
+                      "jpText": "料理が美味しいと感じたら",
+                      "reading": "りょうりが おいしいと かんじたら",
+                      "partOfSpeech": "verb"
+                    },
+                    {
+                      "jpText": "もう一品お願いします",
+                      "reading": "もういっぴんおねがいします",
+                      "partOfSpeech": "expression"
+                    }
+                  ],
+                  "translations": {
+                    "en": "If the food is delicious, say 'One more dish, please'."
+                  }
+                }
+              ]
+            },
+            {
+              "id": "phrase_karaku_shinaide_kudasai",
+              "jpText": "辛くしないでください",
+              "reading": "からくしないでください",
+              "translations": {
+                "en": "Please don't make it spicy"
+              },
+              "audio": "audio/karaku_shinaide_kudasai.mp3",
+              "segments": [
+                {
+                  "jpText": "辛くしないでください",
+                  "reading": "からくしないでください",
+                  "partOfSpeech": "expression"
+                }
+              ],
+              "exampleSentences": [
+                {
+                  "id": "ex_karaku_1",
+                  "jpText": "辛い料理が苦手な場合は、辛くしないでくださいと頼みます。",
+                  "segments": [
+                    {
+                      "jpText": "辛い料理が苦手な場合は",
+                      "reading": "からいりょうりが にがてな ばあいは",
+                      "partOfSpeech": "expression"
+                    },
+                    {
+                      "jpText": "辛くしないでください",
+                      "reading": "からくしないでください",
+                      "partOfSpeech": "expression"
+                    }
+                  ],
+                  "translations": {
+                    "en": "If you don't like spicy food, ask 'Please don't make it spicy'."
+                  }
+                }
+              ]
+            },
+            {
+              "id": "phrase_tsumetai_nomimono_wo_kudasai",
+              "jpText": "冷たい飲み物をください",
+              "reading": "つめたいのみものをください",
+              "translations": {
+                "en": "Cold drink, please"
+              },
+              "audio": "audio/tsumetai_nomimono_wo_kudasai.mp3",
+              "segments": [
+                {
+                  "jpText": "冷たい飲み物",
+                  "reading": "つめたいのみもの",
+                  "partOfSpeech": "noun"
+                },
+                {
+                  "jpText": "をください",
+                  "reading": "をください",
+                  "partOfSpeech": "expression"
+                }
+              ],
+              "exampleSentences": [
+                {
+                  "id": "ex_tsumetai_1",
+                  "jpText": "暑い日には、冷たい飲み物をくださいと頼むと良いです。",
+                  "segments": [
+                    {
+                      "jpText": "暑い日には",
+                      "reading": "あついひには",
+                      "partOfSpeech": "adverb"
+                    },
+                    {
+                      "jpText": "冷たい飲み物をください",
+                      "reading": "つめたいのみものをください",
+                      "partOfSpeech": "expression"
+                    }
+                  ],
+                  "translations": {
+                    "en": "On a hot day, say 'Cold drink, please'."
+                  }
+                }
+              ]
+            },
+            {
+              "id": "phrase_kore_wa_nan_desu_ka",
+              "jpText": "これは何ですか？",
+              "reading": "これはなんですか",
+              "translations": {
+                "en": "What is this?"
+              },
+              "audio": "audio/kore_wa_nan_desu_ka.mp3",
+              "segments": [
+                {
+                  "jpText": "これは",
+                  "reading": "これは",
+                  "partOfSpeech": "pronoun"
+                },
+                {
+                  "jpText": "何ですか？",
+                  "reading": "なんですか",
+                  "partOfSpeech": "expression"
+                }
+              ],
+              "exampleSentences": [
+                {
+                  "id": "ex_kore_1",
+                  "jpText": "メニューに見慣れない料理があったら、これは何ですか？と尋ねましょう。",
+                  "segments": [
+                    {
+                      "jpText": "メニューに見慣れない料理があったら",
+                      "reading": "めにゅーに みなれない りょうりがあったら",
+                      "partOfSpeech": "expression"
+                    },
+                    {
+                      "jpText": "これは何ですか？",
+                      "reading": "これはなんですか",
+                      "partOfSpeech": "expression"
+                    }
+                  ],
+                  "translations": {
+                    "en": "If there's an unfamiliar dish on the menu, ask 'What is this?'"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "phrase_onaka_ga_sukimashita",
+              "jpText": "お腹がすきました",
+              "reading": "おなかがすきました",
+              "translations": {
+                "en": "I'm hungry"
+              },
+              "audio": "audio/onaka_ga_sukimashita.mp3",
+              "segments": [
+                {
+                  "jpText": "お腹がすきました",
+                  "reading": "おなかがすきました",
+                  "partOfSpeech": "expression"
+                }
+              ],
+              "exampleSentences": [
+                {
+                  "id": "ex_onaka_1",
+                  "jpText": "食事前に、お腹がすきましたと言うと良いです。",
+                  "segments": [
+                    {
+                      "jpText": "食事前に",
+                      "reading": "しょくじまえに",
+                      "partOfSpeech": "adverb"
+                    },
+                    {
+                      "jpText": "お腹がすきました",
+                      "reading": "おなかがすきました",
+                      "partOfSpeech": "expression"
+                    }
+                  ],
+                  "translations": {
+                    "en": "Before the meal, you can say 'I'm hungry'."
+                  }
+                }
+              ]
+            }
+          ],
+          "quizQuestions": [
+            {
+              "id": "quiz_restaurant_1",
+              "linkedPhraseId": "phrase_irasshaimase",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "Welcome",
+                "Goodbye",
+                "Thank you",
+                "Excuse me"
+              ],
+              "answerIndex": 0,
+              "explanation": "お店に入るときの挨拶です。"
+            },
+            {
+              "id": "quiz_restaurant_2",
+              "linkedPhraseId": "phrase_menu_onegaishimasu",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "Menu, please",
+                "Bill, please",
+                "Water, please",
+                "Food, please"
+              ],
+              "answerIndex": 0,
+              "explanation": "席に着いたときにメニューを頼む表現です。"
+            },
+            {
+              "id": "quiz_restaurant_3",
+              "linkedPhraseId": "phrase_osusume_nan_desu_ka",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "What do you recommend?",
+                "How much is it?",
+                "Is it spicy?",
+                "Do you have a reservation?"
+              ],
+              "answerIndex": 0,
+              "explanation": "おすすめを尋ねる表現です。"
+            },
+            {
+              "id": "quiz_restaurant_4",
+              "linkedPhraseId": "phrase_okaikei_onegaishimasu",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "The bill, please",
+                "Thank you very much",
+                "I'm full",
+                "Where is the restroom?"
+              ],
+              "answerIndex": 0,
+              "explanation": "食事後に支払いを依頼する表現です。"
+            },
+            {
+              "id": "quiz_restaurant_5",
+              "linkedPhraseId": "phrase_gochisousama_deshita",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "Thank you for the meal",
+                "Excuse me",
+                "Hello",
+                "Goodbye"
+              ],
+              "answerIndex": 0,
+              "explanation": "食事後の感謝の表現です。"
+            },
+            {
+              "id": "quiz_restaurant_6",
+              "linkedPhraseId": "phrase_mouippin_onegaishimasu",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "One more dish, please",
+                "Too expensive",
+                "Stop cooking",
+                "More water, please"
+              ],
+              "answerIndex": 0,
+              "explanation": "料理が美味しいと感じたときに使います。"
+            },
+            {
+              "id": "quiz_restaurant_7",
+              "linkedPhraseId": "phrase_karaku_shinaide_kudasai",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "Please don't make it spicy",
+                "Please add more salt",
+                "Please serve ice",
+                "Please bring water"
+              ],
+              "answerIndex": 0,
+              "explanation": "辛い料理を避けたいときに使います。"
+            },
+            {
+              "id": "quiz_restaurant_8",
+              "linkedPhraseId": "phrase_tsumetai_nomimono_wo_kudasai",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "Cold drink, please",
+                "Hot coffee, please",
+                "Water, please",
+                "Soda, please"
+              ],
+              "answerIndex": 0,
+              "explanation": "暑い時に冷たい飲み物を頼む表現です。"
+            },
+            {
+              "id": "quiz_restaurant_9",
+              "linkedPhraseId": "phrase_kore_wa_nan_desu_ka",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "What is this?",
+                "How much is this?",
+                "Where is that?",
+                "I don't understand"
+              ],
+              "answerIndex": 0,
+              "explanation": "見慣れない料理について質問する表現です。"
+            },
+            {
+              "id": "quiz_restaurant_10",
+              "linkedPhraseId": "phrase_onaka_ga_sukimashita",
+              "questionSuffixJp": "の意味は？",
+              "options": [
+                "I'm hungry",
+                "I'm full",
+                "I'm thirsty",
+                "I'm tired"
+              ],
+              "answerIndex": 0,
+              "explanation": "空腹を表す表現です。"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

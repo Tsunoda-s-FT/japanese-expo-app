@@ -16,7 +16,8 @@ const audioFiles: { [key: string]: any } = {
   'audio/example_morning_1.mp3': require('../../assets/audio/example_morning_1.mp3'),
   'audio/example_konnichiwa_1.mp3': require('../../assets/audio/example_konnichiwa_1.mp3'),
   'audio/example_business_1.mp3': require('../../assets/audio/example_business_1.mp3'),
-  'audio/example_intro_1.mp3': require('../../assets/audio/example_intro_1.mp3')
+  'audio/example_intro_1.mp3': require('../../assets/audio/example_intro_1.mp3'),
+  'audio/irasshaimase.mp3': require('../../assets/audio/irasshaimase.mp3')
 };
 
 // 音声を再生する関数

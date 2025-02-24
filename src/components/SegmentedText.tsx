@@ -1,7 +1,7 @@
 // src/components/SegmentedText.tsx
 
 import React from 'react';
-import { View, Text, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { View, Text, StyleSheet, StyleProp, ViewStyle, TextStyle } from 'react-native';
 
 // Segmentの型定義(既存の contentTypes と整合するならそちらをimportしてもOK)
 export interface Segment {
@@ -14,9 +14,10 @@ export interface Segment {
 export interface SegmentedTextProps {
   segments: Segment[];
   style?: StyleProp<ViewStyle>;
+  furiganaStyle?: StyleProp<TextStyle>;
 }
 
-const SegmentedText: React.FC<SegmentedTextProps> = ({ segments, style }) => {
+const SegmentedText: React.FC<SegmentedTextProps> = ({ segments, style, furiganaStyle }) => {
   if (!segments || segments.length === 0) {
     return null;
   }
@@ -25,7 +26,7 @@ const SegmentedText: React.FC<SegmentedTextProps> = ({ segments, style }) => {
     <View style={[styles.container, style]}>
       {segments.map((seg, index) => (
         <View key={index} style={[styles.segmentBox, getStyleByPartOfSpeech(seg.partOfSpeech)]}>
-          <Text style={styles.reading}>{seg.reading}</Text>
+          <Text style={[styles.reading, furiganaStyle]}>{seg.reading}</Text>
           <Text style={styles.jpText}>{seg.jpText}</Text>
         </View>
       ))}

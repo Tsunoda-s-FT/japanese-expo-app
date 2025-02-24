@@ -1,55 +1,90 @@
 // src/components/RecordingButton.tsx
 
 import React, { useState } from 'react';
-import { StyleSheet, StyleProp, ViewStyle } from 'react-native';
-import { Button } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { Button, ActivityIndicator, Text } from 'react-native-paper';
+import { evaluatePronunciationMock, PronunciationEvaluationResult } from '../services/speechService';
 
 export interface RecordingButtonProps {
-  phraseId?: string;                      // どのフレーズに対する録音か識別したい場合
-  style?: StyleProp<ViewStyle>;           // スタイル上書き用
+  phraseId?: string;
+  style?: any;
+  // 評価完了時のコールバック
+  onEvaluationComplete?: (result: PronunciationEvaluationResult) => void;
 }
 
-const RecordingButton: React.FC<RecordingButtonProps> = ({ phraseId, style }) => {
+const RecordingButton: React.FC<RecordingButtonProps> = ({
+  phraseId,
+  style,
+  onEvaluationComplete,
+}) => {
   const [isRecording, setIsRecording] = useState(false);
+  const [isEvaluating, setIsEvaluating] = useState(false);
 
-  const handleToggleRecording = () => {
+  const handleToggleRecording = async () => {
     if (!isRecording) {
-      console.log(`Start recording for phrase: ${phraseId || '(unknown)'}`);
-      // ここで録音API開始の処理など
+      // ===== 録音開始 =====
+      console.log('Recording started...');
+      setIsRecording(true);
     } else {
-      console.log(`Stop recording for phrase: ${phraseId || '(unknown)'}`);
-      // 録音停止→評価API送信など
+      // ===== 録音停止 → 発音評価 =====
+      console.log('Recording stopped. Evaluating...');
+      setIsRecording(false);
+      setIsEvaluating(true);
+      
+      try {
+        const r = await evaluatePronunciationMock(phraseId || '', null);
+        // 親コンポーネントに結果を渡す
+        if (onEvaluationComplete) {
+          onEvaluationComplete(r);
+        }
+      } catch (err) {
+        console.error('評価中にエラーが発生しました:', err);
+      } finally {
+        setIsEvaluating(false);
+      }
     }
-    setIsRecording((prev) => !prev);
   };
 
   return (
-    <Button
-      mode="contained"
-      icon={isRecording ? 'stop-circle' : 'microphone'}
-      onPress={handleToggleRecording}
-      style={[styles.button, style, isRecording && styles.recordingState]}
-      labelStyle={styles.label}
-    >
-      {isRecording ? '録音中...' : '録音開始'}
-    </Button>
+    <View style={styles.container}>
+      <Button
+        mode="contained"
+        icon={isRecording ? 'stop-circle' : 'microphone'}
+        onPress={handleToggleRecording}
+        style={[styles.button, style, isRecording && styles.recording]}
+        disabled={isEvaluating}
+      >
+        {isEvaluating ? '評価中...' : isRecording ? '録音停止' : '録音開始'}
+      </Button>
+
+      {isEvaluating && (
+        <View style={styles.loadingRow}>
+          <ActivityIndicator size="small" />
+          <Text>発音を評価しています...</Text>
+        </View>
+      )}
+    </View>
   );
 };
 
 export default RecordingButton;
 
 const styles = StyleSheet.create({
+  container: {
+    marginVertical: 8,
+  },
   button: {
     borderRadius: 24,
-    marginVertical: 8,
     backgroundColor: '#2196F3',
   },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
-  },
-  recordingState: {
+  recording: {
     backgroundColor: '#F44336',
+  },
+  loadingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginVertical: 8,
   },
 });

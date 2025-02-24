@@ -13,6 +13,8 @@ import SegmentedText from '../components/SegmentedText';
 import AudioButton from '../components/AudioButton';
 import RecordingButton from '../components/RecordingButton';
 import { useTheme } from 'react-native-paper';
+import PronunciationResultCard from '../components/PronunciationResultCard';
+import { PronunciationEvaluationResult } from '../services/speechService';
 
 type CourseLearningScreenRouteProp = RouteProp<SessionStackParamList, 'CourseLearning'>;
 type SessionNavProp = NativeStackNavigationProp<SessionStackParamList>;
@@ -27,6 +29,8 @@ export default function CourseLearningScreen() {
   const [course, setCourse] = useState<Course | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [evaluationResult, setEvaluationResult] = useState<PronunciationEvaluationResult | null>(null);
+  const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -105,6 +109,66 @@ export default function CourseLearningScreen() {
     }
   };
 
+  const renderCurrentPhrase = () => {
+    if (!course || !course.phrases[currentIndex]) return null;
+    const currentPhrase = course.phrases[currentIndex];
+
+    return (
+      <Card style={styles.phraseCard}>
+        <Card.Content>
+          <SegmentedText
+            segments={currentPhrase.segments ?? []}
+            style={styles.phraseText}
+          />
+          <Text style={styles.translation}>{currentPhrase.translations?.en}</Text>
+
+          {/* 音声・録音ボタン行 */}
+          <View style={styles.audioButtonsContainer}>
+            <AudioButton audioPath={currentPhrase.audio ?? ''} style={styles.audioButton} />
+            <RecordingButton
+              phraseId={currentPhrase.id}
+              style={styles.recordButton}
+              onEvaluationComplete={(result) => {
+                console.log('受け取った評価結果:', result);
+                setEvaluationResult(result);
+                setShowResult(true);
+              }}
+            />
+          </View>
+
+          {/* 例文 */}
+          {currentPhrase.exampleSentences && currentPhrase.exampleSentences.length > 0 && (
+            <View style={styles.examplesContainer}>
+              <Title style={styles.examplesTitle}>例文</Title>
+              {currentPhrase.exampleSentences.map((example, index) => (
+                <View key={index} style={styles.exampleItem}>
+                  <SegmentedText
+                    segments={example.segments ?? []}
+                    style={styles.exampleText}
+                    furiganaStyle={styles.furigana}
+                  />
+                  <Text style={styles.exampleTranslation}>{example.translations?.en}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+        </Card.Content>
+      </Card>
+    );
+  };
+
+  const renderResultArea = () => {
+    if (!showResult || !evaluationResult) return null;
+    return (
+      <View style={styles.evaluationContainer}>
+        <Title style={styles.evaluationTitle}>発音評価結果</Title>
+        <PronunciationResultCard result={evaluationResult} />
+        {/* 閉じる/非表示ボタン */}
+        <Button onPress={() => setShowResult(false)}>閉じる</Button>
+      </View>
+    );
+  };
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -121,15 +185,9 @@ export default function CourseLearningScreen() {
     );
   }
 
-  // 現在のフレーズを取得
-  const currentPhrase: Phrase = course.phrases[currentIndex];
-
   // 進捗計算
   const totalPhrases = course.phrases.length;
   const progress = (currentIndex + 1) / totalPhrases;
-
-  // 例文（original code used phrase.examples, but actually it's phrase.exampleSentences in contentTypes)
-  const examples: ExampleSentence[] = currentPhrase.exampleSentences || [];
 
   return (
     <View style={styles.container}>
@@ -147,51 +205,8 @@ export default function CourseLearningScreen() {
 
       {/* Main content */}
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        {/* フレーズ表示カード */}
-        <Card style={styles.phraseCard} elevation={2}>
-          <Card.Content>
-            <SegmentedText
-              segments={currentPhrase.segments || []}
-              style={styles.mainPhrase}
-            />
-            <Text style={styles.translation}>
-              {currentPhrase.translations.en}
-            </Text>
-          </Card.Content>
-        </Card>
-
-        {/* 音声ボタンなどを置くセクション */}
-        <View style={styles.audioControlsCard}>
-          <View style={styles.buttonRow}>
-            <AudioButton
-              audioPath={currentPhrase.audio} // 旧audioPath -> ここではphrase.audio
-              style={styles.actionButton}
-            />
-            <RecordingButton
-              phraseId={currentPhrase.id}
-              style={styles.actionButton}
-            />
-          </View>
-        </View>
-
-        {/* 例文カード */}
-        {examples.map((example: ExampleSentence, index: number) => (
-          <Card key={index} style={styles.exampleCard} elevation={2}>
-            <Card.Title 
-              title="例文"
-              titleStyle={styles.exampleTitle}
-            />
-            <Card.Content>
-              <SegmentedText
-                segments={example.segments || []}
-                style={styles.examplePhrase}
-              />
-              <Text style={styles.exampleTranslation}>
-                {example.translations.en}
-              </Text>
-            </Card.Content>
-          </Card>
-        ))}
+        {renderCurrentPhrase()}
+        {renderResultArea()}
       </ScrollView>
 
       {/* 下部のナビゲーションボタン */}
@@ -260,10 +275,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: 'white',
   },
-  mainPhrase: {
-    // SegmentedText に適用されるViewStyle
-    // 文字サイズはSegmentedText内部で固定されているので注意
+  phraseText: {
     marginBottom: 12,
+  },
+  furigana: {
+    fontSize: 12,
+    color: '#666',
   },
   translation: {
     fontSize: 18,
@@ -271,32 +288,32 @@ const styles = StyleSheet.create({
     color: '#444',
     marginTop: 8,
   },
-  audioControlsCard: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    elevation: 2,
-  },
-  buttonRow: {
+  audioButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+    marginVertical: 16,
   },
-  actionButton: {
+  audioButton: {
     flex: 1,
     marginHorizontal: 8,
   },
-  exampleCard: {
-    marginBottom: 16,
-    borderRadius: 12,
-    backgroundColor: 'white',
+  recordButton: {
+    flex: 1,
+    marginHorizontal: 8,
   },
-  exampleTitle: {
+  examplesContainer: {
+    marginTop: 16,
+  },
+  examplesTitle: {
     fontSize: 16,
     fontWeight: '700',
+    marginBottom: 8,
   },
-  examplePhrase: {
+  exampleItem: {
+    marginBottom: 16,
+  },
+  exampleText: {
     marginBottom: 8,
   },
   exampleTranslation: {
@@ -320,5 +337,16 @@ const styles = StyleSheet.create({
   navButtonLabel: {
     fontSize: 16,
     fontWeight: '600',
+  },
+  evaluationContainer: {
+    marginTop: 16,
+    padding: 12,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    elevation: 2,
+  },
+  evaluationTitle: {
+    fontSize: 18,
+    marginBottom: 8,
   },
 });
