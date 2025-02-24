@@ -1,9 +1,10 @@
 // src/components/AudioButton.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { Button } from 'react-native-paper';
 import { playAudio } from '../utils/audioUtils';
+import { colors, borderRadius } from '../theme/theme';
 
 // Propsに audio (string) と style を受け取り、再生処理を行う
 export interface AudioButtonProps {
@@ -12,23 +13,31 @@ export interface AudioButtonProps {
 }
 
 const AudioButton: React.FC<AudioButtonProps> = ({ audioPath, style }) => {
-  const handlePress = () => {
-    if (audioPath) {
-      playAudio(audioPath);
-    } else {
-      console.log('No audio path provided');
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePress = async () => {
+    if (isPlaying || !audioPath) return;
+    
+    setIsPlaying(true);
+    
+    try {
+      await playAudio(audioPath);
+    } finally {
+      setIsPlaying(false);
     }
   };
 
   return (
     <Button
       mode="contained"
-      icon="play-circle"
+      icon={isPlaying ? 'volume-high' : 'play-circle'}
       onPress={handlePress}
       style={[styles.button, style]}
       labelStyle={styles.label}
+      loading={isPlaying}
+      disabled={isPlaying || !audioPath}
     >
-      再生
+      {isPlaying ? '再生中...' : '音声'}
     </Button>
   );
 };
@@ -37,13 +46,13 @@ export default AudioButton;
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 24,
-    marginVertical: 8,
-    backgroundColor: '#FF5722',
+    borderRadius: borderRadius.round,
+    backgroundColor: colors.primary,
+    paddingVertical: 2,
   },
   label: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
-    color: '#fff',
+    color: colors.textLight,
   },
 });

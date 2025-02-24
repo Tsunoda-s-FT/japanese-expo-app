@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Alert, BackHandler, ScrollView } from 'react-native';
-import { Card, Title, Button, Text, ActivityIndicator, ProgressBar, RadioButton } from 'react-native-paper';
+import { Text, Card, RadioButton } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
@@ -9,7 +9,10 @@ import { getCourseById } from '../services/contentService';
 import { useProgress } from '../context/ProgressContext';
 import { Course, QuizQuestion } from '../types/contentTypes';
 import SegmentedText from '../components/SegmentedText';
-import { useTheme } from 'react-native-paper';
+import AppButton from '../components/ui/AppButton';
+import AppProgressBar from '../components/ui/AppProgressBar';
+import AppLoading from '../components/ui/AppLoading';
+import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 
 type CourseQuizScreenRouteProp = RouteProp<SessionStackParamList, 'CourseQuiz'>;
 type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
@@ -24,9 +27,7 @@ const CourseQuizScreen: React.FC = () => {
     addAnswerToQuizSession,
     finalizeQuizSession,
     abortQuizSession,
-    getQuizSessionById,
   } = useProgress();
-  const theme = useTheme();
 
   // コース情報 & 問題リスト
   const [course, setCourse] = useState<Course | null>(null);
@@ -62,7 +63,6 @@ const CourseQuizScreen: React.FC = () => {
             if (sessionId) {
               abortQuizSession(sessionId, currentIndex);
             }
-            // モーダル全体を閉じるために親ナビゲーションのgoBackを呼び出す
             navigation.getParent()?.goBack();
           },
         },
@@ -74,8 +74,6 @@ const CourseQuizScreen: React.FC = () => {
     const loadData = async () => {
       try {
         const courseData = await getCourseById(courseId);
-        console.log('[CourseQuizScreen] getCourseById result:', JSON.stringify(courseData, null, 2));
-
         if (!courseData) {
           console.error('Course not found:', courseId);
           setLoading(false);
@@ -86,9 +84,8 @@ const CourseQuizScreen: React.FC = () => {
         setQuestions(courseData.quizQuestions);
         setLoading(false);
 
-        // 新しいクイズセッションを作成（1回だけ）
+        // 新しいクイズセッションを作成
         const newSessionId = await createNewQuizSession(courseId);
-        console.log('[CourseQuizScreen] Created new quiz session:', newSessionId);
         setSessionId(newSessionId);
       } catch (error) {
         console.error('Error loading course data:', error);
@@ -104,18 +101,10 @@ const CourseQuizScreen: React.FC = () => {
     });
 
     return () => backHandler.remove();
-  }, [courseId, navigation]);
+  }, [courseId]);
 
-  /**
-   * 回答ボタンを押すと実行
-   */
   const handleAnswer = async () => {
     if (!questions[currentIndex] || !sessionId || selectedOption === null) {
-      console.log('Answer validation failed:', { // デバッグログ追加
-        hasQuestion: !!questions[currentIndex],
-        sessionId,
-        selectedOption,
-      });
       return;
     }
 
@@ -130,12 +119,6 @@ const CourseQuizScreen: React.FC = () => {
     setIsSubmitted(true);
 
     // 回答を記録
-    console.log('Recording answer:', { // デバッグログ追加
-      sessionId,
-      questionId: currentQuestion.id,
-      selectedOption,
-      correct,
-    });
     await addAnswerToQuizSession(
       sessionId,
       currentQuestion.id,
@@ -144,9 +127,6 @@ const CourseQuizScreen: React.FC = () => {
     );
   };
 
-  /**
-   * 次の問題へ進むボタンを押すと実行
-   */
   const handleNext = async () => {
     // 最後の問題だった場合
     if (currentIndex >= questions.length - 1) {
@@ -175,44 +155,10 @@ const CourseQuizScreen: React.FC = () => {
     setIsCorrect(null);
   };
 
-  const renderQuestionText = () => {
-    if (!questions[currentIndex] || !course) return null;
-
-    const currentQuestion = questions[currentIndex];
-    console.log('[CourseQuizScreen] currentQuestion:', currentQuestion);
-
-    const linkedPhrase = course.phrases.find(p => p.id === currentQuestion.linkedPhraseId);
-    console.log('[CourseQuizScreen] linkedPhrase =', JSON.stringify(linkedPhrase, null, 2));
-
-    if (!linkedPhrase) {
-      console.log('[CourseQuizScreen] No linkedPhrase found for', currentQuestion.linkedPhraseId);
-      return null;
-    }
-
-    console.log('[CourseQuizScreen] linkedPhrase.segments:', linkedPhrase.segments);
-
-    return (
-      <View style={styles.questionContainer}>
-        {linkedPhrase.segments && linkedPhrase.segments.length > 0 ? (
-          <SegmentedText segments={linkedPhrase.segments} />
-        ) : (
-          <Text style={styles.phraseText}>{linkedPhrase.jpText}</Text>
-        )}
-        <Text style={styles.questionText}>{currentQuestion.questionSuffixJp}</Text>
-      </View>
-    );
-  };
-
-  // ロード中の表示
   if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return <AppLoading message="クイズを準備中..." />;
   }
 
-  // 問題が無い場合の表示
   if (!course || questions.length === 0) {
     return (
       <View style={styles.errorContainer}>
@@ -227,57 +173,79 @@ const CourseQuizScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* プログレスバー */}
-      <ProgressBar progress={progress} color={theme.colors.primary} style={styles.progressBar} />
-      <Text style={styles.progressText}>
-        {currentIndex + 1} / {questions.length}
-      </Text>
+      {/* Header with progress */}
+      <View style={styles.headerContainer}>
+        <Text style={styles.questionCounter}>
+          質問 {currentIndex + 1} / {questions.length}
+        </Text>
+        <AppProgressBar progress={progress} height={8} />
+      </View>
 
       <ScrollView style={styles.scrollView}>
         <Card style={styles.card}>
           <Card.Content>
-            {/* リンクされたフレーズの文節表示 */}
+            {/* Question text and linked phrase */}
             {course && currentQuestion && (
               <View style={styles.questionContainer}>
-                {renderQuestionText()}
-                {/* 3. 選択肢 */}
+                {/* Linked phrase */}
+                {(() => {
+                  const linkedPhrase = course.phrases.find(p => p.id === currentQuestion.linkedPhraseId);
+                  if (!linkedPhrase) return null;
+
+                  return (
+                    <View style={styles.phraseContainer}>
+                      {linkedPhrase.segments && linkedPhrase.segments.length > 0 ? (
+                        <SegmentedText segments={linkedPhrase.segments} style={{}} />
+                      ) : (
+                        <Text style={styles.phraseText}>{linkedPhrase.jpText}</Text>
+                      )}
+                    </View>
+                  );
+                })()}
+
+                {/* Question text */}
+                <Text style={styles.questionText}>{currentQuestion.questionSuffixJp}</Text>
+
+                {/* Options */}
                 <RadioButton.Group
                   onValueChange={(value) => setSelectedOption(Number(value))}
                   value={selectedOption?.toString() || ''}
                 >
                   {currentQuestion.options.map((option, index) => (
-                    <RadioButton.Item
-                      key={index}
-                      label={option}
-                      value={index.toString()}
-                      disabled={isSubmitted}
+                    <View 
+                      key={index} 
                       style={[
                         styles.radioItem,
                         isSubmitted && index === currentQuestion.answerIndex && styles.correctAnswer,
                         isSubmitted && selectedOption === index && selectedOption !== currentQuestion.answerIndex && styles.wrongAnswer
                       ]}
-                      labelStyle={[
-                        styles.radioLabel,
-                        isSubmitted && index === currentQuestion.answerIndex && styles.correctAnswerText,
-                        isSubmitted && selectedOption === index && selectedOption !== currentQuestion.answerIndex && styles.wrongAnswerText
-                      ]}
-                    />
+                    >
+                      <RadioButton.Item
+                        label={option}
+                        value={index.toString()}
+                        disabled={isSubmitted}
+                        labelStyle={[
+                          styles.radioLabel,
+                          isSubmitted && index === currentQuestion.answerIndex && styles.correctAnswerText,
+                          isSubmitted && selectedOption === index && selectedOption !== currentQuestion.answerIndex && styles.wrongAnswerText
+                        ]}
+                      />
+                    </View>
                   ))}
                 </RadioButton.Group>
 
-                {/* 4. 回答/次へボタン */}
+                {/* Answer / Next button */}
                 {!isSubmitted ? (
-                  <Button
-                    mode="contained"
+                  <AppButton
+                    label="回答する"
                     onPress={handleAnswer}
                     disabled={selectedOption === null}
+                    variant="primary"
                     style={styles.actionButton}
-                  >
-                    回答する
-                  </Button>
+                  />
                 ) : (
                   <>
-                    {/* 5. 解説 */}
+                    {/* Explanation */}
                     <View style={styles.explanationContainer}>
                       <Text style={[
                         styles.resultText,
@@ -289,13 +257,13 @@ const CourseQuizScreen: React.FC = () => {
                         {currentQuestion.explanation}
                       </Text>
                     </View>
-                    <Button
-                      mode="contained"
+                    <AppButton
+                      label={currentIndex < questions.length - 1 ? '次へ' : '結果を見る'}
                       onPress={handleNext}
+                      variant="primary"
+                      icon="arrow-right"
                       style={styles.actionButton}
-                    >
-                      {currentIndex < questions.length - 1 ? '次へ' : '結果を見る'}
-                    </Button>
+                    />
                   </>
                 )}
               </View>
@@ -307,102 +275,117 @@ const CourseQuizScreen: React.FC = () => {
   );
 };
 
-export default CourseQuizScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
   },
-  progressBar: {
-    marginVertical: 8,
+  headerContainer: {
+    padding: spacing.md,
+    backgroundColor: colors.surface,
+    elevation: 2,
   },
-  progressText: {
+  questionCounter: {
     textAlign: 'center',
-    marginBottom: 16,
-    color: '#666',
+    fontSize: 16,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
   },
   scrollView: {
     flex: 1,
-    padding: 16,
+    padding: spacing.md,
   },
   card: {
-    marginBottom: 16,
+    marginBottom: spacing.md,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
+    ...shadows.medium,
   },
   questionContainer: {
-    marginBottom: 16,
+    padding: spacing.sm,
+  },
+  phraseContainer: {
+    alignItems: 'center',
+    backgroundColor: colors.background,
+    padding: spacing.md,
+    borderRadius: borderRadius.md,
+    marginBottom: spacing.md,
   },
   phraseText: {
     fontSize: 20,
     fontWeight: '600',
     textAlign: 'center',
-    marginBottom: 8,
   },
   questionText: {
     fontSize: 18,
-    color: '#666',
+    color: colors.textSecondary,
     textAlign: 'center',
-    marginTop: 8,
+    marginBottom: spacing.lg,
   },
   radioItem: {
     marginVertical: 4,
-    borderRadius: 8,
+    borderRadius: borderRadius.md,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginBottom: spacing.sm,
   },
   radioLabel: {
     fontSize: 16,
+    color: colors.text,
   },
   correctAnswer: {
     backgroundColor: '#E8F5E9',
+    borderColor: colors.success,
   },
   wrongAnswer: {
     backgroundColor: '#FFEBEE',
+    borderColor: colors.error,
   },
   correctAnswerText: {
-    color: '#2E7D32',
+    color: colors.success,
   },
   wrongAnswerText: {
-    color: '#C62828',
+    color: colors.error,
   },
   actionButton: {
-    marginTop: 24,
+    marginTop: spacing.lg,
   },
   explanationContainer: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
+    marginTop: spacing.md,
+    padding: spacing.md,
+    backgroundColor: colors.background,
+    borderRadius: borderRadius.md,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.accent,
   },
   resultText: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: spacing.sm,
   },
   correctText: {
-    color: '#2E7D32',
+    color: colors.success,
   },
   incorrectText: {
-    color: '#C62828',
+    color: colors.error,
   },
   explanationText: {
     fontSize: 16,
     lineHeight: 24,
-    color: '#333',
-  },
-  errorText: {
-    color: '#C62828',
-    textAlign: 'center',
-    fontSize: 16,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    color: colors.text,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    padding: spacing.md,
+  },
+  errorText: {
+    color: colors.error,
+    fontSize: 16,
   },
 });
+
+export default CourseQuizScreen;

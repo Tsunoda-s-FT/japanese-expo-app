@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, ActivityIndicator, Text } from 'react-native-paper';
 import { evaluatePronunciationMock, PronunciationEvaluationResult } from '../services/speechService';
+import { colors, spacing, borderRadius } from '../theme/theme';
 
 export interface RecordingButtonProps {
   phraseId?: string;
@@ -59,32 +60,36 @@ const RecordingButton: React.FC<RecordingButtonProps> = ({
 
       {isEvaluating && (
         <View style={styles.loadingRow}>
-          <ActivityIndicator size="small" />
-          <Text>発音を評価しています...</Text>
+          <ActivityIndicator size="small" color={colors.primary} />
+          <Text style={styles.loadingText}>発音を評価しています...</Text>
         </View>
       )}
     </View>
   );
 };
 
-export default RecordingButton;
-
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8,
+    marginVertical: spacing.sm,
   },
   button: {
-    borderRadius: 24,
-    backgroundColor: '#2196F3',
+    borderRadius: borderRadius.round,
+    backgroundColor: colors.info,
   },
   recording: {
-    backgroundColor: '#F44336',
+    backgroundColor: colors.error,
   },
   loadingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    marginVertical: 8,
+    marginTop: spacing.sm,
+  },
+  loadingText: {
+    fontSize: 14,
+    color: colors.textSecondary,
   },
 });
+
+export default RecordingButton;

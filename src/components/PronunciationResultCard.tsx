@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, ProgressBar } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { PronunciationEvaluationResult } from '../services/speechService';
+import AppProgressBar from './ui/AppProgressBar';
+import { colors, spacing, borderRadius } from '../theme/theme';
 
 interface Props {
   result: PronunciationEvaluationResult;
@@ -20,113 +22,155 @@ const PronunciationResultCard: React.FC<Props> = ({ result }) => {
     feedback,
   } = result;
 
+  // ランクに応じた色を取得
+  const getScoreColor = (score: number): string => {
+    if (score >= 90) return colors.success;
+    if (score >= 70) return colors.accent;
+    if (score >= 50) return colors.warning;
+    return colors.error;
+  };
+
   return (
     <View style={styles.container}>
       {/* 総合スコア */}
       <Text style={styles.totalScoreLabel}>総合スコア</Text>
       <View style={styles.totalScoreContainer}>
-        <Text style={styles.totalScore}>{pronScore}</Text>
+        <Text style={[styles.totalScore, { color: getScoreColor(pronScore) }]}>
+          {pronScore}
+        </Text>
         <Text style={styles.maxScore}>/ 100</Text>
       </View>
 
-      {/* 正確さ */}
-      <View style={styles.scoreItem}>
-        <Text style={styles.label}>正確さ</Text>
-        <ProgressBar progress={accuracyScore / 100} style={styles.progress} />
-        <Text style={styles.value}>{accuracyScore} / 100</Text>
-      </View>
-      {/* なめらかさ */}
-      <View style={styles.scoreItem}>
-        <Text style={styles.label}>なめらかさ</Text>
-        <ProgressBar progress={fluencyScore / 100} style={styles.progress} />
-        <Text style={styles.value}>{fluencyScore} / 100</Text>
-      </View>
-      {/* 言い切り度 */}
-      <View style={styles.scoreItem}>
-        <Text style={styles.label}>言い切り度</Text>
-        <ProgressBar progress={completenessScore / 100} style={styles.progress} />
-        <Text style={styles.value}>{completenessScore} / 100</Text>
-      </View>
-      {/* 抑揚 */}
-      <View style={styles.scoreItem}>
-        <Text style={styles.label}>抑揚</Text>
-        <ProgressBar progress={prosodyScore / 100} style={styles.progress} />
-        <Text style={styles.value}>{prosodyScore} / 100</Text>
+      {/* 評価項目のスコア */}
+      <View style={styles.scoreItemsContainer}>
+        <AppProgressBar
+          progress={accuracyScore / 100}
+          label="正確さ"
+          showPercentage={true}
+          color={getScoreColor(accuracyScore)}
+        />
+        <AppProgressBar
+          progress={fluencyScore / 100}
+          label="なめらかさ"
+          showPercentage={true}
+          color={getScoreColor(fluencyScore)}
+        />
+        <AppProgressBar
+          progress={completenessScore / 100}
+          label="言い切り度"
+          showPercentage={true}
+          color={getScoreColor(completenessScore)}
+        />
+        <AppProgressBar
+          progress={prosodyScore / 100}
+          label="抑揚"
+          showPercentage={true}
+          color={getScoreColor(prosodyScore)}
+        />
       </View>
 
       {/* エラー集計 */}
-      <Text style={styles.errorSummary}>
-        誤った発音: {mispronunciationCount}{'  '}
-        省略: {omissionCount}{'  '}
-        挿入: {insertionCount}
-      </Text>
+      <View style={styles.errorSummaryContainer}>
+        <Text style={styles.errorSummaryTitle}>発音エラー</Text>
+        <View style={styles.errorItemsRow}>
+          <View style={styles.errorItem}>
+            <Text style={styles.errorValue}>{mispronunciationCount}</Text>
+            <Text style={styles.errorLabel}>誤った発音</Text>
+          </View>
+          <View style={styles.errorItem}>
+            <Text style={styles.errorValue}>{omissionCount}</Text>
+            <Text style={styles.errorLabel}>省略</Text>
+          </View>
+          <View style={styles.errorItem}>
+            <Text style={styles.errorValue}>{insertionCount}</Text>
+            <Text style={styles.errorLabel}>挿入</Text>
+          </View>
+        </View>
+      </View>
 
       {/* 一言フィードバック */}
-      <Text style={styles.feedbackText}>
-        {feedback}
-      </Text>
+      <View style={styles.feedbackContainer}>
+        <Text style={styles.feedbackText}>
+          {feedback}
+        </Text>
+      </View>
     </View>
   );
 };
 
-export default PronunciationResultCard;
-
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
     width: '100%',
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
   },
   totalScoreLabel: {
     fontSize: 16,
     textAlign: 'center',
-    marginBottom: 8,
-    color: '#666',
+    marginBottom: spacing.sm,
+    color: colors.textSecondary,
   },
   totalScoreContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'baseline',
-    marginBottom: 16,
+    marginBottom: spacing.md,
   },
   totalScore: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#3F51B5',
   },
   maxScore: {
     fontSize: 18,
     marginLeft: 4,
-    color: '#666',
+    color: colors.textSecondary,
   },
-  scoreItem: {
-    marginBottom: 12,
+  scoreItemsContainer: {
+    marginBottom: spacing.md,
   },
-  label: {
+  errorSummaryContainer: {
+    marginTop: spacing.md,
+    marginBottom: spacing.md,
+    padding: spacing.sm,
+    backgroundColor: colors.background,
+    borderRadius: borderRadius.md,
+  },
+  errorSummaryTitle: {
     fontSize: 14,
-    marginBottom: 4,
-    color: '#555',
-  },
-  progress: {
-    height: 6,
-    borderRadius: 3,
-  },
-  value: {
-    fontSize: 14,
-    textAlign: 'right',
-    marginTop: 2,
-    color: '#444',
-  },
-  errorSummary: {
-    marginTop: 16,
-    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
     textAlign: 'center',
-    color: '#888',
+  },
+  errorItemsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  errorItem: {
+    alignItems: 'center',
+  },
+  errorValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.error,
+  },
+  errorLabel: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+  feedbackContainer: {
+    backgroundColor: '#FFF8E1',
+    padding: spacing.md,
+    borderRadius: borderRadius.md,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.accent,
   },
   feedbackText: {
-    marginTop: 16,
     fontSize: 16,
-    color: '#333',
-    fontWeight: '600',
+    color: colors.text,
+    fontWeight: '500',
     textAlign: 'center',
   },
 });
+
+export default PronunciationResultCard;

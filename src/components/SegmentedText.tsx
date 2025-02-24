@@ -2,22 +2,29 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, StyleProp, ViewStyle, TextStyle } from 'react-native';
+import { colors, spacing, borderRadius } from '../theme/theme';
 
-// Segmentの型定義(既存の contentTypes と整合するならそちらをimportしてもOK)
+// Segmentの型定義
 export interface Segment {
   jpText: string;
   reading?: string;
   partOfSpeech?: string;
 }
 
-// コンポーネント用のPropsに style?: StyleProp<ViewStyle> を追加
+// コンポーネント用のProps
 export interface SegmentedTextProps {
   segments: Segment[];
   style?: StyleProp<ViewStyle>;
   furiganaStyle?: StyleProp<TextStyle>;
+  showPartOfSpeech?: boolean;
 }
 
-const SegmentedText: React.FC<SegmentedTextProps> = ({ segments, style, furiganaStyle }) => {
+const SegmentedText: React.FC<SegmentedTextProps> = ({
+  segments,
+  style,
+  furiganaStyle,
+  showPartOfSpeech = false,
+}) => {
   if (!segments || segments.length === 0) {
     return null;
   }
@@ -26,25 +33,36 @@ const SegmentedText: React.FC<SegmentedTextProps> = ({ segments, style, furigana
     <View style={[styles.container, style]}>
       {segments.map((seg, index) => (
         <View key={index} style={[styles.segmentBox, getStyleByPartOfSpeech(seg.partOfSpeech)]}>
-          <Text style={[styles.reading, furiganaStyle]}>{seg.reading}</Text>
+          {seg.reading && (
+            <Text style={[styles.reading, furiganaStyle]}>{seg.reading}</Text>
+          )}
           <Text style={styles.jpText}>{seg.jpText}</Text>
+          {showPartOfSpeech && seg.partOfSpeech && (
+            <Text style={styles.partOfSpeech}>{seg.partOfSpeech}</Text>
+          )}
         </View>
       ))}
     </View>
   );
 };
 
-// パートオブスピーチによって色分けする例 (必要に応じてカスタマイズ)
+// パートオブスピーチによって色分けする関数
 function getStyleByPartOfSpeech(pos?: string) {
   switch (pos) {
     case 'expression':
-      return { backgroundColor: '#C8E6C9' };
+      return { backgroundColor: '#E8F5E9' }; // 薄い緑
     case 'verb':
-      return { backgroundColor: '#FFE0B2' };
+      return { backgroundColor: '#FFF3E0' }; // 薄いオレンジ
     case 'noun':
-      return { backgroundColor: '#BBDEFB' };
+      return { backgroundColor: '#E3F2FD' }; // 薄い青
+    case 'adverb':
+      return { backgroundColor: '#FFFDE7' }; // 薄い黄色
+    case 'particle':
+      return { backgroundColor: '#E0F7FA' }; // 薄い水色
+    case 'politeSuffix':
+      return { backgroundColor: '#F3E5F5' }; // 薄い紫
     default:
-      return { backgroundColor: '#F5F5F5' };
+      return { backgroundColor: '#F5F5F5' }; // デフォルトはグレー
   }
 }
 
@@ -52,23 +70,33 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   segmentBox: {
     margin: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 6,
-    borderRadius: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: borderRadius.md,
+    alignItems: 'center',
   },
   reading: {
     fontSize: 12,
-    color: '#555',
+    color: colors.textSecondary,
     textAlign: 'center',
+    marginBottom: 2,
   },
   jpText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
-    color: '#333',
+    color: colors.text,
+  },
+  partOfSpeech: {
+    fontSize: 10,
+    color: colors.textSecondary,
+    marginTop: 4,
+    textAlign: 'center',
   },
 });
 

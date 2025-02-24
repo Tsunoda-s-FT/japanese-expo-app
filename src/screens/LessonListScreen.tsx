@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Card, Title, Paragraph, ActivityIndicator, Button } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, Image } from 'react-native';
+import { Text, Title } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getAllLessons } from '../services/contentService';
+import { useLanguage } from '../context/LanguageContext';
+import AppCard from '../components/ui/AppCard';
+import AppLoading from '../components/ui/AppLoading';
+import { colors, spacing } from '../theme/theme';
+import { commonStyles } from '../theme/styles';
 
 // 画像のマッピング
 const lessonImages: { [key: string]: any } = {
@@ -28,6 +33,7 @@ type LessonListNavigationProp = NativeStackNavigationProp<MainStackParamList, 'L
 
 const LessonListScreen: React.FC = () => {
   const navigation = useNavigation<LessonListNavigationProp>();
+  const { translations } = useLanguage();
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -51,44 +57,40 @@ const LessonListScreen: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return <AppLoading message="レッスンを読み込み中..." />;
   }
 
   if (!lessons || lessons.length === 0) {
     return (
-      <View style={styles.errorContainer}>
-        <Paragraph>レッスン情報がありません。</Paragraph>
+      <View style={commonStyles.centeredContent}>
+        <Text>レッスンが見つかりません。</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <Title style={styles.header}>レッスン一覧</Title>
+
       {lessons.map((lesson) => (
-        <Card
+        <AppCard
           key={lesson.id}
-          style={styles.card}
           onPress={() => handleLessonPress(lesson.id)}
         >
           {lesson.thumbnail && (
-            <Card.Cover 
+            <Image
               source={getImageSource(lesson.thumbnail) || { uri: 'https://placehold.co/600x400/png' }}
-              style={styles.cardCover}
+              style={styles.thumbnail}
             />
           )}
-          <Card.Content>
-            <Title>{lesson.title}</Title>
-            <Paragraph style={styles.description}>{lesson.description}</Paragraph>
-            <Paragraph style={styles.meta}>
+          <View style={styles.cardContent}>
+            <Text style={styles.title}>{lesson.title}</Text>
+            <Text style={styles.description}>{lesson.description}</Text>
+            <Text style={styles.meta}>
               所要時間: {lesson.totalEstimatedTime} • コース数: {lesson.courses.length}
-            </Paragraph>
-          </Card.Content>
-        </Card>
+            </Text>
+          </View>
+        </AppCard>
       ))}
     </ScrollView>
   );
@@ -97,39 +99,43 @@ const LessonListScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 16,
+    backgroundColor: colors.background,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorContainer: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 16,
+  contentContainer: {
+    padding: spacing.md,
   },
   header: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: spacing.lg,
+    color: colors.text,
     textAlign: 'center',
   },
-  card: {
-    marginBottom: 16,
+  thumbnail: {
+    width: '100%',
+    height: 160,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    resizeMode: 'cover',
+    marginBottom: spacing.sm,
   },
-  cardCover: {
-    height: 200,
-    backgroundColor: '#f8f8f8',
+  cardContent: {
+    padding: spacing.sm,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: spacing.xs,
   },
   description: {
-    marginTop: 8,
-    color: '#666',
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
   },
   meta: {
-    marginTop: 8,
     fontSize: 12,
-    color: '#888',
+    color: colors.textSecondary,
   },
 });
 
