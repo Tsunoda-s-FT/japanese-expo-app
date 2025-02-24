@@ -1,12 +1,16 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Text, Card, Title, Paragraph, Divider } from 'react-native-paper';
+import { Text, Title, Divider, Paragraph } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { useProgress } from '../context/ProgressContext';
 import { getCourseById } from '../services/contentService';
 import { QuizQuestion } from '../types/contentTypes';
+import AppCard from '../components/ui/AppCard';
+import { colors, spacing, borderRadius, shadows } from '../theme/theme';
+import { commonStyles } from '../theme/styles';
+import { formatJapaneseDate } from '../utils/formatUtils';
 
 type QuizHistoryDetailRouteProp = RouteProp<MainStackParamList, 'QuizHistoryDetail'>;
 
@@ -18,7 +22,7 @@ const QuizHistoryDetailScreen: React.FC = () => {
   const session = getQuizSessionById(sessionId);
   if (!session) {
     return (
-      <View style={styles.notFoundContainer}>
+      <View style={[commonStyles.centeredContent, styles.notFoundContainer]}>
         <Text style={styles.notFoundText}>履歴が見つかりませんでした。</Text>
       </View>
     );
@@ -28,21 +32,25 @@ const QuizHistoryDetailScreen: React.FC = () => {
   const course = getCourseById(session.courseId);
   const courseTitle = course?.title || '不明なコース';
   const scorePercent = session.totalCount ? Math.round((session.correctCount / session.totalCount) * 100) : 0;
-  const dateLabel = new Date(session.date).toLocaleString('ja-JP');
+
+  // スコアに基づいて色を決定する関数
+  const getScoreColor = (percentage: number): string => {
+    if (percentage >= 80) return colors.success;
+    if (percentage >= 60) return colors.accent;
+    return colors.error;
+  };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[commonStyles.container, styles.container]}>
       {/* 履歴全体の情報 */}
-      <Card style={styles.card}>
-        <Card.Content>
-          <Title style={styles.title}>履歴詳細</Title>
-          <Text style={styles.date}>{dateLabel}</Text>
-          <Paragraph style={styles.course}>コース: {courseTitle}</Paragraph>
-          <Paragraph style={styles.score}>
-            スコア: {session.correctCount}/{session.totalCount} ({scorePercent}%)
-          </Paragraph>
-        </Card.Content>
-      </Card>
+      <AppCard style={styles.card}>
+        <Title style={styles.title}>履歴詳細</Title>
+        <Text style={styles.date}>{formatJapaneseDate(new Date(session.date), true)}</Text>
+        <Paragraph style={styles.course}>コース: {courseTitle}</Paragraph>
+        <Paragraph style={[styles.score, { color: getScoreColor(scorePercent) }]}>
+          スコア: {session.correctCount}/{session.totalCount} ({scorePercent}%)
+        </Paragraph>
+      </AppCard>
 
       <Divider style={styles.divider} />
 
@@ -73,55 +81,53 @@ const QuizHistoryDetailScreen: React.FC = () => {
           : '不明';
 
         return (
-          <Card key={idx} style={styles.answerCard}>
-            <Card.Content>
-              {/* 問題番号と正誤 */}
-              <Text style={styles.answerHeader}>
-                問題 {idx + 1}: {answer.isCorrect ? '○' : '×'}
-              </Text>
+          <AppCard key={idx} style={styles.answerCard}>
+            {/* 問題番号と正誤 */}
+            <Text style={styles.answerHeader}>
+              問題 {idx + 1}: {answer.isCorrect ? '○' : '×'}
+            </Text>
 
-              {/* 問題文 */}
-              <Paragraph style={styles.questionText}>
-                {questionText}
-              </Paragraph>
+            {/* 問題文 */}
+            <Paragraph style={styles.questionText}>
+              {questionText}
+            </Paragraph>
 
-              {/* 選択肢と結果 */}
-              <Text style={[
-                styles.answerResult,
-                answer.isCorrect ? styles.correct : styles.incorrect
-              ]}>
-                {answer.isCorrect ? '正解' : '不正解'}
-              </Text>
+            {/* 選択肢と結果 */}
+            <Text style={[
+              styles.answerResult,
+              answer.isCorrect ? styles.correct : styles.incorrect
+            ]}>
+              {answer.isCorrect ? '正解' : '不正解'}
+            </Text>
 
-              {/* 選択肢一覧 */}
-              <View style={styles.optionsContainer}>
-                {options.map((option, optionIdx) => (
-                  <Text
-                    key={optionIdx}
-                    style={[
-                      styles.optionText,
-                      optionIdx === answer.selectedOptionIndex && styles.selectedOption,
-                      optionIdx === correctOptionIndex && styles.correctOption,
-                    ]}
-                  >
-                    {optionIdx + 1}. {option}
-                    {optionIdx === answer.selectedOptionIndex && ' ← あなたの回答'}
-                    {optionIdx === correctOptionIndex && ' ★ 正解'}
-                  </Text>
-                ))}
+            {/* 選択肢一覧 */}
+            <View style={styles.optionsContainer}>
+              {options.map((option, optionIdx) => (
+                <Text
+                  key={optionIdx}
+                  style={[
+                    styles.optionText,
+                    optionIdx === answer.selectedOptionIndex && styles.selectedOption,
+                    optionIdx === correctOptionIndex && styles.correctOption,
+                  ]}
+                >
+                  {optionIdx + 1}. {option}
+                  {optionIdx === answer.selectedOptionIndex && ' ← あなたの回答'}
+                  {optionIdx === correctOptionIndex && ' ★ 正解'}
+                </Text>
+              ))}
+            </View>
+
+            {/* 解説 */}
+            {explanation && (
+              <View style={styles.explanationContainer}>
+                <Text style={styles.explanationHeader}>解説:</Text>
+                <Paragraph style={styles.explanationText}>
+                  {explanation}
+                </Paragraph>
               </View>
-
-              {/* 解説 */}
-              {explanation && (
-                <View style={styles.explanationContainer}>
-                  <Text style={styles.explanationHeader}>解説:</Text>
-                  <Paragraph style={styles.explanationText}>
-                    {explanation}
-                  </Paragraph>
-                </View>
-              )}
-            </Card.Content>
-          </Card>
+            )}
+          </AppCard>
         );
       })}
     </ScrollView>
@@ -130,105 +136,103 @@ const QuizHistoryDetailScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
+    padding: spacing.md,
   },
   notFoundContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
+    padding: spacing.md,
   },
   notFoundText: {
-    color: '#666',
+    color: colors.textSecondary,
     fontSize: 16,
   },
   card: {
-    marginBottom: 16,
-    borderRadius: 8,
+    marginBottom: spacing.md,
+    ...shadows.medium,
   },
   title: {
     fontSize: 20,
-    marginBottom: 6,
+    marginBottom: spacing.xs,
+    color: colors.text,
   },
   date: {
-    color: '#999',
-    marginBottom: 8,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
   },
   course: {
-    marginBottom: 4,
-    color: '#444',
+    marginBottom: spacing.xs,
+    color: colors.text,
   },
   score: {
-    marginBottom: 8,
-    color: '#444',
+    marginBottom: spacing.sm,
+    fontWeight: 'bold',
   },
   divider: {
-    marginVertical: 16,
+    marginVertical: spacing.md,
   },
   answersHeader: {
     fontSize: 18,
-    marginBottom: 8,
+    marginBottom: spacing.sm,
+    color: colors.text,
   },
   answerCard: {
-    marginBottom: 12,
-    borderRadius: 8,
+    marginBottom: spacing.md,
+    ...shadows.medium,
   },
   answerHeader: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: spacing.sm,
+    color: colors.text,
   },
   questionText: {
     fontSize: 15,
-    color: '#333',
-    marginBottom: 12,
+    color: colors.text,
+    marginBottom: spacing.md,
   },
   answerResult: {
-    marginBottom: 8,
+    marginBottom: spacing.sm,
     fontWeight: 'bold',
     fontSize: 15,
   },
   correct: {
-    color: '#4CAF50',
+    color: colors.success,
   },
   incorrect: {
-    color: '#F44336',
+    color: colors.error,
   },
   optionsContainer: {
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   optionText: {
     fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    color: colors.textSecondary,
+    marginBottom: spacing.xs,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
   },
   selectedOption: {
     backgroundColor: '#FFF3E0',
-    borderRadius: 4,
+    borderRadius: borderRadius.sm,
   },
   correctOption: {
     backgroundColor: '#E8F5E9',
-    borderRadius: 4,
+    borderRadius: borderRadius.sm,
   },
   explanationContainer: {
-    marginTop: 8,
-    backgroundColor: '#F5F5F5',
-    padding: 12,
-    borderRadius: 4,
+    marginTop: spacing.sm,
+    backgroundColor: colors.background,
+    padding: spacing.md,
+    borderRadius: borderRadius.md,
   },
   explanationHeader: {
     fontSize: 14,
     fontWeight: 'bold',
-    marginBottom: 4,
-    color: '#666',
+    marginBottom: spacing.xs,
+    color: colors.textSecondary,
   },
   explanationText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.text,
   },
 });
 

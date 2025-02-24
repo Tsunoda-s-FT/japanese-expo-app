@@ -1,11 +1,16 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { Text, Title } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { useProgress } from '../context/ProgressContext';
+import AppCard from '../components/ui/AppCard';
+import AppButton from '../components/ui/AppButton';
+import { colors, spacing, borderRadius, shadows } from '../theme/theme';
+import { commonStyles } from '../theme/styles';
+import { FadeInView, SlideInView } from '../components/animations';
 
 type QuizResultScreenRouteProp = RouteProp<SessionStackParamList, 'QuizResult'>;
 type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
@@ -16,6 +21,13 @@ const QuizResultScreen: React.FC = () => {
   const { correctCount, totalCount, courseId } = route.params;
 
   const percentage = Math.round((correctCount / totalCount) * 100);
+
+  // 結果に基づいて色を決定
+  const getResultColor = () => {
+    if (percentage >= 80) return colors.success;
+    if (percentage >= 60) return colors.accent;
+    return colors.error;
+  };
 
   const handleRetry = () => {
     if (!courseId) {
@@ -35,101 +47,105 @@ const QuizResultScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Title style={styles.title}>クイズ結果</Title>
-          <View style={styles.resultContainer}>
-            <Text style={styles.score}>
-              {correctCount} / {totalCount}
-            </Text>
-            <Text style={styles.percentage}>
-              正解率: {percentage}%
-            </Text>
-          </View>
-          <View style={styles.messageContainer}>
-            <Text style={styles.message}>
-              {percentage >= 80
-                ? 'おめでとうございます！素晴らしい成績です！'
-                : percentage >= 60
-                ? 'よく頑張りました！もう少し練習しましょう。'
-                : 'もう一度復習して挑戦してみましょう。'}
-            </Text>
-          </View>
-        </Card.Content>
-      </Card>
+    <View style={[commonStyles.screenContainer, styles.container]}>
+      <FadeInView duration={800}>
+        <AppCard style={styles.card}>
+          <SlideInView direction="top" duration={600} delay={300}>
+            <Title style={styles.title}>クイズ結果</Title>
+          </SlideInView>
+          
+          <SlideInView direction="left" duration={600} delay={600}>
+            <View style={styles.resultContainer}>
+              <Text style={[styles.score, { color: getResultColor() }]}>
+                {correctCount} / {totalCount}
+              </Text>
+              <Text style={styles.percentage}>
+                正解率: {percentage}%
+              </Text>
+            </View>
+          </SlideInView>
+          
+          <FadeInView duration={800} delay={900}>
+            <View style={styles.messageContainer}>
+              <Text style={[styles.message, { color: getResultColor() }]}>
+                {percentage >= 80
+                  ? 'おめでとうございます！素晴らしい成績です！'
+                  : percentage >= 60
+                  ? 'よく頑張りました！もう少し練習しましょう。'
+                  : 'もう一度復習して挑戦してみましょう。'}
+              </Text>
+            </View>
+          </FadeInView>
+        </AppCard>
+      </FadeInView>
 
-      <View style={styles.buttonContainer}>
-        <Button
-          mode="contained"
-          onPress={handleExit}
-          style={[styles.button, styles.exitButton]}
-        >
-          セッションを終了
-        </Button>
-        {courseId && (
-          <Button
-            mode="contained"
-            onPress={handleRetry}
-            style={[styles.button, styles.retryButton]}
-          >
-            もう一度挑戦
-          </Button>
-        )}
-      </View>
+      <SlideInView direction="bottom" duration={600} delay={1200}>
+        <View style={styles.buttonContainer}>
+          <AppButton
+            label="セッションを終了"
+            onPress={handleExit}
+            variant="primary"
+            style={styles.button}
+            icon="exit-to-app"
+          />
+          {courseId && (
+            <AppButton
+              label="もう一度挑戦"
+              onPress={handleRetry}
+              variant="secondary"
+              style={styles.button}
+              icon="refresh"
+            />
+          )}
+        </View>
+      </SlideInView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
   },
   card: {
-    marginBottom: 24,
+    marginBottom: spacing.lg,
+    ...shadows.medium,
   },
   title: {
     textAlign: 'center',
     fontSize: 24,
-    marginBottom: 16,
+    marginBottom: spacing.md,
+    color: colors.text,
   },
   resultContainer: {
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: spacing.md,
   },
   score: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#2196F3',
   },
   percentage: {
     fontSize: 20,
-    color: '#666',
-    marginTop: 8,
+    color: colors.textSecondary,
+    marginTop: spacing.xs,
   },
   messageContainer: {
-    padding: 16,
-    backgroundColor: '#e3f2fd',
-    borderRadius: 8,
+    padding: spacing.md,
+    backgroundColor: colors.background,
+    borderRadius: borderRadius.md,
+    marginTop: spacing.sm,
   },
   message: {
     fontSize: 16,
     textAlign: 'center',
-    color: '#1976d2',
+    fontWeight: '500',
   },
   buttonContainer: {
-    gap: 16,
+    gap: spacing.md,
   },
   button: {
-    paddingVertical: 8,
-  },
-  exitButton: {
-    backgroundColor: '#f44336',
-  },
-  retryButton: {
-    backgroundColor: '#2196F3',
+    marginBottom: spacing.sm,
   },
 });
 
