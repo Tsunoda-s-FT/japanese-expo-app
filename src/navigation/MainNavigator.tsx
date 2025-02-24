@@ -6,6 +6,7 @@ import CourseListScreen from '../screens/CourseListScreen';
 import CourseDetailScreen from '../screens/CourseDetailScreen';
 import QuizHistoryScreen from '../screens/QuizHistoryScreen';
 import QuizHistoryDetailScreen from '../screens/QuizHistoryDetailScreen';
+import { useLanguage } from '../context/LanguageContext';
 
 export type MainStackParamList = {
   LessonList: undefined;
@@ -19,6 +20,17 @@ export type MainStackParamList = {
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
 const MainNavigator: React.FC = () => {
+  const { language } = useLanguage();
+
+  const screenTitles = {
+    lessonList: language === 'ja' ? 'レッスン一覧' : 'Lessons',
+    lessonDetail: language === 'ja' ? 'レッスン詳細' : 'Lesson Details',
+    courseList: language === 'ja' ? 'コース一覧' : 'Courses',
+    courseDetail: language === 'ja' ? 'コース詳細' : 'Course Details',
+    quizHistory: language === 'ja' ? 'クイズ履歴' : 'Quiz History',
+    quizHistoryDetail: language === 'ja' ? '履歴詳細' : 'History Details',
+  };
+
   return (
     <MainStack.Navigator
       initialRouteName="LessonList"
@@ -31,32 +43,32 @@ const MainNavigator: React.FC = () => {
       <MainStack.Screen
         name="LessonList"
         component={LessonListScreen}
-        options={{ title: 'レッスン一覧' }}
+        options={{ title: screenTitles.lessonList }}
       />
       <MainStack.Screen
         name="LessonDetail"
         component={LessonDetailScreen}
-        options={{ title: 'レッスン詳細' }}
+        options={{ title: screenTitles.lessonDetail }}
       />
       <MainStack.Screen
         name="CourseList"
         component={CourseListScreen}
-        options={{ title: 'コース一覧' }}
+        options={{ title: screenTitles.courseList }}
       />
       <MainStack.Screen
         name="CourseDetail"
         component={CourseDetailScreen}
-        options={{ title: 'コース詳細' }}
+        options={{ title: screenTitles.courseDetail }}
       />
       <MainStack.Screen
         name="QuizHistory"
         component={QuizHistoryScreen}
-        options={{ title: 'クイズ履歴' }}
+        options={{ title: screenTitles.quizHistory }}
       />
       <MainStack.Screen
         name="QuizHistoryDetail"
         component={QuizHistoryDetailScreen}
-        options={{ title: '履歴詳細' }}
+        options={{ title: screenTitles.quizHistoryDetail }}
       />
     </MainStack.Navigator>
   );

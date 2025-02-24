@@ -1,5 +1,6 @@
 import { Content, Course, Lesson, Phrase, QuizQuestion } from '../types/contentTypes';
 import rawData from '../../assets/data/content.json';
+import { useLanguage } from '../context/LanguageContext';
 
 /** content.json の構造に合わせて変換 */
 function transformContent(data: any): Content {
@@ -58,26 +59,144 @@ function transformContent(data: any): Content {
 // 変換後のデータをメモリに保持
 const content: Content = transformContent(rawData);
 
-/** 全レッスンを返す */
-export function getAllLessons(): Lesson[] {
-  return content.lessons;
+// 英語翻訳タイトルとディスクリプションのマッピング
+// 本来はcontent.jsonに直接組み込むべきですが、工数削減のため、ハードコーディングします
+const contentTranslations: Record<string, { title: string; description: string }> = {
+  // レッスン翻訳
+  'lesson_greetings': {
+    title: 'Greetings',
+    description: 'Basic greeting expressions for N5 level'
+  },
+  'lesson_business': {
+    title: 'Business Manners',
+    description: 'Honorific expressions and interactions for N4 level'
+  },
+  'lesson_restaurant': {
+    title: 'Restaurant',
+    description: 'Learn basic expressions used in restaurants and deepen your understanding with quizzes'
+  },
+  
+  // コース翻訳
+  'course_greetings_new': {
+    title: 'Greetings (Redesigned)',
+    description: 'Learn basic greetings and confirm their meanings with quizzes'
+  },
+  'course_business_new': {
+    title: 'Business Expressions (Redesigned)',
+    description: 'Honorific phrases and quizzes commonly used in the workplace'
+  },
+  'course_restaurant_expressions': {
+    title: 'Restaurant Expressions',
+    description: 'Learn phrases needed for conversations in restaurants and confirm with quizzes'
+  }
+};
+
+// 現在の言語に基づいてタイトルとディスクリプションを取得する関数
+function getLocalizedContent(id: string, language: string): { title: string; description: string } | null {
+  if (language === 'ja' || !contentTranslations[id]) {
+    return null; // 日本語はオリジナルのまま使用
+  }
+  return contentTranslations[id];
 }
 
-/** lessonId からレッスンを取得 */
-export function getLessonById(lessonId: string): Lesson | undefined {
-  return content.lessons.find((l) => l.id === lessonId);
+/** 全レッスンを返す (言語対応版) */
+export function getAllLessons(language = 'ja'): Lesson[] {
+  if (language === 'ja') {
+    return content.lessons;
+  }
+  
+  // 英語版では翻訳されたタイトルとディスクリプションを使用
+  return content.lessons.map(lesson => {
+    const localizedContent = getLocalizedContent(lesson.id, language);
+    if (!localizedContent) {
+      return lesson;
+    }
+    return {
+      ...lesson,
+      title: localizedContent.title,
+      description: localizedContent.description
+    };
+  });
 }
 
-/** すべてのコースをフラットに取得 */
-export function getAllCourses(): Course[] {
-  return content.lessons.flatMap((lesson) => lesson.courses);
+/** lessonId からレッスンを取得 (言語対応版) */
+export function getLessonById(lessonId: string, language = 'ja'): Lesson | undefined {
+  const lesson = content.lessons.find((l) => l.id === lessonId);
+  if (!lesson) return undefined;
+  
+  if (language === 'ja') {
+    return lesson;
+  }
+  
+  // 英語版では翻訳されたタイトルとディスクリプションを使用
+  const localizedLesson = getLocalizedContent(lessonId, language);
+  if (!localizedLesson) {
+    return lesson;
+  }
+  
+  // レッスン自体とコースも翻訳
+  const translatedCourses = lesson.courses.map(course => {
+    const localizedCourse = getLocalizedContent(course.id, language);
+    if (!localizedCourse) {
+      return course;
+    }
+    return {
+      ...course,
+      title: localizedCourse.title,
+      description: localizedCourse.description
+    };
+  });
+  
+  return {
+    ...lesson,
+    title: localizedLesson.title,
+    description: localizedLesson.description,
+    courses: translatedCourses
+  };
 }
 
-/** コースIDからコースを探す */
-export function getCourseById(courseId: string): Course | undefined {
+/** すべてのコースをフラットに取得 (言語対応版) */
+export function getAllCourses(language = 'ja'): Course[] {
+  const courses = content.lessons.flatMap((lesson) => lesson.courses);
+  
+  if (language === 'ja') {
+    return courses;
+  }
+  
+  // 英語版では翻訳されたタイトルとディスクリプションを使用
+  return courses.map(course => {
+    const localizedContent = getLocalizedContent(course.id, language);
+    if (!localizedContent) {
+      return course;
+    }
+    return {
+      ...course,
+      title: localizedContent.title,
+      description: localizedContent.description
+    };
+  });
+}
+
+/** コースIDからコースを探す (言語対応版) */
+export function getCourseById(courseId: string, language = 'ja'): Course | undefined {
   for (const lesson of content.lessons) {
     const found = lesson.courses.find((c) => c.id === courseId);
-    if (found) return found;
+    if (found) {
+      if (language === 'ja') {
+        return found;
+      }
+      
+      // 英語版では翻訳されたタイトルとディスクリプションを使用
+      const localizedContent = getLocalizedContent(courseId, language);
+      if (!localizedContent) {
+        return found;
+      }
+      return {
+        ...found,
+        title: localizedContent.title,
+        description: localizedContent.description
+      };
+    }
   }
   return undefined;
 }
@@ -117,4 +236,22 @@ export function getPhraseCount(courseId: string): number {
 export function getQuizQuestionCount(courseId: string): number {
   const course = getCourseById(courseId);
   return course ? course.quizQuestions.length : 0;
+}
+
+// コンテンツサービスを使用する際のラッパー関数
+// 現在の言語コンテキストを自動的に使用
+export function useContentService() {
+  const { language } = useLanguage();
+  
+  return {
+    getAllLessons: () => getAllLessons(language),
+    getLessonById: (id: string) => getLessonById(id, language),
+    getAllCourses: () => getAllCourses(language),
+    getCourseById: (id: string) => getCourseById(id, language),
+    getLessonForCourse,
+    getNextPhrase,
+    getNextQuizQuestion,
+    getPhraseCount,
+    getQuizQuestionCount
+  };
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { Text, Title } from 'react-native-paper';
+import { Text, Title, Card } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -8,6 +8,7 @@ import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getAllLessons } from '../services/contentService';
 import { useLanguage } from '../context/LanguageContext';
+import { LanguageSelector } from '../components/LanguageSelector';
 import AppLoading from '../components/ui/AppLoading';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { commonStyles } from '../theme/styles';
@@ -33,7 +34,7 @@ type LessonListNavigationProp = NativeStackNavigationProp<MainStackParamList, 'L
 
 const LessonListScreen: React.FC = () => {
   const navigation = useNavigation<LessonListNavigationProp>();
-  const { translations } = useLanguage();
+  const { translations, language } = useLanguage();
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -57,20 +58,28 @@ const LessonListScreen: React.FC = () => {
   };
 
   if (loading) {
-    return <AppLoading message="レッスンを読み込み中..." />;
+    return <AppLoading message={language === 'ja' ? "レッスンを読み込み中..." : "Loading lessons..."} />;
   }
 
   if (!lessons || lessons.length === 0) {
     return (
       <View style={commonStyles.centeredContent}>
-        <Text>レッスンが見つかりません。</Text>
+        <Text>{language === 'ja' ? "レッスンが見つかりません。" : "No lessons found."}</Text>
       </View>
     );
   }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <Title style={styles.header}>レッスン一覧</Title>
+      <Card style={styles.languageCard}>
+        <Card.Content>
+          <LanguageSelector />
+        </Card.Content>
+      </Card>
+
+      <Title style={styles.header}>
+        {language === 'ja' ? 'レッスン一覧' : 'Lessons'}
+      </Title>
 
       <View style={styles.lessonGrid}>
         {lessons.map((lesson) => (
@@ -114,6 +123,11 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: spacing.md,
+  },
+  languageCard: {
+    marginBottom: spacing.md,
+    borderRadius: borderRadius.md,
+    ...shadows.small,
   },
   header: {
     fontSize: 28,

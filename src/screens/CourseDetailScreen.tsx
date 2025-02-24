@@ -8,6 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getCourseById } from '../services/contentService';
 import { Course } from '../types/contentTypes';
 import { useProgress } from '../context/ProgressContext';
+import { useLanguage } from '../context/LanguageContext';
 
 type CourseDetailRouteProp = RouteProp<MainStackParamList, 'CourseDetail'>;
 type RootNavProp = NativeStackNavigationProp<RootStackParamList, 'Main'>;
@@ -16,17 +17,17 @@ const CourseDetailScreen: React.FC = () => {
   const route = useRoute<CourseDetailRouteProp>();
   const navigation = useNavigation<RootNavProp>();
   const { courseId } = route.params;
-
+  const { language, translations } = useLanguage();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
 
   const { courseProgressMap, quizLogs } = useProgress();
 
   useEffect(() => {
-    const foundCourse = getCourseById(courseId);
+    const foundCourse = getCourseById(courseId, language);
     setCourse(foundCourse || null);
     setLoading(false);
-  }, [courseId]);
+  }, [courseId, language]);
 
   const handleStartCourse = () => {
     if (!course) return;
@@ -56,7 +57,7 @@ const CourseDetailScreen: React.FC = () => {
   }
 
   if (!course) {
-    return <Text style={styles.error}>コースが見つかりません。</Text>;
+    return <Text style={styles.error}>{language === 'ja' ? 'コースが見つかりません。' : 'Course not found.'}</Text>;
   }
 
   // 進捗状況の計算
@@ -82,17 +83,23 @@ const CourseDetailScreen: React.FC = () => {
           <Title>{course.title}</Title>
           <Paragraph>{course.description}</Paragraph>
           <View style={styles.metaInfo}>
-            <Text>レベル: {course.level}</Text>
-            <Text>所要時間: {course.estimatedTime}</Text>
+            <Text>{language === 'ja' ? 'レベル: ' : 'Level: '}{course.level}</Text>
+            <Text>{language === 'ja' ? '所要時間: ' : 'Estimated time: '}{course.estimatedTime}</Text>
           </View>
         </Card.Content>
       </Card>
 
       <View style={styles.progressContainer}>
-        <Text>フレーズ進捗: {(phraseProgressRatio * 100).toFixed(0)}%</Text>
+        <Text>
+          {language === 'ja' ? 'フレーズ進捗: ' : 'Phrase Progress: '}
+          {(phraseProgressRatio * 100).toFixed(0)}%
+        </Text>
         <ProgressBar progress={phraseProgressRatio} style={styles.progressBar} />
 
-        <Text>クイズ進捗: {(quizProgressRatio * 100).toFixed(0)}%</Text>
+        <Text>
+          {language === 'ja' ? 'クイズ進捗: ' : 'Quiz Progress: '}
+          {(quizProgressRatio * 100).toFixed(0)}%
+        </Text>
         <ProgressBar progress={quizProgressRatio} style={styles.progressBar} />
       </View>
 
@@ -101,7 +108,7 @@ const CourseDetailScreen: React.FC = () => {
         style={styles.button}
         onPress={handleStartCourse}
       >
-        コース学習を開始
+        {language === 'ja' ? 'コース学習を開始' : 'Start Learning'}
       </Button>
 
       <Button
@@ -110,20 +117,24 @@ const CourseDetailScreen: React.FC = () => {
         onPress={handleStartQuiz}
         disabled={course.quizQuestions.length === 0}
       >
-        コースのクイズを受ける
+        {language === 'ja' ? 'コースのクイズを受ける' : 'Take Quiz'}
       </Button>
 
       <View style={styles.historyContainer}>
-        <Title style={styles.historyTitle}>このコースのクイズ履歴</Title>
+        <Title style={styles.historyTitle}>
+          {language === 'ja' ? 'このコースのクイズ履歴' : 'Quiz History for this Course'}
+        </Title>
 
         {courseQuizLogs.length === 0 ? (
           <Paragraph style={styles.noHistoryText}>
-            まだクイズを完了した履歴がありません。
+            {language === 'ja' 
+              ? 'まだクイズを完了した履歴がありません。'
+              : 'No completed quiz history available yet.'}
           </Paragraph>
         ) : (
           courseQuizLogs.map((log) => {
             const dateObj = new Date(log.date);
-            const dateString = dateObj.toLocaleString('ja-JP', {
+            const dateString = dateObj.toLocaleString(language === 'ja' ? 'ja-JP' : 'en-US', {
               year: 'numeric', month: '2-digit', day: '2-digit',
               hour: '2-digit', minute: '2-digit',
             });
@@ -138,7 +149,8 @@ const CourseDetailScreen: React.FC = () => {
                   <Card.Content>
                     <Text style={styles.historyDate}>{dateString}</Text>
                     <Text>
-                      スコア: {log.correctCount}/{log.totalCount} ({scorePercent}%)
+                      {language === 'ja' ? 'スコア: ' : 'Score: '}
+                      {log.correctCount}/{log.totalCount} ({scorePercent}%)
                     </Text>
                   </Card.Content>
                 </Card>

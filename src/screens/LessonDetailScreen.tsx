@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getLessonById } from '../services/contentService';
+import { useLanguage } from '../context/LanguageContext';
 
 // 画像のマッピング
 const lessonImages: { [key: string]: any } = {
@@ -31,20 +32,21 @@ const LessonDetailScreen: React.FC = () => {
   const route = useRoute<LessonDetailRouteProp>();
   const navigation = useNavigation<LessonDetailNavigationProp>();
   const { lessonId } = route.params;
+  const { language, translations } = useLanguage();
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const foundLesson = await getLessonById(lessonId);
+      const foundLesson = await getLessonById(lessonId, language);
       if (foundLesson) {
         setLesson(foundLesson);
       }
       setLoading(false);
     };
     loadData();
-  }, [lessonId]);
+  }, [lessonId, language]);
 
   const handleCoursePress = (courseId: string) => {
     navigation.navigate('CourseDetail', { courseId });
@@ -61,7 +63,7 @@ const LessonDetailScreen: React.FC = () => {
   if (!lesson) {
     return (
       <View style={styles.errorContainer}>
-        <Paragraph>レッスンが見つかりません。</Paragraph>
+        <Paragraph>{language === 'ja' ? 'レッスンが見つかりません。' : 'Lesson not found.'}</Paragraph>
       </View>
     );
   }
@@ -79,10 +81,13 @@ const LessonDetailScreen: React.FC = () => {
         <Title style={styles.header}>{lesson.title}</Title>
         <Paragraph style={styles.description}>{lesson.description}</Paragraph>
         <Paragraph style={styles.meta}>
-          カテゴリー: {lesson.category} • 所要時間: {lesson.totalEstimatedTime}
+          {language === 'ja' ? 'カテゴリー: ' : 'Category: '}{lesson.category} • 
+          {language === 'ja' ? '所要時間: ' : 'Estimated time: '}{lesson.totalEstimatedTime}
         </Paragraph>
 
-        <Title style={styles.subHeader}>コース一覧</Title>
+        <Title style={styles.subHeader}>
+          {language === 'ja' ? 'コース一覧' : 'Courses'}
+        </Title>
         {lesson.courses.map((course) => (
           <Card
             key={course.id}
@@ -96,10 +101,10 @@ const LessonDetailScreen: React.FC = () => {
               </Paragraph>
               <View style={styles.courseMeta}>
                 <Paragraph style={styles.courseMetaText}>
-                  レベル: {course.level}
+                  {language === 'ja' ? 'レベル: ' : 'Level: '}{course.level}
                 </Paragraph>
                 <Paragraph style={styles.courseMetaText}>
-                  所要時間: {course.estimatedTime}
+                  {language === 'ja' ? '所要時間: ' : 'Estimated time: '}{course.estimatedTime}
                 </Paragraph>
               </View>
             </Card.Content>
