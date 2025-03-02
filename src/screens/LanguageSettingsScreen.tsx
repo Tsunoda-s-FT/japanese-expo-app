@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Text, Card } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../context/LanguageContext';
@@ -7,6 +7,7 @@ import { LANGUAGES, LanguageCode } from '../i18n';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { getFlagIconForLanguage, getNativeLanguageName, getEnglishLanguageName } from '../utils/languageUtils';
 import HeaderWithLanguage from '../components/HeaderWithLanguage';
+import { ImprovedHeader } from '../components/ImprovedHeader';
 
 const LanguageSettingsScreen: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -18,11 +19,10 @@ const LanguageSettingsScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.screenContainer}>
-      <HeaderWithLanguage title={t('settings.language', '言語設定')} showBackButton={true} />
+    <SafeAreaView style={styles.screenContainer}>
+      <ImprovedHeader title={t('settings.language', '言語設定')} showBack={true} />
       
       <ScrollView style={styles.container}>
-        <Text style={styles.title}>{t('settings.languagePreferences', '言語設定')}</Text>
         <Text style={styles.description}>
           {t('settings.languageDescription', '表示言語を選択します。学習コンテンツは選択した言語で表示されます。')}
         </Text>
@@ -76,7 +76,7 @@ const LanguageSettingsScreen: React.FC = () => {
           </Card.Content>
         </Card>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -88,12 +88,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: spacing.md,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: spacing.sm,
   },
   description: {
     fontSize: 16,
