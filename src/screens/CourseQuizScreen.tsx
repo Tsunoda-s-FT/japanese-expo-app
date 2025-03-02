@@ -8,6 +8,7 @@ import { RootStackParamList } from '../navigation/RootNavigator';
 import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { getCourseById } from '../services/contentService';
 import { useProgress } from '../context/ProgressContext';
+import { useQuizSession } from '../context/QuizSessionContext';
 import { Course, QuizQuestion } from '../types/contentTypes';
 import SegmentedText from '../components/SegmentedText';
 import AppButton from '../components/ui/AppButton';
@@ -22,13 +23,13 @@ const CourseQuizScreen: React.FC = () => {
   const navigation = useNavigation<RootNavProp>();
   const route = useRoute<CourseQuizScreenRouteProp>();
   const { courseId } = route.params;
+  const { markQuizCompleted } = useProgress();
   const { 
-    markQuizCompleted,
-    createNewQuizSession,
-    addAnswerToQuizSession,
-    finalizeQuizSession,
-    abortQuizSession,
-  } = useProgress();
+    createNewSession,
+    addAnswer,
+    finalizeSession,
+    abortSession,
+  } = useQuizSession();
 
   // コース情報 & 問題リスト
   const [course, setCourse] = useState<Course | null>(null);
@@ -89,7 +90,7 @@ const CourseQuizScreen: React.FC = () => {
           style: 'destructive',
           onPress: () => {
             if (sessionId) {
-              abortQuizSession(sessionId, currentIndex);
+              abortSession(sessionId, currentIndex);
             }
             navigation.getParent()?.goBack();
           },
@@ -113,7 +114,7 @@ const CourseQuizScreen: React.FC = () => {
         setLoading(false);
 
         // 新しいクイズセッションを作成
-        const newSessionId = await createNewQuizSession(courseId);
+        const newSessionId = createNewSession(courseId);
         setSessionId(newSessionId);
       } catch (error) {
         console.error('Error loading course data:', error);
@@ -154,7 +155,7 @@ const CourseQuizScreen: React.FC = () => {
     setIsSubmitted(true);
 
     // 回答を記録
-    await addAnswerToQuizSession(
+    addAnswer(
       sessionId,
       currentQuestion.id,
       selectedOption,
@@ -170,7 +171,7 @@ const CourseQuizScreen: React.FC = () => {
         return;
       }
       
-      await finalizeQuizSession(sessionId);
+      await finalizeSession(sessionId);
       
       navigation.navigate('Session', {
         screen: 'QuizResult',
