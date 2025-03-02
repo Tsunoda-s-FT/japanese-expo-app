@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
 import { I18nManager } from 'react-native';
 import { LanguageCode, getLanguageInfo, getStoredLanguage, storeLanguage, applyRTL } from '../i18n';
 import { loadTranslations, formatTranslation } from '../i18n/translations';
 import { getTypography, TypographyConfig } from '../theme/typography';
+import LanguageChangeToast from '../components/LanguageChangeToast';
 
 // 型定義
 export type Language = 'en' | 'ja';
@@ -19,6 +20,8 @@ interface LanguageState {
   isLoading: boolean;
   error: Error | null;
   typography: TypographyConfig;
+  showToast: boolean;
+  languageChanged: boolean;
 }
 
 // アクション定義
@@ -26,7 +29,9 @@ type LanguageAction =
   | { type: 'LOAD_LANGUAGE_START' }
   | { type: 'LOAD_LANGUAGE_SUCCESS'; payload: { language: LanguageCode; translations: Record<string, string> } }
   | { type: 'LOAD_LANGUAGE_ERROR'; payload: Error }
-  | { type: 'SET_LANGUAGE'; payload: { language: LanguageCode; translations: Record<string, string> } };
+  | { type: 'SET_LANGUAGE'; payload: { language: LanguageCode; translations: Record<string, string> } }
+  | { type: 'SHOW_TOAST' }
+  | { type: 'HIDE_TOAST' };
 
 // 翻訳データ
 const defaultTranslations = {
@@ -150,7 +155,9 @@ const initialState: LanguageState = {
   isRTL: false,
   isLoading: true,
   error: null,
-  typography: getTypography('en')
+  typography: getTypography('en'),
+  showToast: false,
+  languageChanged: false
 };
 
 function languageReducer(state: LanguageState, action: LanguageAction): LanguageState {
@@ -178,8 +185,16 @@ function languageReducer(state: LanguageState, action: LanguageAction): Language
         language: action.payload.language,
         translations: action.payload.translations,
         isRTL: getLanguageInfo(action.payload.language).rtl,
-        typography: getTypography(action.payload.language)
+        typography: getTypography(action.payload.language),
+        showToast: true,
+        languageChanged: true
       };
+    
+    case 'SHOW_TOAST':
+      return { ...state, showToast: true };
+      
+    case 'HIDE_TOAST':
+      return { ...state, showToast: false };
       
     default:
       return state;
@@ -196,7 +211,9 @@ interface LanguageContextType {
   isRTL: boolean;
   isLoading: boolean;
   typography: TypographyConfig;
+  showToast: boolean;
   setLanguage: (lang: LanguageCode) => Promise<void>;
+  hideToast: () => void;
   t: (key: string, defaultValue?: string, params?: Record<string, string | number>) => string;
 }
 
@@ -231,6 +248,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // 言語を切り替える
   const setLanguage = async (lang: LanguageCode) => {
     try {
+      if (lang === state.language) return; // 同じ言語の場合は何もしない
+      
       await storeLanguage(lang);
       const translations = loadTranslations(lang);
       
@@ -244,6 +263,11 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     } catch (error) {
       console.error('Failed to set language:', error);
     }
+  };
+  
+  // トーストを非表示にする
+  const hideToast = () => {
+    dispatch({ type: 'HIDE_TOAST' });
   };
   
   // パラメータ付き翻訳
@@ -262,13 +286,20 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     isRTL: state.isRTL,
     isLoading: state.isLoading,
     typography: state.typography,
+    showToast: state.showToast,
     setLanguage,
+    hideToast,
     t
   };
   
   return (
     <LanguageContext.Provider value={value}>
       {children}
+      <LanguageChangeToast 
+        visible={state.showToast}
+        onDismiss={hideToast}
+        language={state.language}
+      />
     </LanguageContext.Provider>
   );
 };

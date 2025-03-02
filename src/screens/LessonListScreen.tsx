@@ -72,8 +72,16 @@ const LessonListScreen: React.FC = () => {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <Card style={styles.languageCard}>
-        <Card.Content>
+        <Card.Content style={styles.headerRow}>
           <LanguageSelector />
+          <TouchableOpacity 
+            style={styles.settingsButton}
+            onPress={() => navigation.navigate('LanguageSettings')}
+            accessibilityLabel={language === 'ja' ? "言語設定" : "Language Settings"}
+            accessibilityRole="button"
+          >
+            <Icon name="cog" size={24} color={colors.primary} />
+          </TouchableOpacity>
         </Card.Content>
       </Card>
 
@@ -128,6 +136,15 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     borderRadius: borderRadius.md,
     ...shadows.small,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  settingsButton: {
+    padding: spacing.xs,
+    borderRadius: borderRadius.md,
   },
   header: {
     fontSize: 28,
