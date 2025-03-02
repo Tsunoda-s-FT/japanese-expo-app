@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react';
-import { Animated, ViewStyle, StyleProp } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, ViewProps } from 'react-native';
 
 type SlideDirection = 'left' | 'right' | 'top' | 'bottom';
 
-interface SlideInViewProps {
-  children: React.ReactNode;
-  style?: StyleProp<ViewStyle>;
+interface SlideInViewProps extends ViewProps {
   duration?: number;
   delay?: number;
   direction?: SlideDirection;
@@ -13,56 +11,43 @@ interface SlideInViewProps {
 }
 
 /**
- * スライドインアニメーションを適用するコンポーネント
- * 子要素を指定した方向からスライドさせるアニメーションを提供します
+ * スライドインアニメーションを行うViewコンポーネント
  */
-const SlideInView: React.FC<SlideInViewProps> = ({
+export const SlideInView: React.FC<SlideInViewProps> = ({
   children,
-  style,
-  duration = 500,
+  duration = 300,
   delay = 0,
   direction = 'bottom',
   distance = 100,
+  style,
+  ...props
 }) => {
-  // 位置のアニメーション値
-  const translateValue = new Animated.Value(distance);
+  const translateX = useRef(new Animated.Value(direction === 'left' ? -distance : direction === 'right' ? distance : 0)).current;
+  const translateY = useRef(new Animated.Value(direction === 'top' ? -distance : direction === 'bottom' ? distance : 0)).current;
 
   useEffect(() => {
-    // コンポーネントがマウントされたらアニメーションを開始
-    Animated.timing(translateValue, {
+    Animated.timing(direction === 'left' || direction === 'right' ? translateX : translateY, {
       toValue: 0,
-      duration: duration,
-      delay: delay,
-      useNativeDriver: true, // ネイティブドライバーを使用して最適化
+      duration,
+      delay,
+      useNativeDriver: true,
     }).start();
-  }, []);
-
-  // 方向に応じたスタイルを生成
-  const getAnimatedStyle = () => {
-    switch (direction) {
-      case 'left':
-        return { transform: [{ translateX: translateValue }] };
-      case 'right':
-        return { transform: [{ translateX: translateValue.interpolate({
-          inputRange: [0, distance],
-          outputRange: [0, -distance]
-        }) }] };
-      case 'top':
-        return { transform: [{ translateY: translateValue }] };
-      case 'bottom':
-      default:
-        return { transform: [{ translateY: translateValue.interpolate({
-          inputRange: [0, distance],
-          outputRange: [0, -distance]
-        }) }] };
-    }
-  };
+  }, [translateX, translateY, direction, duration, delay]);
 
   return (
-    <Animated.View style={[style, getAnimatedStyle()]}>
+    <Animated.View
+      style={[
+        style,
+        {
+          transform: [
+            { translateX },
+            { translateY },
+          ],
+        },
+      ]}
+      {...props}
+    >
       {children}
     </Animated.View>
   );
-};
-
-export default SlideInView; 
+}; 

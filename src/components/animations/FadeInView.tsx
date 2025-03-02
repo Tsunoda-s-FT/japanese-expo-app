@@ -1,46 +1,47 @@
-import React, { useEffect } from 'react';
-import { Animated, ViewStyle, StyleProp } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, ViewProps } from 'react-native';
 
-interface FadeInViewProps {
-  children: React.ReactNode;
-  style?: StyleProp<ViewStyle>;
+interface FadeInViewProps extends ViewProps {
   duration?: number;
   delay?: number;
+  initialOpacity?: number;
+  finalOpacity?: number;
 }
 
 /**
- * フェードインアニメーションを適用するコンポーネント
- * 子要素を徐々に表示させるアニメーションを提供します
+ * フェードインアニメーションを行うViewコンポーネント
  */
-const FadeInView: React.FC<FadeInViewProps> = ({
+export const FadeInView: React.FC<FadeInViewProps> = ({
   children,
-  style,
-  duration = 500,
+  duration = 300,
   delay = 0,
+  initialOpacity = 0,
+  finalOpacity = 1,
+  style,
+  ...props
 }) => {
-  // 透明度のアニメーション値
-  const opacity = new Animated.Value(0);
+  const opacity = useRef(new Animated.Value(initialOpacity)).current;
 
   useEffect(() => {
-    // コンポーネントがマウントされたらアニメーションを開始
     Animated.timing(opacity, {
-      toValue: 1,
-      duration: duration,
-      delay: delay,
-      useNativeDriver: true, // ネイティブドライバーを使用して最適化
+      toValue: finalOpacity,
+      duration,
+      delay,
+      useNativeDriver: true,
     }).start();
-
-    // クリーンアップ関数（必要に応じて）
-    return () => {
-      // アニメーションのクリーンアップが必要な場合はここに記述
-    };
-  }, []);
+  }, [opacity, finalOpacity, duration, delay]);
 
   return (
-    <Animated.View style={[style, { opacity }]}>
+    <Animated.View
+      style={[
+        style,
+        {
+          opacity,
+        },
+      ]}
+      {...props}
+    >
       {children}
     </Animated.View>
   );
-};
-
-export default FadeInView; 
+}; 

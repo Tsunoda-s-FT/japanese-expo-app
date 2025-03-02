@@ -1,21 +1,22 @@
 import { MD3LightTheme } from 'react-native-paper';
 import { DefaultTheme } from '@react-navigation/native';
+import { StyleSheet } from 'react-native';
 
 // カラーパレット
 export const colors = {
   // メインカラーをより鮮やかで学習アプリに合う配色に
-  primary: '#6A5ACD', // スレートブルー
-  primaryDark: '#483D8B',
-  primaryLight: '#B39DDB',
+  primary: '#006e51', // 日本を象徴する緑
+  primaryDark: '#00523c',
+  primaryLight: '#3e9e7e',
   
   // アクセントカラーを明るくして学習モチベーションを高める
-  accent: '#FF6B6B', // 明るい赤
+  accent: '#FF5722', // 明るい赤
   
   // 機能色はそのままでコントラストを改善
   success: '#4CAF50',
   error: '#F44336',
   warning: '#FFC107',
-  info: '#42A5F5',
+  info: '#2196F3',
   
   // 背景と表面色をより柔らかくする
   surface: '#FFFFFF',
@@ -23,9 +24,9 @@ export const colors = {
   card: '#FFFFFF',
   
   // テキスト色のコントラストを改善
-  text: '#424242',
+  text: '#212121',
   textSecondary: '#757575',
-  textLight: '#FFFFFF',
+  textLight: '#9E9E9E',
   
   // その他
   border: '#E0E0E0',
@@ -39,31 +40,49 @@ export const spacing = {
   md: 16,
   lg: 24,
   xl: 32,
+  xxl: 48,
 };
 
 // 角丸サイズ
 export const borderRadius = {
   sm: 4,
   md: 8,
-  lg: 16,
+  lg: 12,
   round: 9999,
 };
 
 // シャドウ
 export const shadows = {
+  none: {},
   small: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
     elevation: 2,
   },
   medium: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
     elevation: 4,
+  },
+  large: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
   },
 };
 

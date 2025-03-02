@@ -1,241 +1,186 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity, Modal } from 'react-native';
-import { Button, Text, Divider } from 'react-native-paper';
-import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Pressable, useWindowDimensions } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../context/LanguageContext';
-import { LANGUAGES, LanguageCode } from '../i18n';
-import { colors, spacing, borderRadius } from '../theme/theme';
+import { colors, spacing, borderRadius, shadows } from '../theme/theme';
+import { FadeInView, SlideInView } from './animations';
+import { useTheme } from 'react-native-paper';
+import { LanguageCode } from '../i18n';
+import { getFlagIconForLanguage } from '../utils/languageUtils';
 
-export const LanguageSelector: React.FC = () => {
+// 言語名マッピング
+const languageNames: Record<string, string> = {
+  ja: '日本語',
+  en: 'English',
+  zh: '中文',
+  ko: '한국어',
+  es: 'Español'
+};
+
+interface LanguageSelectorProps {
+  compact?: boolean;
+}
+
+export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ compact = false }) => {
   const { language, setLanguage, t } = useLanguage();
   const [modalVisible, setModalVisible] = useState(false);
+  const { width } = useWindowDimensions();
+  const theme = useTheme();
 
-  const selectedLanguage = LANGUAGES.find(lang => lang.code === language);
+  const isSmallScreen = width < 375;
+  const buttonSize = isSmallScreen ? 40 : 48;
 
-  // モーダル表示の言語選択UIを表示
-  const handleShowLanguageModal = () => {
-    setModalVisible(true);
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
   };
 
-  // 言語が選択された時のハンドラー
-  const handleSelectLanguage = (code: LanguageCode) => {
-    setLanguage(code);
+  const changeLanguage = (lang: LanguageCode) => {
+    setLanguage(lang);
     setModalVisible(false);
   };
 
-  // 言語選択ボタンをレンダリング
-  const renderLanguageButton = () => (
-    <Button
-      mode="outlined"
-      onPress={handleShowLanguageModal}
-      style={styles.languageButton}
-      icon={({ size, color }) => <Icon name="translate" size={size} color={color} />}
-    >
-      {selectedLanguage?.nativeName || language}
-    </Button>
-  );
+  const renderLanguageButton = (lang: LanguageCode) => {
+    const iconName = getFlagIconForLanguage(lang) as any;
+    const isActive = language === lang;
 
-  // 各言語項目をレンダリング
-  const renderLanguageItem = ({ item }: { item: typeof LANGUAGES[0] }) => (
-    <TouchableOpacity
-      style={[
-        styles.languageItem,
-        item.code === language && styles.selectedLanguageItem
-      ]}
-      onPress={() => handleSelectLanguage(item.code)}
-    >
-      <View style={styles.languageItemContent}>
-        <Text style={styles.nativeName}>{item.nativeName}</Text>
-        <Text style={styles.englishName}>{item.name}</Text>
-      </View>
-      {item.code === language && (
-        <Icon name="check" size={24} color={colors.primary} />
-      )}
-    </TouchableOpacity>
-  );
+    return (
+      <TouchableOpacity
+        key={lang}
+        style={[
+          styles.languageButton,
+          isActive && styles.activeButton,
+          { height: buttonSize, minWidth: buttonSize }
+        ]}
+        onPress={() => changeLanguage(lang)}
+        accessibilityLabel={`${languageNames[lang]}に変更`}
+        accessibilityRole="button"
+        accessibilityState={{ selected: isActive }}
+      >
+        <MaterialCommunityIcons name={iconName} size={24} color={isActive ? colors.surface : colors.text} />
+        {!compact && <Text style={[styles.buttonText, isActive && styles.activeText]}>{languageNames[lang]}</Text>}
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        {t('selectLanguage')}
-      </Text>
-
-      {/* 言語選択ボタン - スマホでは小さなスペースで表示可能 */}
-      {renderLanguageButton()}
+      {/* 言語選択トリガーボタン */}
+      <TouchableOpacity
+        style={[styles.selectorButton, shadows.small]}
+        onPress={toggleModal}
+        accessibilityLabel="言語選択"
+        accessibilityHint="タップして言語を選択してください"
+      >
+        <MaterialCommunityIcons 
+          name={getFlagIconForLanguage(language) as any} 
+          size={24} 
+          color={colors.primary} 
+        />
+        {!compact && (
+          <Text style={styles.selectorText}>{t('common.language')}</Text>
+        )}
+      </TouchableOpacity>
 
       {/* 言語選択モーダル */}
       <Modal
-        visible={modalVisible}
+        animationType="fade"
         transparent={true}
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
+        visible={modalVisible}
+        onRequestClose={toggleModal}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{t('selectLanguage')}</Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Icon name="close" size={24} color={colors.textSecondary} />
-              </TouchableOpacity>
-            </View>
-            
-            <Divider style={styles.divider} />
-            
-            <FlatList
-              data={LANGUAGES}
-              keyExtractor={(item) => item.code}
-              renderItem={renderLanguageItem}
-              ItemSeparatorComponent={() => <Divider style={styles.itemDivider} />}
-              style={styles.languageList}
-            />
-          </View>
-        </View>
+        <Pressable style={styles.modalOverlay} onPress={toggleModal}>
+          <FadeInView style={styles.modalContainer}>
+            <SlideInView direction="bottom" style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>{t('common.selectLanguage')}</Text>
+                <TouchableOpacity onPress={toggleModal} accessibilityLabel="閉じる">
+                  <MaterialCommunityIcons name="close" size={24} color={colors.text} />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.languageButtonsContainer}>
+                {Object.keys(languageNames).map(key => renderLanguageButton(key as LanguageCode))}
+              </View>
+            </SlideInView>
+          </FadeInView>
+        </Pressable>
       </Modal>
-
-      {/* コンパクトUIのボタン並べも残しておく（タブレットなど大画面に最適化） */}
-      <View style={styles.buttonContainer}>
-        <Button
-          mode={language === 'ja' ? 'contained' : 'outlined'}
-          onPress={() => setLanguage('ja')}
-          style={styles.button}
-          labelStyle={language === 'ja' ? styles.activeLabel : styles.inactiveLabel}
-          icon={({ size, color }) => <Icon name="flag" size={size} color={color} />}
-        >
-          日本語
-        </Button>
-        <Button
-          mode={language === 'en' ? 'contained' : 'outlined'}
-          onPress={() => setLanguage('en')}
-          style={styles.button}
-          labelStyle={language === 'en' ? styles.activeLabel : styles.inactiveLabel}
-          icon={({ size, color }) => <Icon name="flag-outline" size={size} color={color} />}
-        >
-          English
-        </Button>
-        <Button
-          mode={language === 'zh' ? 'contained' : 'outlined'}
-          onPress={() => setLanguage('zh')}
-          style={styles.button}
-          labelStyle={language === 'zh' ? styles.activeLabel : styles.inactiveLabel}
-          icon={({ size, color }) => <Icon name="translate" size={size} color={color} />}
-        >
-          中文
-        </Button>
-        <Button
-          mode={language === 'ko' ? 'contained' : 'outlined'}
-          onPress={() => setLanguage('ko')}
-          style={styles.button}
-          labelStyle={language === 'ko' ? styles.activeLabel : styles.inactiveLabel}
-          icon={({ size, color }) => <Icon name="translate" size={size} color={color} />}
-        >
-          한국어
-        </Button>
-        <Button
-          mode={language === 'es' ? 'contained' : 'outlined'}
-          onPress={() => setLanguage('es')}
-          style={styles.button}
-          labelStyle={language === 'es' ? styles.activeLabel : styles.inactiveLabel}
-          icon={({ size, color }) => <Icon name="translate" size={size} color={color} />}
-        >
-          Español
-        </Button>
-      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    marginVertical: spacing.sm,
   },
-  title: {
-    fontSize: 16,
-    marginBottom: spacing.sm,
-    fontWeight: '500',
-    textAlign: 'center',
-    color: colors.textSecondary,
-  },
-  buttonContainer: {
+  selectorButton: {
     flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.md,
+    padding: spacing.sm,
+    paddingHorizontal: spacing.md,
+  },
+  selectorText: {
+    marginLeft: spacing.sm,
+    color: colors.text,
+    fontWeight: '500',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: spacing.md,
-    flexWrap: 'wrap',
-    marginTop: spacing.md,
-  },
-  button: {
-    flex: 1,
-    minWidth: 100,
-    borderRadius: borderRadius.md,
-    margin: spacing.xs,
-  },
-  activeLabel: {
-    fontWeight: 'bold',
-  },
-  inactiveLabel: {
-    fontWeight: 'normal',
-  },
-  languageButton: {
-    alignSelf: 'center',
-    borderRadius: borderRadius.md,
-    marginVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
   },
   modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
     width: '90%',
     maxWidth: 400,
-    backgroundColor: colors.background,
+  },
+  modalContent: {
+    backgroundColor: colors.surface,
     borderRadius: borderRadius.lg,
-    padding: spacing.md,
-    maxHeight: '80%',
+    padding: spacing.lg,
+    ...shadows.medium,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: spacing.md,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: colors.text,
   },
-  divider: {
-    marginVertical: spacing.sm,
-  },
-  languageList: {
-    flexGrow: 0,
-  },
-  languageItem: {
+  languageButtonsContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
     justifyContent: 'space-between',
+  },
+  languageButton: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.sm,
-  },
-  selectedLanguageItem: {
+    justifyContent: 'center',
     backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: borderRadius.md,
+    padding: spacing.sm,
+    marginBottom: spacing.sm,
+    minWidth: 100,
+    gap: spacing.xs,
   },
-  languageItemContent: {
-    flexDirection: 'column',
-  },
-  nativeName: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  buttonText: {
+    marginLeft: spacing.xs,
     color: colors.text,
   },
-  englishName: {
-    fontSize: 14,
-    color: colors.textSecondary,
+  activeButton: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
-  itemDivider: {
-    backgroundColor: colors.border,
-    opacity: 0.2,
+  activeText: {
+    color: colors.surface,
+    fontWeight: 'bold',
   },
 });
