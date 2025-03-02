@@ -1,140 +1,161 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { logError } from '../utils/errorUtils';
 
-// テーマの種類
+// 型定義
 export type ThemeType = 'light' | 'dark' | 'system';
+export type FontSize = 'small' | 'medium' | 'large';
 
-// 設定の型定義
-interface Settings {
+export interface Settings {
   theme: ThemeType;
   soundEnabled: boolean;
   notificationsEnabled: boolean;
   autoPlayAudio: boolean;
   furiganaEnabled: boolean;
-  fontSize: 'small' | 'medium' | 'large';
+  fontSize: FontSize;
 }
 
-// コンテキストの型定義
-interface SettingsContextValue {
+// 状態の型定義
+interface SettingsState {
   settings: Settings;
   isLoading: boolean;
-  setTheme: (theme: ThemeType) => Promise<void>;
-  setSoundEnabled: (enabled: boolean) => Promise<void>;
-  setNotificationsEnabled: (enabled: boolean) => Promise<void>;
-  setAutoPlayAudio: (enabled: boolean) => Promise<void>;
-  setFuriganaEnabled: (enabled: boolean) => Promise<void>;
-  setFontSize: (size: 'small' | 'medium' | 'large') => Promise<void>;
-  resetSettings: () => Promise<void>;
+  error: Error | null;
 }
 
+// アクション定義
+type SettingsAction = 
+  | { type: 'LOAD_SETTINGS_START' }
+  | { type: 'LOAD_SETTINGS_SUCCESS'; payload: Settings }
+  | { type: 'LOAD_SETTINGS_ERROR'; payload: Error }
+  | { type: 'UPDATE_SETTINGS'; payload: Partial<Settings> }
+  | { type: 'RESET_SETTINGS' };
+
 // デフォルト設定
-const defaultSettings: Settings = {
+export const defaultSettings: Settings = {
   theme: 'light',
   soundEnabled: true,
   notificationsEnabled: true,
   autoPlayAudio: false,
   furiganaEnabled: true,
-  fontSize: 'medium',
+  fontSize: 'medium'
 };
 
-// AsyncStorageのキー
+const initialState: SettingsState = {
+  settings: defaultSettings,
+  isLoading: true,
+  error: null
+};
+
+function settingsReducer(state: SettingsState, action: SettingsAction): SettingsState {
+  switch (action.type) {
+    case 'LOAD_SETTINGS_START':
+      return { ...state, isLoading: true };
+      
+    case 'LOAD_SETTINGS_SUCCESS':
+      return { 
+        ...state, 
+        settings: action.payload,
+        isLoading: false,
+        error: null
+      };
+      
+    case 'LOAD_SETTINGS_ERROR':
+      return { ...state, error: action.payload, isLoading: false };
+      
+    case 'UPDATE_SETTINGS':
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          ...action.payload
+        }
+      };
+      
+    case 'RESET_SETTINGS':
+      return {
+        ...state,
+        settings: defaultSettings
+      };
+      
+    default:
+      return state;
+  }
+}
+
+// ストレージキー
 const SETTINGS_STORAGE_KEY = 'app_settings';
 
-// コンテキストの作成
-const SettingsContext = createContext<SettingsContextValue | undefined>(undefined);
+// コンテキスト型定義
+interface SettingsContextType {
+  settings: Settings;
+  isLoading: boolean;
+  updateSettings: (newSettings: Partial<Settings>) => Promise<void>;
+  resetSettings: () => Promise<void>;
+}
 
-// プロバイダーコンポーネント
-export const SettingsProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
-  const [isLoading, setIsLoading] = useState(true);
+const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-  // 初期化時に設定を読み込む
+export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [state, dispatch] = useReducer(settingsReducer, initialState);
+  
+  // 初期化時にAsyncStorageから設定を読み込む
   useEffect(() => {
     loadSettings();
   }, []);
-
-  // 設定をAsyncStorageから読み込む
+  
+  // 状態変更時にAsyncStorageに保存
+  useEffect(() => {
+    if (!state.isLoading) {
+      saveSettings();
+    }
+  }, [state.settings]);
+  
   const loadSettings = async () => {
+    dispatch({ type: 'LOAD_SETTINGS_START' });
     try {
-      setIsLoading(true);
-      const storedSettings = await AsyncStorage.getItem(SETTINGS_STORAGE_KEY);
+      const settingsJSON = await AsyncStorage.getItem(SETTINGS_STORAGE_KEY);
       
-      if (storedSettings) {
-        setSettings({ ...defaultSettings, ...JSON.parse(storedSettings) });
+      if (settingsJSON) {
+        const savedSettings = JSON.parse(settingsJSON);
+        dispatch({ 
+          type: 'LOAD_SETTINGS_SUCCESS', 
+          payload: { ...defaultSettings, ...savedSettings } 
+        });
+      } else {
+        dispatch({ type: 'LOAD_SETTINGS_SUCCESS', payload: defaultSettings });
       }
     } catch (error) {
-      logError('設定の読み込みに失敗しました', 'error', { error });
-    } finally {
-      setIsLoading(false);
+      dispatch({ type: 'LOAD_SETTINGS_ERROR', payload: error as Error });
     }
   };
-
-  // 設定をAsyncStorageに保存する
-  const saveSettings = async (newSettings: Settings) => {
+  
+  const saveSettings = async () => {
     try {
-      await AsyncStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(newSettings));
-      setSettings(newSettings);
+      await AsyncStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(state.settings));
     } catch (error) {
-      logError('設定の保存に失敗しました', 'error', { error });
-      throw error;
+      console.error('Failed to save settings:', error);
     }
   };
-
-  // テーマを設定
-  const setTheme = async (theme: ThemeType) => {
-    const newSettings = { ...settings, theme };
-    await saveSettings(newSettings);
+  
+  const updateSettings = async (newSettings: Partial<Settings>) => {
+    dispatch({ type: 'UPDATE_SETTINGS', payload: newSettings });
   };
-
-  // 音声を有効/無効に設定
-  const setSoundEnabled = async (enabled: boolean) => {
-    const newSettings = { ...settings, soundEnabled: enabled };
-    await saveSettings(newSettings);
-  };
-
-  // 通知を有効/無効に設定
-  const setNotificationsEnabled = async (enabled: boolean) => {
-    const newSettings = { ...settings, notificationsEnabled: enabled };
-    await saveSettings(newSettings);
-  };
-
-  // 音声の自動再生を有効/無効に設定
-  const setAutoPlayAudio = async (enabled: boolean) => {
-    const newSettings = { ...settings, autoPlayAudio: enabled };
-    await saveSettings(newSettings);
-  };
-
-  // ふりがなの表示を有効/無効に設定
-  const setFuriganaEnabled = async (enabled: boolean) => {
-    const newSettings = { ...settings, furiganaEnabled: enabled };
-    await saveSettings(newSettings);
-  };
-
-  // フォントサイズを設定
-  const setFontSize = async (size: 'small' | 'medium' | 'large') => {
-    const newSettings = { ...settings, fontSize: size };
-    await saveSettings(newSettings);
-  };
-
-  // 設定をリセット
+  
   const resetSettings = async () => {
-    await saveSettings(defaultSettings);
+    try {
+      await AsyncStorage.removeItem(SETTINGS_STORAGE_KEY);
+      dispatch({ type: 'RESET_SETTINGS' });
+    } catch (error) {
+      dispatch({ type: 'LOAD_SETTINGS_ERROR', payload: error as Error });
+    }
   };
-
-  // コンテキスト値
-  const value: SettingsContextValue = {
-    settings,
-    isLoading,
-    setTheme,
-    setSoundEnabled,
-    setNotificationsEnabled,
-    setAutoPlayAudio,
-    setFuriganaEnabled,
-    setFontSize,
-    resetSettings,
+  
+  const value: SettingsContextType = {
+    settings: state.settings,
+    isLoading: state.isLoading,
+    updateSettings,
+    resetSettings
   };
-
+  
   return (
     <SettingsContext.Provider value={value}>
       {children}
@@ -142,13 +163,10 @@ export const SettingsProvider: React.FC<{children: React.ReactNode}> = ({ childr
   );
 };
 
-// カスタムフック
-export const useSettings = (): SettingsContextValue => {
+export const useSettings = () => {
   const context = useContext(SettingsContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useSettings must be used within a SettingsProvider');
   }
   return context;
 };
-
-export default SettingsContext; 

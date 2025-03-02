@@ -1,14 +1,29 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-type Language = 'en' | 'ja';
+// 型定義
+export type Language = 'en' | 'ja';
 
-interface LanguageContextType {
-  language: Language;
-  setLanguage: (lang: Language) => Promise<void>;
-  translations: Record<string, string>;
+interface TranslationData {
+  [key: string]: string;
 }
 
+// 状態の型定義
+interface LanguageState {
+  language: Language;
+  translations: TranslationData;
+  isLoading: boolean;
+  error: Error | null;
+}
+
+// アクション定義
+type LanguageAction = 
+  | { type: 'LOAD_LANGUAGE_START' }
+  | { type: 'LOAD_LANGUAGE_SUCCESS'; payload: Language }
+  | { type: 'LOAD_LANGUAGE_ERROR'; payload: Error }
+  | { type: 'SET_LANGUAGE'; payload: Language };
+
+// 翻訳データ
 const defaultTranslations = {
   ja: {
     appTitle: '日本語学習アプリ',
@@ -106,58 +121,122 @@ const defaultTranslations = {
     recordAudio: 'Record Audio',
     playAudio: 'Play Audio',
     answer: 'Answer',
-    showResult: 'Show Results',
+    showResult: 'Show Result',
     exitSession: 'Exit Session',
     tryAgain: 'Try Again',
     congratulations: 'Congratulations!',
-    goodJob: 'Good job!',
-    needMorePractice: 'Need more practice',
+    goodJob: 'Good Job!',
+    needMorePractice: 'Need More Practice',
     examples: 'Examples',
     pronunciation: 'Pronunciation',
     explanation: 'Explanation',
     quizHistory: 'Quiz History',
-    historyDetail: 'History Details',
+    historyDetail: 'History Detail',
     score: 'Score',
     date: 'Date',
-    noHistory: 'No history found',
+    noHistory: 'No History',
     questionNumber: 'Question',
-  },
+  }
 };
+
+const initialState: LanguageState = {
+  language: 'en',
+  translations: defaultTranslations.en,
+  isLoading: true,
+  error: null
+};
+
+function languageReducer(state: LanguageState, action: LanguageAction): LanguageState {
+  switch (action.type) {
+    case 'LOAD_LANGUAGE_START':
+      return { ...state, isLoading: true };
+      
+    case 'LOAD_LANGUAGE_SUCCESS':
+      return { 
+        ...state, 
+        language: action.payload,
+        translations: defaultTranslations[action.payload],
+        isLoading: false,
+        error: null
+      };
+      
+    case 'LOAD_LANGUAGE_ERROR':
+      return { ...state, error: action.payload, isLoading: false };
+      
+    case 'SET_LANGUAGE':
+      return {
+        ...state,
+        language: action.payload,
+        translations: defaultTranslations[action.payload]
+      };
+      
+    default:
+      return state;
+  }
+}
+
+// ストレージキー
+const LANGUAGE_STORAGE_KEY = 'user_language';
+
+// コンテキスト型定義
+interface LanguageContextType {
+  language: Language;
+  translations: TranslationData;
+  isLoading: boolean;
+  setLanguage: (lang: Language) => Promise<void>;
+  t: (key: string, defaultValue?: string) => string;
+}
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('en');
-  const [translations, setTranslations] = useState(defaultTranslations.en);
-
+  const [state, dispatch] = useReducer(languageReducer, initialState);
+  
+  // 初期化時にAsyncStorageから言語設定を読み込む
   useEffect(() => {
-    // Load saved language preference
-    const loadLanguage = async () => {
-      try {
-        const savedLanguage = await AsyncStorage.getItem('userLanguage');
-        if (savedLanguage === 'ja' || savedLanguage === 'en') {
-          setLanguageState(savedLanguage);
-          setTranslations(defaultTranslations[savedLanguage]);
-        }
-      } catch (error) {
-        console.error('Error loading language preference:', error);
-      }
-    };
     loadLanguage();
   }, []);
-
-  const setLanguage = async (lang: Language) => {
+  
+  const loadLanguage = async () => {
+    dispatch({ type: 'LOAD_LANGUAGE_START' });
     try {
-      await AsyncStorage.setItem('userLanguage', lang);
-      setLanguageState(lang);
-      setTranslations(defaultTranslations[lang]);
+      const savedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
+      
+      if (savedLanguage === 'ja' || savedLanguage === 'en') {
+        dispatch({ type: 'LOAD_LANGUAGE_SUCCESS', payload: savedLanguage as Language });
+      } else {
+        // デフォルト言語をセット
+        dispatch({ type: 'LOAD_LANGUAGE_SUCCESS', payload: 'en' });
+      }
     } catch (error) {
-      console.error('Error saving language preference:', error);
+      dispatch({ type: 'LOAD_LANGUAGE_ERROR', payload: error as Error });
     }
   };
-
+  
+  const setLanguage = async (lang: Language) => {
+    try {
+      await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+      dispatch({ type: 'SET_LANGUAGE', payload: lang });
+    } catch (error) {
+      console.error('Failed to save language setting:', error);
+    }
+  };
+  
+  // 翻訳キーで文字列を取得
+  const t = (key: string, defaultValue?: string): string => {
+    return state.translations[key] || defaultValue || key;
+  };
+  
+  const value: LanguageContextType = {
+    language: state.language,
+    translations: state.translations,
+    isLoading: state.isLoading,
+    setLanguage,
+    t
+  };
+  
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, translations }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );
@@ -165,7 +244,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;
