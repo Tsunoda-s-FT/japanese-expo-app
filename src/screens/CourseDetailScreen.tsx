@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Text, Button, ActivityIndicator, ProgressBar, Card, Title, Paragraph } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Text, Button, ActivityIndicator, Divider, Card } from 'react-native-paper';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { MainStackParamList } from '../navigation/MainNavigator';
@@ -8,28 +8,40 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getCourseById } from '../services/contentService';
 import { Course } from '../types/contentTypes';
 import { useProgress } from '../context/ProgressContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
+import UnifiedHeader from '../components/UnifiedHeader';
+import { colors, spacing, borderRadius, shadows } from '../theme/theme';
+import { formatJapaneseDate } from '../utils/formatUtils';
 
 type CourseDetailRouteProp = RouteProp<MainStackParamList, 'CourseDetail'>;
-type RootNavProp = NativeStackNavigationProp<RootStackParamList, 'Main'>;
+type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
 
 const CourseDetailScreen: React.FC = () => {
   const route = useRoute<CourseDetailRouteProp>();
   const navigation = useNavigation<RootNavProp>();
   const { courseId } = route.params;
-  const { language, translations } = useLanguage();
+  const { language, t } = useImprovedLanguage();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const { courseProgressMap, quizLogs } = useProgress();
+  const { getCourseProgressRatio, getCourseQuizProgressRatio, quizLogs } = useProgress();
 
   useEffect(() => {
-    const foundCourse = getCourseById(courseId, language);
-    setCourse(foundCourse || null);
-    setLoading(false);
+    const loadData = async () => {
+      try {
+        const data = await getCourseById(courseId, language);
+        setCourse(data || null);
+      } catch (error) {
+        console.error('Error loading course:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
   }, [courseId, language]);
 
-  const handleStartCourse = () => {
+  const handleStartLearning = () => {
     if (!course) return;
     navigation.navigate('Session', {
       screen: 'CourseLearning',
@@ -53,23 +65,39 @@ const CourseDetailScreen: React.FC = () => {
   };
 
   if (loading) {
-    return <ActivityIndicator style={styles.loading} />;
+    return (
+      <SafeAreaView style={styles.container}>
+        <UnifiedHeader 
+          title={t('common.loading', 'Loading...')}
+          showBack={true}
+        />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      </SafeAreaView>
+    );
   }
 
   if (!course) {
-    return <Text style={styles.error}>{language === 'ja' ? 'コースが見つかりません。' : 'Course not found.'}</Text>;
+    return (
+      <SafeAreaView style={styles.container}>
+        <UnifiedHeader 
+          title={t('courseDetail.notFound', 'Course Not Found')}
+          showBack={true} 
+        />
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>
+            {t('courseDetail.notFoundMessage', 'The requested course could not be found.')}
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   // 進捗状況の計算
-  const totalPhrases = course.phrases.length;
-  const totalQuizzes = course.quizQuestions.length;
-
-  const cp = courseProgressMap.get(courseId);
-  const learnedCount = cp ? cp.learnedPhraseIds.size : 0;
-  const quizCompletedCount = cp ? cp.completedQuizIds.size : 0;
-
-  const phraseProgressRatio = totalPhrases > 0 ? learnedCount / totalPhrases : 0;
-  const quizProgressRatio = totalQuizzes > 0 ? quizCompletedCount / totalQuizzes : 0;
+  const phraseProgress = getCourseProgressRatio(courseId);
+  const quizProgress = getCourseQuizProgressRatio(courseId);
+  const totalProgress = (phraseProgress + quizProgress) / 2;
 
   // このコース用のクイズ履歴を抽出
   const courseQuizLogs = quizLogs
@@ -77,140 +105,358 @@ const CourseDetailScreen: React.FC = () => {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
-    <ScrollView style={styles.container}>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Title>{course.title}</Title>
-          <Paragraph>{course.description}</Paragraph>
-          <View style={styles.metaInfo}>
-            <Text>{language === 'ja' ? 'レベル: ' : 'Level: '}{course.level}</Text>
-            <Text>{language === 'ja' ? '所要時間: ' : 'Estimated time: '}{course.estimatedTime}</Text>
-          </View>
-        </Card.Content>
-      </Card>
-
-      <View style={styles.progressContainer}>
-        <Text>
-          {language === 'ja' ? 'フレーズ進捗: ' : 'Phrase Progress: '}
-          {(phraseProgressRatio * 100).toFixed(0)}%
-        </Text>
-        <ProgressBar progress={phraseProgressRatio} style={styles.progressBar} />
-
-        <Text>
-          {language === 'ja' ? 'クイズ進捗: ' : 'Quiz Progress: '}
-          {(quizProgressRatio * 100).toFixed(0)}%
-        </Text>
-        <ProgressBar progress={quizProgressRatio} style={styles.progressBar} />
-      </View>
-
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={handleStartCourse}
-      >
-        {language === 'ja' ? 'コース学習を開始' : 'Start Learning'}
-      </Button>
-
-      <Button
-        mode="outlined"
-        style={styles.button}
-        onPress={handleStartQuiz}
-        disabled={course.quizQuestions.length === 0}
-      >
-        {language === 'ja' ? 'コースのクイズを受ける' : 'Take Quiz'}
-      </Button>
-
-      <View style={styles.historyContainer}>
-        <Title style={styles.historyTitle}>
-          {language === 'ja' ? 'このコースのクイズ履歴' : 'Quiz History for this Course'}
-        </Title>
-
-        {courseQuizLogs.length === 0 ? (
-          <Paragraph style={styles.noHistoryText}>
-            {language === 'ja' 
-              ? 'まだクイズを完了した履歴がありません。'
-              : 'No completed quiz history available yet.'}
-          </Paragraph>
-        ) : (
-          courseQuizLogs.map((log) => {
-            const dateObj = new Date(log.date);
-            const dateString = dateObj.toLocaleString(language === 'ja' ? 'ja-JP' : 'en-US', {
-              year: 'numeric', month: '2-digit', day: '2-digit',
-              hour: '2-digit', minute: '2-digit',
-            });
-            const scorePercent = Math.round((log.correctCount / log.totalCount) * 100);
-            return (
+    <SafeAreaView style={styles.container}>
+      <UnifiedHeader 
+        title={course.title}
+        subtitle={course.level}
+        showBack={true}
+        progress={totalProgress}
+      />
+      
+      <ScrollView style={styles.scrollView}>
+        <Card style={styles.mainCard}>
+          <Card.Content>
+            <Text style={styles.description}>{course.description}</Text>
+            
+            <View style={styles.metaContainer}>
+              <View style={styles.metaItem}>
+                <Text style={styles.metaLabel}>{t('common.level', 'Level')}</Text>
+                <Text style={styles.metaValue}>{course.level}</Text>
+              </View>
+              
+              <View style={styles.metaItem}>
+                <Text style={styles.metaLabel}>{t('common.estimatedTime', 'Est. Time')}</Text>
+                <Text style={styles.metaValue}>{course.estimatedTime}</Text>
+              </View>
+              
+              <View style={styles.metaItem}>
+                <Text style={styles.metaLabel}>{t('common.phrases', 'Phrases')}</Text>
+                <Text style={styles.metaValue}>{course.phrases.length}</Text>
+              </View>
+              
+              <View style={styles.metaItem}>
+                <Text style={styles.metaLabel}>{t('common.quizzes', 'Quizzes')}</Text>
+                <Text style={styles.metaValue}>{course.quizQuestions.length}</Text>
+              </View>
+            </View>
+          </Card.Content>
+        </Card>
+        
+        <Card style={styles.progressCard}>
+          <Card.Content>
+            <Text style={styles.sectionTitle}>
+              {t('courseDetail.progress', 'Your Progress')}
+            </Text>
+            
+            <View style={styles.progressItem}>
+              <View style={styles.progressLabelContainer}>
+                <Text style={styles.progressLabel}>
+                  {t('courseDetail.learningProgress', 'Learning')}
+                </Text>
+                <Text style={styles.progressPercentage}>
+                  {Math.round(phraseProgress * 100)}%
+                </Text>
+              </View>
+              <View style={styles.progressBarBackground}>
+                <View 
+                  style={[
+                    styles.progressBarFill, 
+                    { 
+                      width: `${Math.round(phraseProgress * 100)}%`,
+                      backgroundColor: colors.primary 
+                    }
+                  ]} 
+                />
+              </View>
+            </View>
+            
+            <View style={styles.progressItem}>
+              <View style={styles.progressLabelContainer}>
+                <Text style={styles.progressLabel}>
+                  {t('courseDetail.quizProgress', 'Quizzes')}
+                </Text>
+                <Text style={styles.progressPercentage}>
+                  {Math.round(quizProgress * 100)}%
+                </Text>
+              </View>
+              <View style={styles.progressBarBackground}>
+                <View 
+                  style={[
+                    styles.progressBarFill, 
+                    { 
+                      width: `${Math.round(quizProgress * 100)}%`,
+                      backgroundColor: colors.accent 
+                    }
+                  ]} 
+                />
+              </View>
+            </View>
+          </Card.Content>
+        </Card>
+        
+        <View style={styles.actionButtonsContainer}>
+          <Button
+            mode="contained"
+            onPress={handleStartLearning}
+            style={styles.actionButton}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonLabel}
+            icon="book-open-variant"
+          >
+            {t('courseDetail.startLearning', 'Start Learning')}
+          </Button>
+          
+          <Button
+            mode="outlined"
+            onPress={handleStartQuiz}
+            style={styles.actionButton}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.outlineButtonLabel}
+            icon="clipboard-list"
+            disabled={course.quizQuestions.length === 0}
+          >
+            {t('courseDetail.takeQuiz', 'Take Quiz')}
+          </Button>
+        </View>
+        
+        <Card style={styles.historyCard}>
+          <Card.Content>
+            <Text style={styles.sectionTitle}>
+              {t('courseDetail.quizHistory', 'Quiz History')}
+            </Text>
+            
+            {courseQuizLogs.length === 0 ? (
+              <Text style={styles.noHistoryText}>
+                {t('courseDetail.noHistory', 'No completed quiz history available yet.')}
+              </Text>
+            ) : (
+              courseQuizLogs.slice(0, 5).map((log) => {
+                const dateObj = new Date(log.date);
+                const scorePercent = Math.round((log.correctCount / log.totalCount) * 100);
+                
+                return (
+                  <TouchableOpacity
+                    key={log.sessionId}
+                    style={styles.historyItem}
+                    onPress={() => handleViewQuizHistory(log.sessionId)}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.historyContent}>
+                      <Text style={styles.historyDate}>
+                        {formatJapaneseDate(dateObj, true)}
+                      </Text>
+                      <View style={styles.scoreContainer}>
+                        <Text style={[
+                          styles.score, 
+                          getScoreStyle(scorePercent)
+                        ]}>
+                          {log.correctCount}/{log.totalCount}
+                        </Text>
+                        <Text style={[
+                          styles.scorePercentage,
+                          getScoreStyle(scorePercent)
+                        ]}>
+                          {scorePercent}%
+                        </Text>
+                      </View>
+                    </View>
+                    
+                    <Divider style={styles.historyDivider} />
+                  </TouchableOpacity>
+                );
+              })
+            )}
+            
+            {courseQuizLogs.length > 5 && (
               <TouchableOpacity
-                key={log.sessionId}
-                activeOpacity={0.8}
-                onPress={() => handleViewQuizHistory(log.sessionId)}
+                style={styles.viewAllButton}
+                onPress={() => navigation.navigate('Main', { screen: 'QuizHistory' })}
               >
-                <Card key={log.sessionId} style={styles.historyCard}>
-                  <Card.Content>
-                    <Text style={styles.historyDate}>{dateString}</Text>
-                    <Text>
-                      {language === 'ja' ? 'スコア: ' : 'Score: '}
-                      {log.correctCount}/{log.totalCount} ({scorePercent}%)
-                    </Text>
-                  </Card.Content>
-                </Card>
+                <Text style={styles.viewAllText}>
+                  {t('courseDetail.viewAllHistory', 'View All History')}
+                </Text>
               </TouchableOpacity>
-            );
-          })
-        )}
-      </View>
-    </ScrollView>
+            )}
+          </Card.Content>
+        </Card>
+      </ScrollView>
+    </SafeAreaView>
   );
+};
+
+// スコアのスタイルを決定するヘルパー関数
+const getScoreStyle = (score: number) => {
+  if (score >= 80) return { color: colors.success };
+  if (score >= 60) return { color: colors.accent };
+  return { color: colors.error };
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16
+    backgroundColor: colors.background,
   },
-  loading: {
+  scrollView: {
+    flex: 1,
+  },
+  loadingContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
-  error: {
-    color: 'red',
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing.lg,
+  },
+  errorText: {
+    color: colors.textSecondary,
     textAlign: 'center',
-    marginTop: 20
+    fontSize: 16,
   },
-  card: {
-    marginBottom: 16
+  mainCard: {
+    margin: spacing.md,
+    borderRadius: borderRadius.md,
+    ...shadows.small,
   },
-  metaInfo: {
-    marginTop: 8
+  description: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: spacing.md,
+    color: colors.text,
   },
-  progressContainer: {
-    marginVertical: 16
+  metaContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginHorizontal: -spacing.xs,
   },
-  progressBar: {
+  metaItem: {
+    width: '50%',
+    paddingHorizontal: spacing.xs,
+    marginBottom: spacing.sm,
+  },
+  metaLabel: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginBottom: 2,
+  },
+  metaValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.text,
+  },
+  progressCard: {
+    margin: spacing.md,
+    marginTop: 0,
+    borderRadius: borderRadius.md,
+    ...shadows.small,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: spacing.sm,
+    color: colors.text,
+  },
+  progressItem: {
+    marginBottom: spacing.sm,
+  },
+  progressLabelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  progressLabel: {
+    fontSize: 14,
+    color: colors.text,
+  },
+  progressPercentage: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: colors.textSecondary,
+  },
+  progressBarBackground: {
     height: 8,
-    marginVertical: 4
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    borderRadius: 4,
+    overflow: 'hidden',
   },
-  button: {
-    marginTop: 8,
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 4,
   },
-  historyContainer: {
-    marginTop: 24,
+  actionButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: spacing.md,
+    marginTop: 0,
   },
-  historyTitle: {
-    fontSize: 20,
-    marginBottom: 8,
+  actionButton: {
+    flex: 1,
+    marginHorizontal: spacing.xs,
+    borderRadius: borderRadius.md,
   },
-  noHistoryText: {
-    color: '#666',
-    marginBottom: 16,
+  buttonContent: {
+    height: 48,
+  },
+  buttonLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  outlineButtonLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.primary,
   },
   historyCard: {
-    marginVertical: 6,
+    margin: spacing.md,
+    marginTop: 0,
+    borderRadius: borderRadius.md,
+    ...shadows.small,
+  },
+  noHistoryText: {
+    color: colors.textSecondary,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    padding: spacing.md,
+  },
+  historyItem: {
+    paddingVertical: spacing.sm,
+  },
+  historyContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   historyDate: {
-    color: '#999',
-    marginBottom: 4,
+    fontSize: 14,
+    color: colors.textSecondary,
+  },
+  scoreContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  score: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: spacing.sm,
+  },
+  scorePercentage: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  historyDivider: {
+    marginTop: spacing.sm,
+  },
+  viewAllButton: {
+    alignItems: 'center',
+    paddingVertical: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  viewAllText: {
+    color: colors.primary,
+    fontWeight: 'bold',
   },
 });
 

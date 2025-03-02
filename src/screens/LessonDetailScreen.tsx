@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, SafeAreaView } from 'react-native';
 import { Card, Title, Paragraph, ActivityIndicator } from 'react-native-paper';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getLessonById } from '../services/contentService';
-import { useLanguage } from '../context/LanguageContext';
+import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
+import UnifiedHeader from '../components/UnifiedHeader';
+import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 
 // 画像のマッピング
 const lessonImages: { [key: string]: any } = {
@@ -16,6 +18,7 @@ const lessonImages: { [key: string]: any } = {
 
 // 画像のパスから画像ソースを取得する関数
 const getImageSource = (path: string) => {
+  if (!path) return null;
   // パスからファイル名を抽出
   const fileName = path.split('/').pop();
   if (fileName && lessonImages[fileName]) {
@@ -32,19 +35,23 @@ const LessonDetailScreen: React.FC = () => {
   const route = useRoute<LessonDetailRouteProp>();
   const navigation = useNavigation<LessonDetailNavigationProp>();
   const { lessonId } = route.params;
-  const { language, translations } = useLanguage();
+  const { language, t } = useImprovedLanguage();
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const foundLesson = await getLessonById(lessonId, language);
-      if (foundLesson) {
-        setLesson(foundLesson);
+      try {
+        const data = await getLessonById(lessonId, language);
+        setLesson(data || null);
+      } catch (error) {
+        console.error('Error loading lesson:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
+    
     loadData();
   }, [lessonId, language]);
 
@@ -54,124 +61,196 @@ const LessonDetailScreen: React.FC = () => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
-      </View>
+      <SafeAreaView style={styles.container}>
+        <UnifiedHeader 
+          title={t('common.loading', 'Loading...')}
+          showBack={true}
+        />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      </SafeAreaView>
     );
   }
 
   if (!lesson) {
     return (
-      <View style={styles.errorContainer}>
-        <Paragraph>{language === 'ja' ? 'レッスンが見つかりません。' : 'Lesson not found.'}</Paragraph>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <UnifiedHeader 
+          title={t('lessonDetail.notFound', 'Lesson Not Found')}
+          showBack={true}
+        />
+        <View style={styles.errorContainer}>
+          <Paragraph style={styles.errorText}>
+            {t('lessonDetail.notFoundMessage', 'The requested lesson could not be found.')}
+          </Paragraph>
+        </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      {lesson.thumbnail && (
-        <Image
-          source={getImageSource(lesson.thumbnail) || { uri: 'https://placehold.co/600x400/png' }}
-          style={styles.thumbnail}
-        />
-      )}
+    <SafeAreaView style={styles.container}>
+      <UnifiedHeader 
+        title={lesson.title}
+        subtitle={lesson.category}
+        showBack={true}
+      />
       
-      <View style={styles.content}>
-        <Title style={styles.header}>{lesson.title}</Title>
-        <Paragraph style={styles.description}>{lesson.description}</Paragraph>
-        <Paragraph style={styles.meta}>
-          {language === 'ja' ? 'カテゴリー: ' : 'Category: '}{lesson.category} • 
-          {language === 'ja' ? '所要時間: ' : 'Estimated time: '}{lesson.totalEstimatedTime}
-        </Paragraph>
+      <ScrollView style={styles.scrollView}>
+        {lesson.thumbnail && (
+          <View style={styles.imageContainer}>
+            <Image
+              source={getImageSource(lesson.thumbnail) || { uri: 'https://placehold.co/600x400/png' }}
+              style={styles.thumbnail}
+              resizeMode="cover"
+            />
+          </View>
+        )}
+        
+        <View style={styles.content}>
+          <Paragraph style={styles.description}>{lesson.description}</Paragraph>
+          
+          <View style={styles.metaInfo}>
+            <View style={styles.metaItem}>
+              <Title style={styles.metaLabel}>
+                {t('common.category', 'Category')}
+              </Title>
+              <Paragraph style={styles.metaValue}>{lesson.category}</Paragraph>
+            </View>
+            
+            <View style={styles.metaItem}>
+              <Title style={styles.metaLabel}>
+                {t('common.estimatedTime', 'Estimated Time')}
+              </Title>
+              <Paragraph style={styles.metaValue}>{lesson.totalEstimatedTime}</Paragraph>
+            </View>
+          </View>
 
-        <Title style={styles.subHeader}>
-          {language === 'ja' ? 'コース一覧' : 'Courses'}
-        </Title>
-        {lesson.courses.map((course) => (
-          <Card
-            key={course.id}
-            style={styles.card}
-            onPress={() => handleCoursePress(course.id)}
-          >
-            <Card.Content>
-              <Title>{course.title}</Title>
-              <Paragraph style={styles.courseDescription}>
-                {course.description}
-              </Paragraph>
-              <View style={styles.courseMeta}>
-                <Paragraph style={styles.courseMetaText}>
-                  {language === 'ja' ? 'レベル: ' : 'Level: '}{course.level}
+          <Title style={styles.sectionTitle}>
+            {t('lessonDetail.availableCourses', 'Available Courses')}
+          </Title>
+          
+          {lesson.courses.map((course) => (
+            <Card
+              key={course.id}
+              style={styles.courseCard}
+              onPress={() => handleCoursePress(course.id)}
+            >
+              <Card.Content>
+                <Title style={styles.courseTitle}>{course.title}</Title>
+                <Paragraph style={styles.courseDescription}>
+                  {course.description}
                 </Paragraph>
-                <Paragraph style={styles.courseMetaText}>
-                  {language === 'ja' ? '所要時間: ' : 'Estimated time: '}{course.estimatedTime}
-                </Paragraph>
-              </View>
-            </Card.Content>
-          </Card>
-        ))}
-      </View>
-    </ScrollView>
+                
+                <View style={styles.courseMetaContainer}>
+                  <Paragraph style={styles.courseMeta}>
+                    {t('common.level', 'Level')}: {course.level}
+                  </Paragraph>
+                  <Paragraph style={styles.courseMeta}>
+                    {t('common.estimatedTime', 'Estimated Time')}: {course.estimatedTime}
+                  </Paragraph>
+                </View>
+              </Card.Content>
+            </Card>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
+  },
+  scrollView: {
+    flex: 1,
   },
   loadingContainer: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   errorContainer: {
     flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    padding: spacing.lg,
+  },
+  errorText: {
+    color: colors.textSecondary,
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  imageContainer: {
+    width: '100%',
+    height: 200,
+    overflow: 'hidden',
   },
   thumbnail: {
     width: '100%',
-    height: 200,
-    resizeMode: 'cover',
-    marginBottom: 16,
-    borderRadius: 8,
+    height: '100%',
   },
   content: {
-    padding: 16,
-  },
-  header: {
-    fontSize: 24,
-    marginBottom: 8,
+    padding: spacing.md,
   },
   description: {
-    marginBottom: 16,
-    color: '#666',
+    fontSize: 16,
+    lineHeight: 24,
+    color: colors.text,
+    marginBottom: spacing.md,
   },
-  meta: {
-    fontSize: 14,
-    color: '#888',
-    marginBottom: 24,
-  },
-  subHeader: {
-    fontSize: 20,
-    marginBottom: 16,
-  },
-  card: {
-    marginBottom: 16,
-  },
-  courseDescription: {
-    marginTop: 4,
-    color: '#666',
-  },
-  courseMeta: {
+  metaInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 8,
+    marginBottom: spacing.lg,
+    paddingVertical: spacing.sm,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.border,
   },
-  courseMetaText: {
+  metaItem: {
+    flex: 1,
+  },
+  metaLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: colors.textSecondary,
+  },
+  metaValue: {
+    fontSize: 16,
+    color: colors.text,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: spacing.md,
+    color: colors.text,
+  },
+  courseCard: {
+    marginBottom: spacing.md,
+    borderRadius: borderRadius.md,
+    ...shadows.small,
+  },
+  courseTitle: {
+    fontSize: 18,
+    marginBottom: spacing.xs,
+  },
+  courseDescription: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
+  },
+  courseMetaContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: spacing.xs,
+  },
+  courseMeta: {
     fontSize: 12,
-    color: '#888',
+    color: colors.textSecondary,
   },
 });
 
