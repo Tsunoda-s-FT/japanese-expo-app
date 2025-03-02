@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { Content, Lesson, Course } from '../types/contentTypes';
 import rawData from '../../assets/data/content.json';
 import { useLanguage } from './LanguageContext';
+import { LanguageCode } from '../i18n';
 
 // 状態の型定義
 interface ContentState {
@@ -37,10 +38,10 @@ function contentReducer(state: ContentState, action: ContentAction): ContentStat
 
 interface ContentContextType {
   state: ContentState;
-  getAllLessons: (language?: string) => Lesson[];
-  getLessonById: (lessonId: string, language?: string) => Lesson | undefined;
-  getAllCourses: (language?: string) => Course[];
-  getCourseById: (courseId: string, language?: string) => Course | undefined;
+  getAllLessons: (language?: LanguageCode) => Lesson[];
+  getLessonById: (lessonId: string, language?: LanguageCode) => Lesson | undefined;
+  getAllCourses: (language?: LanguageCode) => Course[];
+  getCourseById: (courseId: string, language?: LanguageCode) => Course | undefined;
   getPhraseCount: (courseId: string) => number;
   getQuizQuestionCount: (courseId: string) => number;
 }
@@ -89,6 +90,7 @@ function getLocalizedContent(id: string, language: string): { title: string; des
 
 export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(contentReducer, initialState);
+  const { t } = useLanguage();
 
   useEffect(() => {
     loadContent();
@@ -160,70 +162,54 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   // インターフェースメソッドの実装
-  const getAllLessons = (language = 'ja'): Lesson[] => {
+  const getAllLessons = (language: LanguageCode = 'ja'): Lesson[] => {
     if (!state.content) return [];
     
-    if (language === 'ja') {
-      return state.content.lessons;
-    }
-    
-    // 英語などの場合、翻訳データをマージする
     return state.content.lessons.map(lesson => {
-      const localizedData = getLocalizedContent(lesson.id, language);
-      if (!localizedData) return lesson;
-      
       return {
         ...lesson,
-        title: localizedData.title,
-        description: localizedData.description,
+        title: t(`lesson_${lesson.id}`, lesson.title),
+        description: t(`lesson_${lesson.id}_description`, lesson.description),
+        courses: lesson.courses.map(course => ({
+          ...course,
+          title: t(`course_${course.id}`, course.title),
+          description: t(`course_${course.id}_description`, course.description)
+        }))
       };
     });
   };
 
-  const getLessonById = (lessonId: string, language = 'ja'): Lesson | undefined => {
+  const getLessonById = (lessonId: string, language: LanguageCode = 'ja'): Lesson | undefined => {
     if (!state.content) return undefined;
     
     const lesson = state.content.lessons.find(l => l.id === lessonId);
     if (!lesson) return undefined;
     
-    if (language === 'ja') {
-      return lesson;
-    }
-    
-    // 翻訳データをマージする
-    const localizedData = getLocalizedContent(lesson.id, language);
-    if (!localizedData) return lesson;
-    
     return {
       ...lesson,
-      title: localizedData.title,
-      description: localizedData.description,
+      title: t(`lesson_${lesson.id}`, lesson.title),
+      description: t(`lesson_${lesson.id}_description`, lesson.description),
+      courses: lesson.courses.map(course => ({
+        ...course,
+        title: t(`course_${course.id}`, course.title),
+        description: t(`course_${course.id}_description`, course.description)
+      }))
     };
   };
 
-  const getAllCourses = (language = 'ja'): Course[] => {
+  const getAllCourses = (language: LanguageCode = 'ja'): Course[] => {
     if (!state.content) return [];
     
     const allCourses = state.content.lessons.flatMap(l => l.courses);
     
-    if (language === 'ja') {
-      return allCourses;
-    }
-    
-    // 英語などの場合、翻訳データをマージする
-    return allCourses.map(course => {
-      const localizedData = getLocalizedContent(course.id, language);
-      if (!localizedData) return course;
-      
-      return {
-        ...course,
-        title: localizedData.title,
-        description: localizedData.description,
-      };
-    });
+    return allCourses.map(course => ({
+      ...course,
+      title: t(`course_${course.id}`, course.title),
+      description: t(`course_${course.id}_description`, course.description)
+    }));
   };
 
-  const getCourseById = (courseId: string, language = 'ja'): Course | undefined => {
+  const getCourseById = (courseId: string, language: LanguageCode = 'ja'): Course | undefined => {
     if (!state.content) return undefined;
     
     const course = state.content.lessons
@@ -232,18 +218,10 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       
     if (!course) return undefined;
     
-    if (language === 'ja') {
-      return course;
-    }
-    
-    // 翻訳データをマージする
-    const localizedData = getLocalizedContent(course.id, language);
-    if (!localizedData) return course;
-    
     return {
       ...course,
-      title: localizedData.title,
-      description: localizedData.description,
+      title: t(`course_${course.id}`, course.title),
+      description: t(`course_${course.id}_description`, course.description)
     };
   };
 

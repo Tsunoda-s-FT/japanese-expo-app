@@ -3,15 +3,16 @@ import { View, StyleSheet } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useLanguage } from '../context/LanguageContext';
+import { LANGUAGES, LanguageCode } from '../i18n';
 import { colors, spacing, borderRadius } from '../theme/theme';
 
 export const LanguageSelector: React.FC = () => {
-  const { language, setLanguage, translations } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {language === 'ja' ? '言語を選択' : 'Select Language'}
+        {t('selectLanguage')}
       </Text>
       <View style={styles.buttonContainer}>
         <Button
@@ -31,6 +32,15 @@ export const LanguageSelector: React.FC = () => {
           icon={({ size, color }) => <Icon name="flag-outline" size={size} color={color} />}
         >
           English
+        </Button>
+        <Button
+          mode={language === 'zh' ? 'contained' : 'outlined'}
+          onPress={() => setLanguage('zh')}
+          style={styles.button}
+          labelStyle={language === 'zh' ? styles.activeLabel : styles.inactiveLabel}
+          icon={({ size, color }) => <Icon name="translate" size={size} color={color} />}
+        >
+          中文
         </Button>
       </View>
     </View>
@@ -53,10 +63,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: spacing.md,
+    flexWrap: 'wrap',
   },
   button: {
     flex: 1,
+    minWidth: 100,
     borderRadius: borderRadius.md,
+    margin: spacing.xs,
   },
   activeLabel: {
     fontWeight: 'bold',

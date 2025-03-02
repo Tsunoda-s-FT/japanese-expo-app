@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { I18nManager } from 'react-native';
+import { LanguageCode, getLanguageInfo, getStoredLanguage, storeLanguage, applyRTL } from '../i18n';
+import { loadTranslations, formatTranslation } from '../i18n/translations';
 
 // 型定義
 export type Language = 'en' | 'ja';
@@ -10,8 +12,9 @@ interface TranslationData {
 
 // 状態の型定義
 interface LanguageState {
-  language: Language;
-  translations: TranslationData;
+  language: LanguageCode;
+  translations: Record<string, string>;
+  isRTL: boolean;
   isLoading: boolean;
   error: Error | null;
 }
@@ -19,9 +22,9 @@ interface LanguageState {
 // アクション定義
 type LanguageAction = 
   | { type: 'LOAD_LANGUAGE_START' }
-  | { type: 'LOAD_LANGUAGE_SUCCESS'; payload: Language }
+  | { type: 'LOAD_LANGUAGE_SUCCESS'; payload: { language: LanguageCode; translations: Record<string, string> } }
   | { type: 'LOAD_LANGUAGE_ERROR'; payload: Error }
-  | { type: 'SET_LANGUAGE'; payload: Language };
+  | { type: 'SET_LANGUAGE'; payload: { language: LanguageCode; translations: Record<string, string> } };
 
 // 翻訳データ
 const defaultTranslations = {
@@ -141,7 +144,8 @@ const defaultTranslations = {
 
 const initialState: LanguageState = {
   language: 'en',
-  translations: defaultTranslations.en,
+  translations: {},
+  isRTL: false,
   isLoading: true,
   error: null
 };
@@ -154,8 +158,9 @@ function languageReducer(state: LanguageState, action: LanguageAction): Language
     case 'LOAD_LANGUAGE_SUCCESS':
       return { 
         ...state, 
-        language: action.payload,
-        translations: defaultTranslations[action.payload],
+        language: action.payload.language,
+        translations: action.payload.translations,
+        isRTL: getLanguageInfo(action.payload.language).rtl,
         isLoading: false,
         error: null
       };
@@ -166,8 +171,9 @@ function languageReducer(state: LanguageState, action: LanguageAction): Language
     case 'SET_LANGUAGE':
       return {
         ...state,
-        language: action.payload,
-        translations: defaultTranslations[action.payload]
+        language: action.payload.language,
+        translations: action.payload.translations,
+        isRTL: getLanguageInfo(action.payload.language).rtl
       };
       
     default:
@@ -180,11 +186,12 @@ const LANGUAGE_STORAGE_KEY = 'user_language';
 
 // コンテキスト型定義
 interface LanguageContextType {
-  language: Language;
-  translations: TranslationData;
+  language: LanguageCode;
+  translations: Record<string, string>;
+  isRTL: boolean;
   isLoading: boolean;
-  setLanguage: (lang: Language) => Promise<void>;
-  t: (key: string, defaultValue?: string) => string;
+  setLanguage: (lang: LanguageCode) => Promise<void>;
+  t: (key: string, defaultValue?: string, params?: Record<string, string | number>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -192,7 +199,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(languageReducer, initialState);
   
-  // 初期化時にAsyncStorageから言語設定を読み込む
+  // 初期化時に言語設定を読み込む
   useEffect(() => {
     loadLanguage();
   }, []);
@@ -200,36 +207,53 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const loadLanguage = async () => {
     dispatch({ type: 'LOAD_LANGUAGE_START' });
     try {
-      const savedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
+      const language = await getStoredLanguage();
+      const translations = loadTranslations(language);
       
-      if (savedLanguage === 'ja' || savedLanguage === 'en') {
-        dispatch({ type: 'LOAD_LANGUAGE_SUCCESS', payload: savedLanguage as Language });
-      } else {
-        // デフォルト言語をセット
-        dispatch({ type: 'LOAD_LANGUAGE_SUCCESS', payload: 'en' });
-      }
+      // RTL設定を適用
+      applyRTL(language);
+      
+      dispatch({ 
+        type: 'LOAD_LANGUAGE_SUCCESS', 
+        payload: { language, translations } 
+      });
     } catch (error) {
       dispatch({ type: 'LOAD_LANGUAGE_ERROR', payload: error as Error });
     }
   };
   
-  const setLanguage = async (lang: Language) => {
+  // 言語を切り替える
+  const setLanguage = async (lang: LanguageCode) => {
     try {
-      await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
-      dispatch({ type: 'SET_LANGUAGE', payload: lang });
+      await storeLanguage(lang);
+      const translations = loadTranslations(lang);
+      
+      // RTL設定を適用
+      applyRTL(lang);
+      
+      dispatch({ 
+        type: 'SET_LANGUAGE', 
+        payload: { language: lang, translations } 
+      });
     } catch (error) {
-      console.error('Failed to save language setting:', error);
+      console.error('Failed to set language:', error);
     }
   };
   
-  // 翻訳キーで文字列を取得
-  const t = (key: string, defaultValue?: string): string => {
-    return state.translations[key] || defaultValue || key;
+  // パラメータ付き翻訳
+  const t = (
+    key: string, 
+    defaultValue?: string,
+    params?: Record<string, string | number>
+  ): string => {
+    const text = state.translations[key] || defaultValue || key;
+    return params ? formatTranslation(text, params) : text;
   };
   
   const value: LanguageContextType = {
     language: state.language,
     translations: state.translations,
+    isRTL: state.isRTL,
     isLoading: state.isLoading,
     setLanguage,
     t
