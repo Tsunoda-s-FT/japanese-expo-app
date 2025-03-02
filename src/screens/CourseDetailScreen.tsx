@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Text, Button, ActivityIndicator, Divider, Card } from 'react-native-paper';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/RootNavigator';
@@ -66,7 +66,7 @@ const CourseDetailScreen: React.FC = () => {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <UnifiedHeader 
           title={t('common.loading', 'Loading...')}
           showBack={true}
@@ -74,23 +74,23 @@ const CourseDetailScreen: React.FC = () => {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (!course) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <UnifiedHeader 
           title={t('courseDetail.notFound', 'Course Not Found')}
-          showBack={true} 
+          showBack={true}
         />
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>
             {t('courseDetail.notFoundMessage', 'The requested course could not be found.')}
           </Text>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -105,7 +105,7 @@ const CourseDetailScreen: React.FC = () => {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <UnifiedHeader 
         title={course.title}
         subtitle={course.level}
@@ -113,7 +113,10 @@ const CourseDetailScreen: React.FC = () => {
         progress={totalProgress}
       />
       
-      <ScrollView style={styles.scrollView}>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+      >
         <Card style={styles.mainCard}>
           <Card.Content>
             <Text style={styles.description}>{course.description}</Text>
@@ -280,7 +283,7 @@ const CourseDetailScreen: React.FC = () => {
           </Card.Content>
         </Card>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -298,6 +301,9 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: spacing.xl,
   },
   loadingContainer: {
     flex: 1,

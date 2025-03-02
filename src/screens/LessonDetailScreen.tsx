@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Image, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView, Image } from 'react-native';
 import { Card, Title, Paragraph, ActivityIndicator } from 'react-native-paper';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -61,7 +61,7 @@ const LessonDetailScreen: React.FC = () => {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <UnifiedHeader 
           title={t('common.loading', 'Loading...')}
           showBack={true}
@@ -69,13 +69,13 @@ const LessonDetailScreen: React.FC = () => {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (!lesson) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <UnifiedHeader 
           title={t('lessonDetail.notFound', 'Lesson Not Found')}
           showBack={true}
@@ -85,19 +85,22 @@ const LessonDetailScreen: React.FC = () => {
             {t('lessonDetail.notFoundMessage', 'The requested lesson could not be found.')}
           </Paragraph>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <UnifiedHeader 
         title={lesson.title}
         subtitle={lesson.category}
         showBack={true}
       />
       
-      <ScrollView style={styles.scrollView}>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+      >
         {lesson.thumbnail && (
           <View style={styles.imageContainer}>
             <Image
@@ -109,54 +112,62 @@ const LessonDetailScreen: React.FC = () => {
         )}
         
         <View style={styles.content}>
-          <Paragraph style={styles.description}>{lesson.description}</Paragraph>
-          
-          <View style={styles.metaInfo}>
-            <View style={styles.metaItem}>
-              <Title style={styles.metaLabel}>
-                {t('common.category', 'Category')}
-              </Title>
-              <Paragraph style={styles.metaValue}>{lesson.category}</Paragraph>
-            </View>
-            
-            <View style={styles.metaItem}>
-              <Title style={styles.metaLabel}>
-                {t('common.estimatedTime', 'Estimated Time')}
-              </Title>
-              <Paragraph style={styles.metaValue}>{lesson.totalEstimatedTime}</Paragraph>
-            </View>
-          </View>
-
-          <Title style={styles.sectionTitle}>
-            {t('lessonDetail.availableCourses', 'Available Courses')}
-          </Title>
-          
-          {lesson.courses.map((course) => (
-            <Card
-              key={course.id}
-              style={styles.courseCard}
-              onPress={() => handleCoursePress(course.id)}
-            >
-              <Card.Content>
-                <Title style={styles.courseTitle}>{course.title}</Title>
-                <Paragraph style={styles.courseDescription}>
-                  {course.description}
-                </Paragraph>
-                
-                <View style={styles.courseMetaContainer}>
-                  <Paragraph style={styles.courseMeta}>
-                    {t('common.level', 'Level')}: {course.level}
-                  </Paragraph>
-                  <Paragraph style={styles.courseMeta}>
-                    {t('common.estimatedTime', 'Estimated Time')}: {course.estimatedTime}
-                  </Paragraph>
+          <Card style={styles.mainCard}>
+            <Card.Content>
+              <Paragraph style={styles.description}>{lesson.description}</Paragraph>
+              
+              <View style={styles.metaInfo}>
+                <View style={styles.metaItem}>
+                  <Title style={styles.metaLabel}>
+                    {t('common.category', 'Category')}
+                  </Title>
+                  <Paragraph style={styles.metaValue}>{lesson.category}</Paragraph>
                 </View>
-              </Card.Content>
-            </Card>
-          ))}
+                
+                <View style={styles.metaItem}>
+                  <Title style={styles.metaLabel}>
+                    {t('common.estimatedTime', 'Estimated Time')}
+                  </Title>
+                  <Paragraph style={styles.metaValue}>{lesson.totalEstimatedTime}</Paragraph>
+                </View>
+              </View>
+            </Card.Content>
+          </Card>
+
+          <Card style={styles.coursesCard}>
+            <Card.Content>
+              <Title style={styles.sectionTitle}>
+                {t('lessonDetail.availableCourses', 'Available Courses')}
+              </Title>
+              
+              {lesson.courses.map((course) => (
+                <Card
+                  key={course.id}
+                  style={styles.courseCard}
+                  onPress={() => handleCoursePress(course.id)}
+                >
+                  <Card.Content>
+                    <Title style={styles.courseTitle}>{course.title}</Title>
+                    <Paragraph style={styles.courseDescription}>
+                      {course.description}
+                    </Paragraph>
+                    
+                    <View style={styles.courseMetaContainer}>
+                      <Paragraph style={styles.courseMeta}>
+                        {t('common.level', 'Level')}: {course.level}
+                      </Paragraph>
+                      <Paragraph style={styles.courseMeta}>
+                        {t('common.estimatedTime', 'Estimated Time')}: {course.estimatedTime}
+                      </Paragraph>
+                    </View>
+                  </Card.Content>
+                </Card>
+              ))}
+            </Card.Content>
+          </Card>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -167,6 +178,9 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: spacing.xl,
   },
   loadingContainer: {
     flex: 1,
@@ -194,7 +208,12 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   content: {
-    padding: spacing.md,
+    flex: 1,
+  },
+  mainCard: {
+    margin: spacing.md,
+    borderRadius: borderRadius.md,
+    ...shadows.small,
   },
   description: {
     fontSize: 16,
@@ -222,6 +241,12 @@ const styles = StyleSheet.create({
   metaValue: {
     fontSize: 16,
     color: colors.text,
+  },
+  coursesCard: {
+    margin: spacing.md,
+    marginTop: 0,
+    borderRadius: borderRadius.md,
+    ...shadows.small,
   },
   sectionTitle: {
     fontSize: 20,

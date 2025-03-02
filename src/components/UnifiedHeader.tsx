@@ -1,9 +1,15 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Platform, StatusBar } from 'react-native';
+import { 
+  View, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Platform, 
+  StatusBar,
+  SafeAreaView
+} from 'react-native';
 import { Text } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
 import { colors, spacing, shadows } from '../theme/theme';
 import { LanguageCode } from '../i18n';
@@ -78,7 +84,6 @@ const UnifiedHeader: React.FC<UnifiedHeaderProps> = ({
 }) => {
   const { language, t } = useImprovedLanguage();
   const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
   
   // デフォルトハンドラー
   const handleBack = () => {
@@ -113,114 +118,113 @@ const UnifiedHeader: React.FC<UnifiedHeaderProps> = ({
     }
   };
   
-  return (
-    <View style={[
-      styles.container, 
-      { 
-        backgroundColor,
-        paddingTop: insets.top,
-        ...(elevated ? shadows.small : {})
-      }
-    ]}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor={backgroundColor}
-        translucent={false}
-      />
-      
-      {/* ヘッダーコンテンツ */}
-      <View style={styles.headerContent}>
-        {/* 左側：戻る/閉じるボタン */}
-        <View style={styles.leftSection}>
-          {showBack && (
-            <TouchableOpacity
-              onPress={handleBack}
-              style={styles.iconButton}
-              accessibilityLabel={t('accessibility.back', '戻る')}
-              accessibilityRole="button"
-            >
-              <MaterialCommunityIcons
-                name="arrow-left"
-                size={24}
-                color={colors.text}
-              />
-            </TouchableOpacity>
-          )}
-          
-          {showClose && (
-            <TouchableOpacity
-              onPress={handleClose}
-              style={styles.iconButton}
-              accessibilityLabel={t('accessibility.close', '閉じる')}
-              accessibilityRole="button"
-            >
-              <MaterialCommunityIcons
-                name="close"
-                size={24}
-                color={colors.text}
-              />
-            </TouchableOpacity>
-          )}
-        </View>
+  // ヘッダーコンテンツのレンダリング（SafeAreaView内で使用）
+  const renderHeaderContent = () => (
+    <View style={[styles.headerContent, elevated && shadows.small]}>
+      {/* 左側：戻る/閉じるボタン */}
+      <View style={styles.leftSection}>
+        {showBack && (
+          <TouchableOpacity
+            onPress={handleBack}
+            style={styles.iconButton}
+            accessibilityLabel={t('accessibility.back', '戻る')}
+            accessibilityRole="button"
+          >
+            <MaterialCommunityIcons
+              name="arrow-left"
+              size={24}
+              color={colors.text}
+            />
+          </TouchableOpacity>
+        )}
         
-        {/* 中央：タイトル */}
-        <View style={styles.titleSection}>
+        {showClose && (
+          <TouchableOpacity
+            onPress={handleClose}
+            style={styles.iconButton}
+            accessibilityLabel={t('accessibility.close', '閉じる')}
+            accessibilityRole="button"
+          >
+            <MaterialCommunityIcons
+              name="close"
+              size={24}
+              color={colors.text}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+      
+      {/* 中央：タイトル */}
+      <View style={styles.titleSection}>
+        <Text 
+          style={styles.title} 
+          numberOfLines={1} 
+          ellipsizeMode="tail"
+        >
+          {title}
+        </Text>
+        {subtitle && (
           <Text 
-            style={styles.title} 
+            style={styles.subtitle} 
             numberOfLines={1} 
             ellipsizeMode="tail"
           >
-            {title}
+            {subtitle}
           </Text>
-          {subtitle && (
-            <Text 
-              style={styles.subtitle} 
-              numberOfLines={1} 
-              ellipsizeMode="tail"
-            >
-              {subtitle}
-            </Text>
-          )}
-        </View>
-        
-        {/* 右側：言語と設定 */}
-        <View style={styles.rightSection}>
-          {rightAction}
-          
-          {showLanguageSelector && (
-            <TouchableOpacity
-              onPress={handleLanguagePress}
-              style={styles.iconButton}
-              accessibilityLabel={t('accessibility.changeLanguage', '言語を変更')}
-              accessibilityRole="button"
-            >
-              <View style={[
-                styles.languageButton,
-                { backgroundColor: getLanguageColor(language) }
-              ]}>
-                <Text style={styles.languageText}>
-                  {getLanguageDisplay(language)}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          
-          {showSettings && (
-            <TouchableOpacity
-              onPress={handleSettingsPress}
-              style={styles.iconButton}
-              accessibilityLabel={t('accessibility.settings', '設定')}
-              accessibilityRole="button"
-            >
-              <MaterialCommunityIcons
-                name="cog"
-                size={24}
-                color={colors.text}
-              />
-            </TouchableOpacity>
-          )}
-        </View>
+        )}
       </View>
+      
+      {/* 右側：言語と設定 */}
+      <View style={styles.rightSection}>
+        {rightAction}
+        
+        {showLanguageSelector && (
+          <TouchableOpacity
+            onPress={handleLanguagePress}
+            style={styles.iconButton}
+            accessibilityLabel={t('accessibility.changeLanguage', '言語を変更')}
+            accessibilityRole="button"
+          >
+            <View style={[
+              styles.languageButton,
+              { backgroundColor: getLanguageColor(language) }
+            ]}>
+              <Text style={styles.languageText}>
+                {getLanguageDisplay(language)}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        
+        {showSettings && (
+          <TouchableOpacity
+            onPress={handleSettingsPress}
+            style={styles.iconButton}
+            accessibilityLabel={t('accessibility.settings', '設定')}
+            accessibilityRole="button"
+          >
+            <MaterialCommunityIcons
+              name="cog"
+              size={24}
+              color={colors.text}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+    </View>
+  );
+  
+  return (
+    <View style={[styles.container, { backgroundColor }]}>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="transparent"
+        translucent={true}
+      />
+      
+      <SafeAreaView style={{ backgroundColor }}>
+        {renderHeaderContent()}
+      </SafeAreaView>
       
       {/* プログレスバー（提供されている場合） */}
       {progress !== undefined && (
@@ -243,6 +247,8 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.1)',
   },
   headerContent: {
     height: 56,
@@ -250,6 +256,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: spacing.md,
+    backgroundColor: colors.surface,
   },
   leftSection: {
     flexDirection: 'row',
