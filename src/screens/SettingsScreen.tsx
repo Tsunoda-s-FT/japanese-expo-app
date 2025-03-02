@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Text, List, Switch, Divider } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
 import { useSettings } from '../context/SettingsContext';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
-import { ImprovedHeader } from '../components/ImprovedHeader';
+import AppHeader from '../components/AppHeader';
 
 const SettingsScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -49,8 +49,12 @@ const SettingsScreen: React.FC = () => {
   const privacyText = language === 'ja' ? 'プライバシーポリシー' : 'Privacy Policy';
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ImprovedHeader title={settingsTitle} showBack={true} />
+    <View style={styles.container}>
+      <AppHeader 
+        title={settingsTitle}
+        showBack={true}
+        showLanguageSelector={false}
+      />
       
       <ScrollView style={styles.scrollView}>
         <List.Section>
@@ -160,7 +164,7 @@ const SettingsScreen: React.FC = () => {
           />
         </List.Section>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

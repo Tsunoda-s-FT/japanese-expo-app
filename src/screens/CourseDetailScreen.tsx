@@ -9,7 +9,7 @@ import { getCourseById } from '../services/contentService';
 import { Course } from '../types/contentTypes';
 import { useProgress } from '../context/ProgressContext';
 import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
-import UnifiedHeader from '../components/UnifiedHeader';
+import AppHeader from '../components/AppHeader';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { formatJapaneseDate } from '../utils/formatUtils';
 
@@ -67,7 +67,7 @@ const CourseDetailScreen: React.FC = () => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <UnifiedHeader 
+        <AppHeader 
           title={t('common.loading', 'Loading...')}
           showBack={true}
         />
@@ -81,7 +81,7 @@ const CourseDetailScreen: React.FC = () => {
   if (!course) {
     return (
       <View style={styles.container}>
-        <UnifiedHeader 
+        <AppHeader 
           title={t('courseDetail.notFound', 'Course Not Found')}
           showBack={true}
         />
@@ -106,7 +106,7 @@ const CourseDetailScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <UnifiedHeader 
+      <AppHeader 
         title={course.title}
         subtitle={course.level}
         showBack={true}

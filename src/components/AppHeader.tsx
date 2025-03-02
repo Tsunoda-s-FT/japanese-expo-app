@@ -3,7 +3,6 @@ import {
   View, 
   StyleSheet, 
   TouchableOpacity, 
-  Platform, 
   StatusBar,
   SafeAreaView
 } from 'react-native';
@@ -14,7 +13,6 @@ import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
 import { colors, spacing, shadows } from '../theme/theme';
 import { LanguageCode } from '../i18n';
 
-// 言語表示設定
 const getLanguageDisplay = (code: LanguageCode): string => {
   switch(code) {
     case 'en': return 'EN';
@@ -37,36 +35,22 @@ const getLanguageColor = (code: LanguageCode): string => {
   }
 };
 
-interface UnifiedHeaderProps {
-  // 基本プロパティ
+interface AppHeaderProps {
   title: string;
-  
-  // ナビゲーションオプション
   showBack?: boolean;
   showClose?: boolean;
-  
-  // 右側要素
   showLanguageSelector?: boolean;
   showSettings?: boolean;
-  
-  // オプション要素
   subtitle?: string;
   progress?: number;
   rightAction?: React.ReactNode;
-  
-  // コールバック
   onBackPress?: () => void;
   onClosePress?: () => void;
   onLanguagePress?: () => void;
   onSettingsPress?: () => void;
-  
-  // スタイリング
-  backgroundColor?: string;
-  elevated?: boolean;
 }
 
-const UnifiedHeader: React.FC<UnifiedHeaderProps> = ({
-  // プロパティのデフォルト値
+const AppHeader: React.FC<AppHeaderProps> = ({
   title,
   showBack = false,
   showClose = false,
@@ -79,13 +63,10 @@ const UnifiedHeader: React.FC<UnifiedHeaderProps> = ({
   onClosePress,
   onLanguagePress,
   onSettingsPress,
-  backgroundColor = colors.surface,
-  elevated = true,
 }) => {
   const { language, t } = useImprovedLanguage();
   const navigation = useNavigation();
   
-  // デフォルトハンドラー
   const handleBack = () => {
     if (onBackPress) {
       onBackPress();
@@ -118,115 +99,106 @@ const UnifiedHeader: React.FC<UnifiedHeaderProps> = ({
     }
   };
   
-  // ヘッダーコンテンツのレンダリング（SafeAreaView内で使用）
-  const renderHeaderContent = () => (
-    <View style={[styles.headerContent, elevated && shadows.small]}>
-      {/* 左側：戻る/閉じるボタン */}
-      <View style={styles.leftSection}>
-        {showBack && (
-          <TouchableOpacity
-            onPress={handleBack}
-            style={styles.iconButton}
-            accessibilityLabel={t('accessibility.back', '戻る')}
-            accessibilityRole="button"
-          >
-            <MaterialCommunityIcons
-              name="arrow-left"
-              size={24}
-              color={colors.text}
-            />
-          </TouchableOpacity>
-        )}
-        
-        {showClose && (
-          <TouchableOpacity
-            onPress={handleClose}
-            style={styles.iconButton}
-            accessibilityLabel={t('accessibility.close', '閉じる')}
-            accessibilityRole="button"
-          >
-            <MaterialCommunityIcons
-              name="close"
-              size={24}
-              color={colors.text}
-            />
-          </TouchableOpacity>
-        )}
-      </View>
-      
-      {/* 中央：タイトル */}
-      <View style={styles.titleSection}>
-        <Text 
-          style={styles.title} 
-          numberOfLines={1} 
-          ellipsizeMode="tail"
-        >
-          {title}
-        </Text>
-        {subtitle && (
-          <Text 
-            style={styles.subtitle} 
-            numberOfLines={1} 
-            ellipsizeMode="tail"
-          >
-            {subtitle}
-          </Text>
-        )}
-      </View>
-      
-      {/* 右側：言語と設定 */}
-      <View style={styles.rightSection}>
-        {rightAction}
-        
-        {showLanguageSelector && (
-          <TouchableOpacity
-            onPress={handleLanguagePress}
-            style={styles.iconButton}
-            accessibilityLabel={t('accessibility.changeLanguage', '言語を変更')}
-            accessibilityRole="button"
-          >
-            <View style={[
-              styles.languageButton,
-              { backgroundColor: getLanguageColor(language) }
-            ]}>
-              <Text style={styles.languageText}>
-                {getLanguageDisplay(language)}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-        
-        {showSettings && (
-          <TouchableOpacity
-            onPress={handleSettingsPress}
-            style={styles.iconButton}
-            accessibilityLabel={t('accessibility.settings', '設定')}
-            accessibilityRole="button"
-          >
-            <MaterialCommunityIcons
-              name="cog"
-              size={24}
-              color={colors.text}
-            />
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
-  );
-  
   return (
-    <View style={[styles.container, { backgroundColor }]}>
+    <View style={styles.container}>
       <StatusBar
         barStyle="dark-content"
         backgroundColor="transparent"
         translucent={true}
       />
       
-      <SafeAreaView style={{ backgroundColor }}>
-        {renderHeaderContent()}
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.headerContent}>
+          <View style={styles.leftSection}>
+            {showBack && (
+              <TouchableOpacity
+                onPress={handleBack}
+                style={styles.iconButton}
+                accessibilityLabel={t('accessibility.back', '戻る')}
+                accessibilityRole="button"
+              >
+                <MaterialCommunityIcons
+                  name="arrow-left"
+                  size={24}
+                  color={colors.text}
+                />
+              </TouchableOpacity>
+            )}
+            
+            {showClose && (
+              <TouchableOpacity
+                onPress={handleClose}
+                style={styles.iconButton}
+                accessibilityLabel={t('accessibility.close', '閉じる')}
+                accessibilityRole="button"
+              >
+                <MaterialCommunityIcons
+                  name="close"
+                  size={24}
+                  color={colors.text}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+          
+          <View style={styles.titleSection}>
+            <Text 
+              style={styles.title} 
+              numberOfLines={1} 
+              ellipsizeMode="tail"
+            >
+              {title}
+            </Text>
+            {subtitle && (
+              <Text 
+                style={styles.subtitle} 
+                numberOfLines={1} 
+                ellipsizeMode="tail"
+              >
+                {subtitle}
+              </Text>
+            )}
+          </View>
+          
+          <View style={styles.rightSection}>
+            {rightAction}
+            
+            {showLanguageSelector && (
+              <TouchableOpacity
+                onPress={handleLanguagePress}
+                style={styles.iconButton}
+                accessibilityLabel={t('accessibility.changeLanguage', '言語を変更')}
+                accessibilityRole="button"
+              >
+                <View style={[
+                  styles.languageButton,
+                  { backgroundColor: getLanguageColor(language) }
+                ]}>
+                  <Text style={styles.languageText}>
+                    {getLanguageDisplay(language)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+            
+            {showSettings && (
+              <TouchableOpacity
+                onPress={handleSettingsPress}
+                style={styles.iconButton}
+                accessibilityLabel={t('accessibility.settings', '設定')}
+                accessibilityRole="button"
+              >
+                <MaterialCommunityIcons
+                  name="cog"
+                  size={24}
+                  color={colors.text}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
       </SafeAreaView>
       
-      {/* プログレスバー（提供されている場合） */}
       {progress !== undefined && (
         <View style={styles.progressContainer}>
           <View style={styles.progressBackground}>
@@ -250,6 +222,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(0,0,0,0.1)',
   },
+  safeArea: {
+    backgroundColor: colors.surface,
+  },
   headerContent: {
     height: 56,
     flexDirection: 'row',
@@ -257,6 +232,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.md,
     backgroundColor: colors.surface,
+    ...shadows.small,
   },
   leftSection: {
     flexDirection: 'row',
@@ -320,4 +296,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UnifiedHeader; 
+export default AppHeader; 

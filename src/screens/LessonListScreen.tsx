@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Image, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -10,7 +10,7 @@ import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
 import AppLoading from '../components/ui/AppLoading';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { commonStyles } from '../theme/styles';
-import { ImprovedHeader } from '../components/ImprovedHeader';
+import AppHeader from '../components/AppHeader';
 
 // 画像のマッピング
 const lessonImages: { [key: string]: any } = {
@@ -62,17 +62,18 @@ const LessonListScreen: React.FC = () => {
 
   if (!lessons || lessons.length === 0) {
     return (
-      <SafeAreaView style={[commonStyles.centeredContent, styles.container]}>
+      <View style={[commonStyles.centeredContent, styles.container]}>
+        <AppHeader title={language === 'ja' ? "レッスンが見つかりません" : "No Lessons"} />
         <Text>{language === 'ja' ? "レッスンが見つかりません。" : "No lessons found."}</Text>
-      </SafeAreaView>
+      </View>
     );
   }
 
   const screenTitle = language === 'ja' ? 'レッスン' : 'Lessons';
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ImprovedHeader title={screenTitle} />
+    <View style={styles.container}>
+      <AppHeader title={screenTitle} />
       
       <ScrollView 
         style={styles.scrollView} 
@@ -105,7 +106,7 @@ const LessonListScreen: React.FC = () => {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

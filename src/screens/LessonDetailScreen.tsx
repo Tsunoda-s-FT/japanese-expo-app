@@ -7,7 +7,7 @@ import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getLessonById } from '../services/contentService';
 import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
-import UnifiedHeader from '../components/UnifiedHeader';
+import AppHeader from '../components/AppHeader';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 
 // 画像のマッピング
@@ -62,7 +62,7 @@ const LessonDetailScreen: React.FC = () => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <UnifiedHeader 
+        <AppHeader 
           title={t('common.loading', 'Loading...')}
           showBack={true}
         />
@@ -76,7 +76,7 @@ const LessonDetailScreen: React.FC = () => {
   if (!lesson) {
     return (
       <View style={styles.container}>
-        <UnifiedHeader 
+        <AppHeader 
           title={t('lessonDetail.notFound', 'Lesson Not Found')}
           showBack={true}
         />
@@ -91,9 +91,8 @@ const LessonDetailScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <UnifiedHeader 
+      <AppHeader 
         title={lesson.title}
-        subtitle={lesson.category}
         showBack={true}
       />
       

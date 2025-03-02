@@ -1,13 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Text, Card } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../context/LanguageContext';
 import { LANGUAGES, LanguageCode } from '../i18n';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { getFlagIconForLanguage, getNativeLanguageName, getEnglishLanguageName } from '../utils/languageUtils';
-import HeaderWithLanguage from '../components/HeaderWithLanguage';
-import { ImprovedHeader } from '../components/ImprovedHeader';
+import AppHeader from '../components/AppHeader';
 
 const LanguageSettingsScreen: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -19,8 +18,12 @@ const LanguageSettingsScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.screenContainer}>
-      <ImprovedHeader title={t('settings.language', '言語設定')} showBack={true} />
+    <View style={styles.screenContainer}>
+      <AppHeader 
+        title={t('settings.language', '言語設定')} 
+        showBack={true}
+        showLanguageSelector={false}
+      />
       
       <ScrollView style={styles.container}>
         <Text style={styles.description}>
@@ -76,7 +79,7 @@ const LanguageSettingsScreen: React.FC = () => {
           </Card.Content>
         </Card>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
