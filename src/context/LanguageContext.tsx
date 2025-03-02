@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { I18nManager } from 'react-native';
 import { LanguageCode, getLanguageInfo, getStoredLanguage, storeLanguage, applyRTL } from '../i18n';
 import { loadTranslations, formatTranslation } from '../i18n/translations';
+import { getTypography, TypographyConfig } from '../theme/typography';
 
 // 型定義
 export type Language = 'en' | 'ja';
@@ -17,6 +18,7 @@ interface LanguageState {
   isRTL: boolean;
   isLoading: boolean;
   error: Error | null;
+  typography: TypographyConfig;
 }
 
 // アクション定義
@@ -147,7 +149,8 @@ const initialState: LanguageState = {
   translations: {},
   isRTL: false,
   isLoading: true,
-  error: null
+  error: null,
+  typography: getTypography('en')
 };
 
 function languageReducer(state: LanguageState, action: LanguageAction): LanguageState {
@@ -162,7 +165,8 @@ function languageReducer(state: LanguageState, action: LanguageAction): Language
         translations: action.payload.translations,
         isRTL: getLanguageInfo(action.payload.language).rtl,
         isLoading: false,
-        error: null
+        error: null,
+        typography: getTypography(action.payload.language)
       };
       
     case 'LOAD_LANGUAGE_ERROR':
@@ -173,7 +177,8 @@ function languageReducer(state: LanguageState, action: LanguageAction): Language
         ...state,
         language: action.payload.language,
         translations: action.payload.translations,
-        isRTL: getLanguageInfo(action.payload.language).rtl
+        isRTL: getLanguageInfo(action.payload.language).rtl,
+        typography: getTypography(action.payload.language)
       };
       
     default:
@@ -190,6 +195,7 @@ interface LanguageContextType {
   translations: Record<string, string>;
   isRTL: boolean;
   isLoading: boolean;
+  typography: TypographyConfig;
   setLanguage: (lang: LanguageCode) => Promise<void>;
   t: (key: string, defaultValue?: string, params?: Record<string, string | number>) => string;
 }
@@ -255,6 +261,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     translations: state.translations,
     isRTL: state.isRTL,
     isLoading: state.isLoading,
+    typography: state.typography,
     setLanguage,
     t
   };

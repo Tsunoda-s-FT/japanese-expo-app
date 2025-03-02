@@ -9,7 +9,9 @@ import * as Localization from 'expo-localization';
 export type LanguageCode = 
   | 'en'     // 英語
   | 'ja'     // 日本語
-  | 'zh';    // 中国語（簡体）
+  | 'zh'     // 中国語（簡体）
+  | 'ko'     // 韓国語
+  | 'es';    // スペイン語
 
 // 右から左に表示する言語コード
 const RTL_LANGUAGES: LanguageCode[] = [];
@@ -28,6 +30,8 @@ export const LANGUAGES: LanguageInfo[] = [
   { code: 'en', name: 'English', nativeName: 'English', rtl: false },
   { code: 'ja', name: 'Japanese', nativeName: '日本語', rtl: false },
   { code: 'zh', name: 'Chinese (Simplified)', nativeName: '简体中文', rtl: false },
+  { code: 'ko', name: 'Korean', nativeName: '한국어', rtl: false },
+  { code: 'es', name: 'Spanish', nativeName: 'Español', rtl: false },
 ];
 
 // AsyncStorage のキー
