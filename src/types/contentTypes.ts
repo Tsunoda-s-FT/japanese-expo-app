@@ -84,6 +84,21 @@ export interface QuizAnswer {
   timestamp: string;
 }
 
+export interface QuizSessionLog {
+  sessionId: string;
+  courseId: string;
+  date: string;
+  status: 'ongoing' | 'completed' | 'aborted';
+  answers: {
+    questionId: string;
+    selectedOptionIndex: number;
+    isCorrect: boolean;
+  }[];
+  correctCount: number;
+  totalCount: number;
+  stoppedAtQuestionIndex?: number;
+}
+
 export interface CourseProgress {
   courseId: string;
   learnedPhraseIds: Set<string>;     // 変更：学習済みフレーズIDのSet

@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContent } from './ContentContext';
-import { Content, Course, Lesson } from '../types/contentTypes';
-import { QuizSessionLog } from '../types/QuizSessionLog';
+import { Content, Course, Lesson, QuizSessionLog } from '../types/contentTypes';
 
 // ストレージキー - progressManager.tsと統一
 const PROGRESS_STORAGE_KEY = '@japanese_app_progress';

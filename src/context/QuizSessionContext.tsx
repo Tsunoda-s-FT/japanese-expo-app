@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import { QuizSessionLog } from '../types/QuizSessionLog';
+import { QuizSessionLog } from '../types/contentTypes';
 import { useProgress } from './ProgressContext';
 import contentJson from '../../assets/data/content.json';
 import { QuizQuestion, Content } from '../types/contentTypes';
