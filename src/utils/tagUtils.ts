@@ -1,4 +1,5 @@
-// src/utils/localization.ts
+// src/utils/tagUtils.ts
+// 多言語タグ情報と関連ユーティリティ関数
 
 import { LanguageCode } from '../i18n/i18n';
 import learningLevelTags from '../../assets/contents/tags/learningLevel.json';
@@ -51,35 +52,17 @@ export function getTagById(tagType: TagType, tagId: string): TagInfo | undefined
 
 /**
  * 各種タグの多言語テキストを取得する
+ * @param tagType タグのタイプ
+ * @param tagId タグID
+ * @param language 言語コード
+ * @returns ローカライズされたラベル
  */
-export function getLocalizedTagText(
+export function getLocalizedTagLabel(
   tagType: TagType,
   tagId: string,
   language: LanguageCode = 'ja'
 ): string {
-  let tagList;
-  
-  switch (tagType) {
-    case 'learningLevel':
-      tagList = learningLevelTags;
-      break;
-    case 'partOfSpeech':
-      tagList = partOfSpeechTags;
-      break;
-    case 'politenessLevel':
-      tagList = politenessLevelTags;
-      break;
-    case 'segmentType':
-      tagList = segmentTypeTags;
-      break;
-    case 'sentenceType':
-      tagList = sentenceTypeTags;
-      break;
-    default:
-      return tagId;
-  }
-  
-  const tag = tagList.find((t: any) => t.id === tagId);
+  const tag = getTagById(tagType, tagId);
   if (!tag || !tag.labels) return tagId;
   
   return tag.labels[language] || tag.labels.ja || tagId;

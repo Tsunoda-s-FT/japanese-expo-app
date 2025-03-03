@@ -1,32 +1,33 @@
-// src/screens/CourseLearningScreen.tsx
-
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, Alert, BackHandler } from 'react-native';
 import { Text, Card, Title } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SessionStackParamList } from '../navigation/SessionNavigator';
-import { getCourseById } from '../services/contentService';
+import { getCourseById, getLessonForCourse } from '../services/contentService';
 import { useProgress } from '../context/ProgressContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Course, Phrase } from '../types/contentTypes';
-import SegmentedText from '../components/learning/SegmentedText';
+import { PronunciationEvaluationResult } from '../utils/audio';
+import { AppButton, AppProgressBar, AppLoading } from '../components';
+import EnhancedPhraseCard from '../components/learning/EnhancedPhraseCard';
 import AudioButton from '../components/learning/AudioButton';
 import RecordingButton from '../components/learning/RecordingButton';
 import PronunciationResultCard from '../components/learning/PronunciationResultCard';
-import { PronunciationEvaluationResult } from '../utils/audio';
-import { AppButton, AppProgressBar, AppLoading } from '../components';
-import { colors, spacing } from '../theme/theme';
+import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 
 type CourseLearningScreenRouteProp = RouteProp<SessionStackParamList, 'CourseLearning'>;
 type SessionNavProp = NativeStackNavigationProp<SessionStackParamList>;
 
-export default function CourseLearningScreen() {
+export default function UpdatedCourseLearningScreen() {
   const navigation = useNavigation<SessionNavProp>();
   const route = useRoute<CourseLearningScreenRouteProp>();
   const { courseId } = route.params;
   const { markPhraseCompleted, isPhraseCompleted } = useProgress();
+  const { language, t } = useLanguage();
 
   const [course, setCourse] = useState<Course | null>(null);
+  const [lessonId, setLessonId] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [evaluationResult, setEvaluationResult] = useState<PronunciationEvaluationResult | null>(null);
@@ -37,8 +38,14 @@ export default function CourseLearningScreen() {
     const loadData = async () => {
       if (!courseId) return;
       try {
-        const data = await getCourseById(courseId);
+        const data = await getCourseById(courseId, language);
         setCourse(data ?? null);
+        
+        // コースが所属するレッスンIDを取得
+        const lesson = await getLessonForCourse(courseId);
+        if (lesson) {
+          setLessonId(lesson.id);
+        }
       } catch (error) {
         console.error('Error loading course:', error);
       } finally {
@@ -46,7 +53,7 @@ export default function CourseLearningScreen() {
       }
     };
     loadData();
-  }, [courseId]);
+  }, [courseId, language]);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -66,12 +73,12 @@ export default function CourseLearningScreen() {
 
   const showExitConfirmation = () => {
     Alert.alert(
-      '学習を終了しますか？',
-      '学習を中断して呼び出し元の画面に戻ります',
+      t('exitSessionTitle', '学習を終了しますか？'),
+      t('exitSessionMessage', '学習を中断して呼び出し元の画面に戻ります'),
       [
-        { text: 'キャンセル', style: 'cancel' },
+        { text: t('cancel', 'キャンセル'), style: 'cancel' },
         {
-          text: '終了する',
+          text: t('exit', '終了する'),
           style: 'destructive',
           onPress: () => {
             navigation.getParent()?.goBack();
@@ -93,8 +100,8 @@ export default function CourseLearningScreen() {
       setCurrentIndex(currentIndex + 1);
       setShowResult(false); // 結果表示をリセット
     } else {
-      // 最後のフレーズが終わったらクイズへ
-      navigation.navigate('CourseQuiz', { courseId });
+      // 最後のフレーズが終わったらコース学習完了画面へ
+      navigation.navigate('CourseLearningComplete', { courseId });
     }
   };
 
@@ -109,13 +116,13 @@ export default function CourseLearningScreen() {
   };
 
   if (loading) {
-    return <AppLoading message="コースを読み込んでいます..." />;
+    return <AppLoading message={t('loadingCourse', 'コースを読み込んでいます...')} />;
   }
 
   if (!course) {
     return (
       <View style={styles.errorContainer}>
-        <Text>コースが見つかりませんでした。</Text>
+        <Text>{t('courseNotFound', 'コースが見つかりませんでした。')}</Text>
       </View>
     );
   }
@@ -127,7 +134,7 @@ export default function CourseLearningScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header with progress */}
+      {/* ヘッダーと進捗バー */}
       <View style={styles.headerContainer}>
         <Text style={styles.progressText}>
           {currentIndex + 1} / {totalPhrases}
@@ -138,65 +145,43 @@ export default function CourseLearningScreen() {
         />
       </View>
 
-      {/* Main content */}
+      {/* メインコンテンツ */}
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        {/* Phrase Card */}
-        <Card style={styles.phraseCard}>
-          <Card.Content>
-            {isCurrentPhraseCompleted && (
-              <View style={styles.completedBadge}>
-                <Text style={styles.completedText}>学習済み</Text>
-              </View>
-            )}
-            {/* Main phrase */}
-            <View style={styles.phraseContainer}>
-              <SegmentedText
-                segments={currentPhrase.segments ?? []}
-                style={styles.phraseText}
-              />
-              <Text style={styles.translation}>{currentPhrase.translations.en}</Text>
+        {/* 完了済みバッジ */}
+        {isCurrentPhraseCompleted && (
+          <View style={styles.completedBadgeContainer}>
+            <View style={styles.completedBadge}>
+              <Text style={styles.completedText}>{t('completed', '学習済み')}</Text>
             </View>
+          </View>
+        )}
 
-            {/* Audio and Recording buttons */}
-            <View style={styles.audioButtonsContainer}>
-              <AudioButton audioPath={currentPhrase.audio ?? ''} style={styles.audioButton} />
-              <RecordingButton
-                phraseId={currentPhrase.id}
-                style={styles.recordButton}
-                onEvaluationComplete={(result) => {
-                  setEvaluationResult(result);
-                  setShowResult(true);
-                }}
-              />
-            </View>
+        {/* 強化版フレーズカード */}
+        {lessonId && (
+          <EnhancedPhraseCard phrase={currentPhrase} lessonId={lessonId} />
+        )}
+        
+        {/* 音声と録音ボタン */}
+        <View style={styles.audioButtonsContainer}>
+          <AudioButton audioPath={currentPhrase.audio ?? ''} style={styles.audioButton} />
+          <RecordingButton
+            phraseId={currentPhrase.id}
+            style={styles.recordButton}
+            onEvaluationComplete={(result) => {
+              setEvaluationResult(result);
+              setShowResult(true);
+            }}
+          />
+        </View>
 
-            {/* Example sentences */}
-            {currentPhrase.exampleSentences && currentPhrase.exampleSentences.length > 0 && (
-              <View style={styles.examplesContainer}>
-                <Title style={styles.examplesTitle}>例文</Title>
-                {currentPhrase.exampleSentences.map((example, index) => (
-                  <View key={index} style={styles.exampleItem}>
-                    <SegmentedText
-                      segments={example.segments ?? []}
-                      style={styles.exampleText}
-                      furiganaStyle={styles.furigana}
-                    />
-                    <Text style={styles.exampleTranslation}>{example.translations.en}</Text>
-                  </View>
-                ))}
-              </View>
-            )}
-          </Card.Content>
-        </Card>
-
-        {/* Pronunciation evaluation result */}
+        {/* 発音評価結果 - 位置変更済み（例文の下・解説の上） */}
         {showResult && evaluationResult && (
           <Card style={styles.evaluationContainer}>
             <Card.Content>
-              <Title style={styles.evaluationTitle}>発音評価結果</Title>
+              <Title style={styles.evaluationTitle}>{t('pronunciationResult', '発音評価結果')}</Title>
               <PronunciationResultCard result={evaluationResult} />
               <AppButton
-                label="結果を閉じる"
+                label={t('closeResult', '結果を閉じる')}
                 onPress={() => setShowResult(false)}
                 variant="outline"
                 style={styles.closeButton}
@@ -206,17 +191,17 @@ export default function CourseLearningScreen() {
         )}
       </ScrollView>
 
-      {/* Navigation buttons */}
+      {/* ナビゲーションボタン */}
       <View style={styles.navigationContainer}>
         <AppButton
-          label="戻る"
+          label={t('back', '戻る')}
           onPress={handlePrevious}
           variant="outline"
           icon="arrow-left"
           style={styles.navButton}
         />
         <AppButton
-          label="次へ"
+          label={t('next', '次へ')}
           onPress={handleNext}
           variant="primary"
           icon="arrow-right"
@@ -248,25 +233,24 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: spacing.md,
+    paddingBottom: spacing.xxl,
   },
-  phraseCard: {
-    marginBottom: spacing.md,
-    borderRadius: 12,
-    backgroundColor: colors.surface,
-    elevation: 2,
+  completedBadgeContainer: {
+    alignItems: 'flex-end',
+    marginBottom: -20,
+    zIndex: 10,
   },
-  phraseContainer: {
-    alignItems: 'center',
-    paddingVertical: spacing.md,
+  completedBadge: {
+    backgroundColor: colors.success,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    ...shadows.small,
   },
-  phraseText: {
-    marginBottom: spacing.md,
-  },
-  translation: {
-    fontSize: 18,
-    textAlign: 'center',
-    color: colors.textSecondary,
-    marginTop: spacing.sm,
+  completedText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 12,
   },
   audioButtonsContainer: {
     flexDirection: 'row',
@@ -282,44 +266,15 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: spacing.sm,
   },
-  examplesContainer: {
-    marginTop: spacing.md,
-    backgroundColor: '#f9f9f9',
-    padding: spacing.md,
-    borderRadius: 8,
-  },
-  examplesTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    marginBottom: spacing.sm,
-    color: colors.text,
-  },
-  exampleItem: {
-    marginBottom: spacing.md,
-    padding: spacing.sm,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.primary,
-    backgroundColor: colors.surface,
-  },
-  exampleText: {
-    marginBottom: spacing.sm,
-  },
-  furigana: {
-    fontSize: 12,
-    color: colors.textSecondary,
-  },
-  exampleTranslation: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    fontStyle: 'italic',
-  },
   evaluationContainer: {
     marginTop: spacing.md,
-    borderRadius: 8,
-    elevation: 2,
+    marginBottom: spacing.lg,
+    borderRadius: borderRadius.lg,
+    ...shadows.medium,
   },
   evaluationTitle: {
     fontSize: 18,
+    fontWeight: 'bold',
     marginBottom: spacing.sm,
     color: colors.text,
     textAlign: 'center',
@@ -344,20 +299,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.md,
-  },
-  completedBadge: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: colors.success,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 16,
-    zIndex: 1,
-  },
-  completedText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
   },
 });

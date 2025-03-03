@@ -26,64 +26,83 @@ export interface Segment {
   jpText: string;
   reading?: string;
   partOfSpeech?: string;
+  segmentType?: string;  // 新規: base, polite_suffix, honorific_prefix など
 }
 
-// 翻訳の構造を定義
+// 多言語対応の翻訳を定義
 export interface Translations {
   en: string;
-  // 他の言語のサポートを追加する場合はここに
+  ja?: string;
+  zh?: string;
+  ko?: string;
+  es?: string;
+  [key: string]: string | undefined;
 }
 
-// 例文の構造を定義
+// 多言語対応のテキスト
+export interface LocalizedText {
+  ja: string;
+  en?: string;
+  zh?: string;
+  ko?: string;
+  es?: string;
+  [key: string]: string | undefined;
+}
+
+// 例文の構造を定義（拡張版）
 export interface ExampleSentence {
   id: string;
   jpText: string;
-  reading?: string;      // 追加：読み仮名
+  reading?: string;
   segments?: Segment[];
   translations: Translations;
-  audio?: string;
+  audio?: string;        // 旧形式との互換性のため残す
+  audioPath?: string;    // 新形式: レッスンディレクトリからの相対パス
 }
 
-// フレーズの構造を定義
+// フレーズのバリエーション（新規）
+export interface PhraseVariation {
+  id: string;
+  jpText: string;
+  reading?: string;
+  audioPath?: string;
+  politenessLevel?: string;
+  translations: Translations;
+  description?: LocalizedText;
+}
+
+// フレーズの構造を定義（拡張版）
 export interface Phrase {
   id: string;
   jpText: string;
-  reading?: string;      // 追加：読み仮名
+  reading?: string;
   segments?: Segment[];
   translations: Translations;
   audio?: string;
-  exampleSentences?: ExampleSentence[];
-  notes?: string; // オプショナルなメモフィールド
+  politenessLevel?: string;  // 新規: casual, polite, honorific, humble
+  learningLevel?: string;    // 新規: essential, common, advanced
+  sentenceType?: string;     // 新規: statement, question, request など
+  description?: LocalizedText;
+  usageContext?: LocalizedText;
+  exampleSentences?: ExampleSentence[];  // 旧形式との互換性のため残す
+  examples?: ExampleSentence[];          // 新形式: examples
+  variations?: PhraseVariation[];        // 新規: バリエーション
+  notes?: string;                        // オプショナルなメモフィールド
   words?: string[];
+  imageRefs?: string[];                  // 新規: 画像への参照
 }
 
 // クイズ問題の構造を定義
 export interface QuizQuestion {
   id: string;
-  linkedPhraseId: string;      // フレーズIDへの参照
-  questionSuffixJp: string;    // 問題文のサフィックス（例：「の意味は？」）
+  linkedPhraseId: string;
+  questionSuffixJp: string;
   options: string[];
   answerIndex: number;
   explanation: string;
 }
 
 // 進捗管理用の型定義
-export interface QuizResult {
-  sessionId: string;
-  courseId: string;
-  startTime: string;
-  endTime?: string;
-  answers: QuizAnswer[];
-  status: 'in-progress' | 'completed' | 'aborted';
-}
-
-export interface QuizAnswer {
-  questionId: string;
-  selectedOption: number;
-  isCorrect: boolean;
-  timestamp: string;
-}
-
 export interface QuizSessionLog {
   sessionId: string;
   courseId: string;
@@ -101,9 +120,9 @@ export interface QuizSessionLog {
 
 export interface CourseProgress {
   courseId: string;
-  learnedPhraseIds: Set<string>;     // 変更：学習済みフレーズIDのSet
-  completedQuizIds: Set<string>;     // 追加：完了済みクイズIDのSet
-  lastAccessedDate: Date;            // 追加：最終アクセス日時
+  learnedPhraseIds: Set<string>;
+  completedQuizIds: Set<string>;
+  lastAccessedDate: Date;
 }
 
 export interface LessonProgress {
