@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Text, TextProps, StyleSheet } from 'react-native';
-import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
+import { useLanguage } from '../context/LanguageContext';
 import { LanguageCode } from '../i18n';
 
 // 言語ごとのテキストスケール係数
@@ -45,7 +45,7 @@ export const LocalizedText: React.FC<LocalizedTextProps> = ({
   minimumFontScale = 0.7,
   ...props
 }) => {
-  const { language } = useImprovedLanguage();
+  const { language } = useLanguage();
   
   // 言語に基づいたフォントサイズの調整
   const scaledSize = useMemo(() => {

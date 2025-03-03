@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Modal, Text, Pressable } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { LanguageCode } from '../i18n';
-import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
-import { colors, spacing, borderRadius, shadows } from '../theme/theme';
-import { FadeInView } from './animations/FadeInView';
-import { SlideInView } from './animations/SlideInView';
+import { LanguageCode } from '../../i18n';
+import { useLanguage } from '../../context/LanguageContext';
+import { colors, spacing, borderRadius, shadows } from '../../theme/theme';
+import { FadeInView } from '../animations/FadeInView';
+import { SlideInView } from '../animations/SlideInView';
 
 // 言語アイコンマッピング - 国旗アイコンではなく言語コードと絵文字を使用
 const languageIcons: Record<LanguageCode, string> = {
@@ -31,13 +31,15 @@ const supportedLanguages: LanguageCode[] = ['en', 'ja', 'zh', 'ko', 'es'];
 interface LanguageSelectorProps {
   compact?: boolean; // コンパクトモード（ヘッダー用）
   onClose?: () => void; // モーダル閉じる時のコールバック
+  showLabel?: boolean; // 古いインターフェースとの互換性のため
 }
 
-export const ImprovedLanguageSelector: React.FC<LanguageSelectorProps> = ({ 
+export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ 
   compact = false,
-  onClose
+  onClose,
+  showLabel = false
 }) => {
-  const { language, setLanguage, t } = useImprovedLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const [modalVisible, setModalVisible] = useState(false);
 
   // 言語変更ハンドラー
@@ -249,6 +251,6 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     fontSize: 14,
     color: colors.textSecondary,
-    lineHeight: 20,
-  },
+    textAlign: 'center',
+  }
 }); 

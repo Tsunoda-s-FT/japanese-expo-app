@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
+import { useLanguage } from '../context/LanguageContext';
 import { LanguageCode, getDeviceLanguage } from '../i18n';
 import { colors } from '../theme/theme';
 import RootNavigator from '../navigation/RootNavigator';
@@ -9,7 +9,7 @@ import { LocalizedText } from './LocalizedText';
 import LanguageSelectionScreen from '../screens/LanguageSelectionScreen';
 
 const AppInitialization: React.FC = () => {
-  const { language, setLanguage } = useImprovedLanguage();
+  const { language, setLanguage } = useLanguage();
   const [isLoading, setIsLoading] = useState(true);
   const [isFirstLaunch, setIsFirstLaunch] = useState(false);
 

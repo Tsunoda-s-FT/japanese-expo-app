@@ -3,14 +3,14 @@ import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Text, List, Switch, Divider } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
+import { useLanguage } from '../context/LanguageContext';
 import { useSettings } from '../context/SettingsContext';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import AppHeader from '../components/AppHeader';
 
 const SettingsScreen: React.FC = () => {
   const navigation = useNavigation();
-  const { language, t } = useImprovedLanguage();
+  const { language, t } = useLanguage();
   const { settings, updateSettings } = useSettings();
 
   const toggleSoundEnabled = () => {

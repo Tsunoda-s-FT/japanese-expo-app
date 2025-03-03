@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Image, TouchableOpacity, Text } from 'react-native';
 import { Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
+import { useLanguage } from '../context/LanguageContext';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { LanguageCode } from '../i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -62,7 +62,7 @@ interface LanguageSelectionScreenProps {
 }
 
 const LanguageSelectionScreen: React.FC<LanguageSelectionScreenProps> = ({ onComplete }) => {
-  const { setLanguage } = useImprovedLanguage();
+  const { setLanguage } = useLanguage();
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>('en');
   
   // 言語選択完了ハンドラー

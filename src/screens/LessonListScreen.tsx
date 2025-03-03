@@ -6,7 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getAllLessons } from '../services/contentService';
-import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
+import { useLanguage } from '../context/LanguageContext';
 import AppLoading from '../components/ui/AppLoading';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { commonStyles } from '../theme/styles';
@@ -33,7 +33,7 @@ type LessonListNavigationProp = NativeStackNavigationProp<MainStackParamList, 'L
 
 const LessonListScreen: React.FC = () => {
   const navigation = useNavigation<LessonListNavigationProp>();
-  const { language, t } = useImprovedLanguage();
+  const { language, t } = useLanguage();
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
   const [loading, setLoading] = useState(true);
 

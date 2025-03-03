@@ -6,7 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getLessonById } from '../services/contentService';
-import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
+import { useLanguage } from '../context/LanguageContext';
 import AppHeader from '../components/AppHeader';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 
@@ -35,7 +35,7 @@ const LessonDetailScreen: React.FC = () => {
   const route = useRoute<LessonDetailRouteProp>();
   const navigation = useNavigation<LessonDetailNavigationProp>();
   const { lessonId } = route.params;
-  const { language, t } = useImprovedLanguage();
+  const { language, t } = useLanguage();
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);

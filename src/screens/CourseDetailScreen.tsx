@@ -8,7 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getCourseById } from '../services/contentService';
 import { Course } from '../types/contentTypes';
 import { useProgress } from '../context/ProgressContext';
-import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
+import { useLanguage } from '../context/LanguageContext';
 import AppHeader from '../components/AppHeader';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { formatJapaneseDate } from '../utils/formatUtils';
@@ -20,7 +20,7 @@ const CourseDetailScreen: React.FC = () => {
   const route = useRoute<CourseDetailRouteProp>();
   const navigation = useNavigation<RootNavProp>();
   const { courseId } = route.params;
-  const { language, t } = useImprovedLanguage();
+  const { language, t } = useLanguage();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
 

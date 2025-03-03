@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
-import { colors, spacing, borderRadius, shadows } from '../theme/theme';
-import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
-import { LanguageCode } from '../i18n';
+import { colors, spacing, borderRadius, shadows } from '../../theme/theme';
+import { useLanguage } from '../../context/LanguageContext';
+import { LanguageCode } from '../../i18n';
 
 // 言語アイコンマッピング
 const languageIcons: Record<LanguageCode, string> = {
@@ -25,13 +25,16 @@ const languageNames: Record<LanguageCode, { native: string, english: string }> =
 interface LanguageChangeToastProps {
   visible: boolean;
   onDismiss: () => void;
+  language?: LanguageCode; // 古いインターフェースとの互換性のため
 }
 
-export const ImprovedLanguageChangeToast: React.FC<LanguageChangeToastProps> = ({
+export const LanguageChangeToast: React.FC<LanguageChangeToastProps> = ({
   visible,
-  onDismiss
+  onDismiss,
+  language: propLanguage
 }) => {
-  const { language, t } = useImprovedLanguage();
+  const { language: contextLanguage, t } = useLanguage();
+  const language = propLanguage || contextLanguage;
   
   // アニメーション用の値
   const fadeAnim = useRef(new Animated.Value(0)).current;

@@ -9,7 +9,7 @@ import {
 import { Text } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useImprovedLanguage } from '../context/ImprovedLanguageContext';
+import { useLanguage } from '../context/LanguageContext';
 import { colors, spacing, shadows } from '../theme/theme';
 import { LanguageCode } from '../i18n';
 
@@ -64,7 +64,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   onLanguagePress,
   onSettingsPress,
 }) => {
-  const { language, t } = useImprovedLanguage();
+  const { language, t } = useLanguage();
   const navigation = useNavigation();
   
   const handleBack = () => {
