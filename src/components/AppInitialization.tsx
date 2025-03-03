@@ -5,7 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { LanguageCode, getDeviceLanguage, getStoredLanguage } from '../i18n';
 import { colors } from '../theme/theme';
 import RootNavigator from '../navigation/RootNavigator';
-import { LocalizedText } from './common/LocalizedText';
+import { LocalizedText } from './ui/LocalizedText';
 import LanguageSelectionScreen from '../screens/LanguageSelectionScreen';
 
 const AppInitialization: React.FC = () => {

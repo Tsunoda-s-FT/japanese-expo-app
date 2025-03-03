@@ -6,10 +6,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { useProgress } from '../context/ProgressContext';
-import { AppCard, AppButton } from '../components/ui';
+import { AppCard, AppButton } from '../components';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { commonStyles } from '../theme/styles';
-import { FadeInView, SlideInView } from '../components/animations';
+import { AnimatedView } from '../components/animations/AnimatedView';
+import { FadeInView } from '../components/animations/FadeInView';
+import { SlideInView } from '../components/animations/SlideInView';
 
 type QuizResultScreenRouteProp = RouteProp<SessionStackParamList, 'QuizResult'>;
 type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
@@ -47,11 +49,11 @@ const QuizResultScreen: React.FC = () => {
 
   return (
     <View style={[commonStyles.screenContainer, styles.container]}>
-      <FadeInView duration={800}>
+      <AnimatedView animation="fade" duration={800}>
         <AppCard style={styles.card}>
-          <SlideInView direction="top" duration={600} delay={300}>
+          <AnimatedView animation="slide" direction="top" duration={600} delay={300}>
             <Title style={styles.title}>クイズ結果</Title>
-          </SlideInView>
+          </AnimatedView>
           
           <SlideInView direction="left" duration={600} delay={600}>
             <View style={styles.resultContainer}>
@@ -76,9 +78,9 @@ const QuizResultScreen: React.FC = () => {
             </View>
           </FadeInView>
         </AppCard>
-      </FadeInView>
+      </AnimatedView>
 
-      <SlideInView direction="bottom" duration={600} delay={1200}>
+      <AnimatedView animation="slide" direction="bottom" duration={600} delay={1200}>
         <View style={styles.buttonContainer}>
           <AppButton
             label="セッションを終了"
@@ -97,7 +99,7 @@ const QuizResultScreen: React.FC = () => {
             />
           )}
         </View>
-      </SlideInView>
+      </AnimatedView>
     </View>
   );
 };

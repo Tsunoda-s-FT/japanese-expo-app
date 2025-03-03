@@ -6,7 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { LANGUAGES, LanguageCode } from '../i18n';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { getFlagIconForLanguage, getNativeLanguageName, getEnglishLanguageName } from '../utils/language';
-import AppHeader from '../components/common/AppHeader';
+import { AppHeader } from '../components';
 
 const LanguageSettingsScreen: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();

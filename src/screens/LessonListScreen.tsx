@@ -7,10 +7,9 @@ import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getAllLessons } from '../services/contentService';
 import { useLanguage } from '../context/LanguageContext';
-import { AppLoading } from '../components/ui';
+import { AppLoading, AppHeader } from '../components';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { commonStyles } from '../theme/styles';
-import AppHeader from '../components/common/AppHeader';
 
 // 画像のマッピング
 const lessonImages: { [key: string]: any } = {

@@ -6,14 +6,16 @@ import { useLanguage } from '../context/LanguageContext';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { LanguageCode } from '../i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FadeInView, SlideInView } from '../components/animations';
+import { AnimatedView } from '../components/animations/AnimatedView';
+import { FadeInView } from '../components/animations/FadeInView';
+import { SlideInView } from '../components/animations/SlideInView';
 
 // 言語アイコンマッピング
 const languageIcons: Record<LanguageCode, string> = {
   en: '🇺🇸',
   ja: '🇯🇵',
   zh: '🇨🇳',
-  ko: '🇰��',
+  ko: '🇰🇵',
   es: '🇪🇸'
 };
 
@@ -75,7 +77,7 @@ const LanguageSelectionScreen: React.FC<LanguageSelectionScreenProps> = ({ onCom
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <FadeInView duration={800}>
+        <AnimatedView animation="fade" duration={800}>
           <View style={styles.logoContainer}>
             <Image 
               source={require('../../assets/icon.png')} 
@@ -85,7 +87,7 @@ const LanguageSelectionScreen: React.FC<LanguageSelectionScreenProps> = ({ onCom
             <Text style={styles.title}>{welcomeText[selectedLanguage]}</Text>
             <Text style={styles.description}>{descriptionText[selectedLanguage]}</Text>
           </View>
-        </FadeInView>
+        </AnimatedView>
         
         <View style={styles.languagesContainer}>
           {supportedLanguages.map((langCode, index) => (
@@ -118,7 +120,7 @@ const LanguageSelectionScreen: React.FC<LanguageSelectionScreenProps> = ({ onCom
           ))}
         </View>
         
-        <FadeInView duration={800} delay={800}>
+        <AnimatedView animation="fade" duration={800} delay={800}>
           <Button
             mode="contained"
             style={styles.continueButton}
@@ -127,7 +129,7 @@ const LanguageSelectionScreen: React.FC<LanguageSelectionScreenProps> = ({ onCom
           >
             {continueText[selectedLanguage]}
           </Button>
-        </FadeInView>
+        </AnimatedView>
       </ScrollView>
     </SafeAreaView>
   );

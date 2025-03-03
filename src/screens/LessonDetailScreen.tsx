@@ -7,7 +7,7 @@ import { MainStackParamList } from '../navigation/MainNavigator';
 import { Lesson } from '../types/contentTypes';
 import { getLessonById } from '../services/contentService';
 import { useLanguage } from '../context/LanguageContext';
-import AppHeader from '../components/common/AppHeader';
+import { AppHeader } from '../components';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 
 // 画像のマッピング

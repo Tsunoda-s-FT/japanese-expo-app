@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { Animated, ViewProps } from 'react-native';
+import React from 'react';
+import { ViewProps } from 'react-native';
+import { AnimatedView } from './AnimatedView';
 
 interface FadeInViewProps extends ViewProps {
   duration?: number;
@@ -10,6 +11,7 @@ interface FadeInViewProps extends ViewProps {
 
 /**
  * フェードインアニメーションを行うViewコンポーネント
+ * @deprecated 代わりに AnimatedView を使用してください
  */
 export const FadeInView: React.FC<FadeInViewProps> = ({
   children,
@@ -20,28 +22,17 @@ export const FadeInView: React.FC<FadeInViewProps> = ({
   style,
   ...props
 }) => {
-  const opacity = useRef(new Animated.Value(initialOpacity)).current;
-
-  useEffect(() => {
-    Animated.timing(opacity, {
-      toValue: finalOpacity,
-      duration,
-      delay,
-      useNativeDriver: true,
-    }).start();
-  }, [opacity, finalOpacity, duration, delay]);
-
   return (
-    <Animated.View
-      style={[
-        style,
-        {
-          opacity,
-        },
-      ]}
+    <AnimatedView
+      animation="fade"
+      duration={duration}
+      delay={delay}
+      initialOpacity={initialOpacity}
+      finalOpacity={finalOpacity}
+      style={style}
       {...props}
     >
       {children}
-    </Animated.View>
+    </AnimatedView>
   );
 }; 

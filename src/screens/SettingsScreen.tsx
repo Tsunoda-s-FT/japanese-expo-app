@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useLanguage } from '../context/LanguageContext';
 import { useSettings } from '../context/SettingsContext';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
-import AppHeader from '../components/common/AppHeader';
+import { AppHeader } from '../components';
 
 const SettingsScreen: React.FC = () => {
   const navigation = useNavigation();

@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   progressBar: {
     height: '100%',
     backgroundColor: colors.primary,
-  },
+  }
 });
 
 export default AppHeader; 

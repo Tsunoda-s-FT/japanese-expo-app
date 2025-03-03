@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { Animated, ViewProps } from 'react-native';
+import React from 'react';
+import { ViewProps } from 'react-native';
+import { AnimatedView } from './AnimatedView';
 
 type SlideDirection = 'left' | 'right' | 'top' | 'bottom';
 
@@ -12,6 +13,7 @@ interface SlideInViewProps extends ViewProps {
 
 /**
  * スライドインアニメーションを行うViewコンポーネント
+ * @deprecated 代わりに AnimatedView を使用してください
  */
 export const SlideInView: React.FC<SlideInViewProps> = ({
   children,
@@ -22,32 +24,17 @@ export const SlideInView: React.FC<SlideInViewProps> = ({
   style,
   ...props
 }) => {
-  const translateX = useRef(new Animated.Value(direction === 'left' ? -distance : direction === 'right' ? distance : 0)).current;
-  const translateY = useRef(new Animated.Value(direction === 'top' ? -distance : direction === 'bottom' ? distance : 0)).current;
-
-  useEffect(() => {
-    Animated.timing(direction === 'left' || direction === 'right' ? translateX : translateY, {
-      toValue: 0,
-      duration,
-      delay,
-      useNativeDriver: true,
-    }).start();
-  }, [translateX, translateY, direction, duration, delay]);
-
   return (
-    <Animated.View
-      style={[
-        style,
-        {
-          transform: [
-            { translateX },
-            { translateY },
-          ],
-        },
-      ]}
+    <AnimatedView
+      animation="slide"
+      direction={direction}
+      duration={duration}
+      delay={delay}
+      distance={distance}
+      style={style}
       {...props}
     >
       {children}
-    </Animated.View>
+    </AnimatedView>
   );
 }; 
