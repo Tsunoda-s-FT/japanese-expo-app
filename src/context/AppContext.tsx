@@ -2,38 +2,26 @@ import React, { createContext, useContext } from 'react';
 import { LanguageProvider } from './LanguageContext';
 import { UserProgressProvider } from './UserProgressContext';
 import { SettingsProvider } from './SettingsContext';
+import { QuizSessionProvider } from './QuizSessionContext';
+import { ContentProvider } from './ContentContext';
 
-// 型定義のみをインポート（実装は分離）
-type QuizSessionProviderProps = {
-  children: React.ReactNode;
-};
-
-type ContentProviderProps = {
-  children: React.ReactNode;
-};
-
-// プレースホルダーコンポーネント（実際のファイルを遅延インポート）
-const QuizSessionProvider: React.FC<QuizSessionProviderProps> = ({ children }) => {
-  // 遅延インポートを実装（実際のアプリで使用時に解決される）
-  const ActualQuizSessionProvider = require('./QuizSessionContext').QuizSessionProvider;
-  return <ActualQuizSessionProvider>{children}</ActualQuizSessionProvider>;
-};
-
-const ContentProvider: React.FC<ContentProviderProps> = ({ children }) => {
-  // 遅延インポートを実装（実際のアプリで使用時に解決される）
-  const ActualContentProvider = require('./ContentContext').ContentProvider;
-  return <ActualContentProvider>{children}</ActualContentProvider>;
-};
-
+/** アプリケーション全体のコンテキスト型 */
 interface AppContextType {
   appVersion: string;
+  buildNumber: string;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+/**
+ * アプリケーション全体のプロバイダー
+ * コンテキストの順序はプロバイダーの依存関係に基づいています
+ */
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // アプリケーション情報
   const appState: AppContextType = {
     appVersion: '1.0.0',
+    buildNumber: '1',
   };
 
   return (
@@ -53,6 +41,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   );
 };
 
+/**
+ * アプリケーションコンテキストを使用するためのフック
+ */
 export const useApp = () => {
   const context = useContext(AppContext);
   if (!context) {

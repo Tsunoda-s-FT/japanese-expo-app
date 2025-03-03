@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { I18nManager } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LanguageCode, getLanguageInfo, getDeviceLanguage, applyRTL } from '../i18n';
-import { loadTranslations, formatTranslation } from '../i18n/translations';
+import { loadTranslations, formatTranslation, TranslationsMap } from '../i18n/translations';
 import { LanguageChangeToast } from '../components/language/LanguageChangeToast';
 import { getTypography, TypographyConfig } from '../theme/typography';
 
@@ -16,7 +16,7 @@ interface TranslationData {
 // 状態の型定義
 interface LanguageState {
   language: LanguageCode;
-  translations: Record<string, string>;
+  translations: TranslationsMap;
   isRTL: boolean;
   isLoading: boolean;
   error: Error | null;
@@ -27,9 +27,9 @@ interface LanguageState {
 // アクション定義
 type LanguageAction = 
   | { type: 'LOAD_LANGUAGE_START' }
-  | { type: 'LOAD_LANGUAGE_SUCCESS'; payload: { language: LanguageCode; translations: Record<string, string> } }
+  | { type: 'LOAD_LANGUAGE_SUCCESS'; payload: { language: LanguageCode; translations: TranslationsMap } }
   | { type: 'LOAD_LANGUAGE_ERROR'; payload: Error }
-  | { type: 'SET_LANGUAGE'; payload: { language: LanguageCode; translations: Record<string, string> } }
+  | { type: 'SET_LANGUAGE'; payload: { language: LanguageCode; translations: TranslationsMap } }
   | { type: 'HIDE_TOAST' };
 
 // 翻訳データ
@@ -201,7 +201,7 @@ const LANGUAGE_STORAGE_KEY = 'user_language';
 // コンテキスト型定義
 interface LanguageContextType {
   language: LanguageCode;
-  translations: Record<string, string>;
+  translations: TranslationsMap;
   isRTL: boolean;
   isLoading: boolean;
   typography: TypographyConfig;

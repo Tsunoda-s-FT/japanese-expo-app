@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Modal, Text, Pressable } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { LanguageCode } from '../../i18n';
+import { LanguageCode, LANGUAGES, getLanguageInfo } from '../../i18n';
 import { useLanguage } from '../../context/LanguageContext';
 import { colors, spacing, borderRadius, shadows } from '../../theme/theme';
-import { FadeInView } from '../animations/FadeInView';
-import { SlideInView } from '../animations/SlideInView';
+import { FadeInView, SlideInView } from '../animations';
 
 // 言語アイコンマッピング - 国旗アイコンではなく言語コードと絵文字を使用
 const languageIcons: Record<LanguageCode, string> = {
@@ -16,17 +15,8 @@ const languageIcons: Record<LanguageCode, string> = {
   es: '🇪🇸'
 };
 
-// 言語名のマッピング（各言語でのネイティブ表記と英語表記）
-const languageNames: Record<LanguageCode, { native: string, english: string }> = {
-  en: { native: 'English', english: 'English' },
-  ja: { native: '日本語', english: 'Japanese' },
-  zh: { native: '中文', english: 'Chinese' },
-  ko: { native: '한국어', english: 'Korean' },
-  es: { native: 'Español', english: 'Spanish' }
-};
-
 // サポートされている言語コード
-const supportedLanguages: LanguageCode[] = ['en', 'ja', 'zh', 'ko', 'es'];
+const supportedLanguages: LanguageCode[] = LANGUAGES.map(lang => lang.code);
 
 interface LanguageSelectorProps {
   compact?: boolean; // コンパクトモード（ヘッダー用）
@@ -51,9 +41,10 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     if (onClose) onClose();
   };
 
-  // 現在の言語アイコンとテキスト
+  // 現在の言語情報
+  const currentLanguageInfo = getLanguageInfo(language);
   const currentIcon = languageIcons[language];
-  const currentName = languageNames[language].native;
+  const currentName = currentLanguageInfo.nativeName;
 
   // コンパクトモードでのレンダリング（ヘッダー用）
   if (compact) {
@@ -83,23 +74,26 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               onStartShouldSetResponder={() => true}
               onResponderRelease={(e) => e.stopPropagation()}
             >
-              {supportedLanguages.map((langCode) => (
-                <TouchableOpacity
-                  key={langCode}
-                  style={[
-                    styles.languageMenuItem,
-                    language === langCode && styles.activeLanguageItem
-                  ]}
-                  onPress={() => handleLanguageChange(langCode)}
-                  accessibilityLabel={`${languageNames[langCode].english} (${languageNames[langCode].native})`}
-                  accessibilityRole="radio"
-                  accessibilityState={{ checked: language === langCode }}
-                >
-                  <Text style={styles.languageIcon}>{languageIcons[langCode]}</Text>
-                  <Text style={styles.languageName}>{languageNames[langCode].native}</Text>
-                  {language === langCode && <Text style={styles.checkmark}>✓</Text>}
-                </TouchableOpacity>
-              ))}
+              {supportedLanguages.map((langCode) => {
+                const langInfo = getLanguageInfo(langCode);
+                return (
+                  <TouchableOpacity
+                    key={langCode}
+                    style={[
+                      styles.languageMenuItem,
+                      language === langCode && styles.activeLanguageItem
+                    ]}
+                    onPress={() => handleLanguageChange(langCode)}
+                    accessibilityLabel={`${langInfo.name} (${langInfo.nativeName})`}
+                    accessibilityRole="radio"
+                    accessibilityState={{ checked: language === langCode }}
+                  >
+                    <Text style={styles.languageIcon}>{languageIcons[langCode]}</Text>
+                    <Text style={styles.languageName}>{langInfo.nativeName}</Text>
+                    {language === langCode && <Text style={styles.checkmark}>✓</Text>}
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           </Pressable>
         </Modal>
@@ -112,35 +106,38 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     <View style={styles.container}>
       <Text style={styles.title}>{t('settings.selectLanguage', '言語を選択')}</Text>
       
-      {supportedLanguages.map((langCode) => (
-        <TouchableOpacity
-          key={langCode}
-          style={[
-            styles.languageButton,
-            language === langCode && styles.activeLanguageButton
-          ]}
-          onPress={() => handleLanguageChange(langCode)}
-          accessibilityLabel={`${languageNames[langCode].english} (${languageNames[langCode].native})`}
-          accessibilityRole="radio"
-          accessibilityState={{ checked: language === langCode }}
-        >
-          <View style={styles.languageInfo}>
-            <Text style={styles.languageIconLarge}>{languageIcons[langCode]}</Text>
-            <View style={styles.languageTextContainer}>
-              <Text style={[
-                styles.languageNameLarge,
-                language === langCode && styles.activeText
-              ]}>
-                {languageNames[langCode].native}
-              </Text>
-              <Text style={styles.languageEnglishName}>
-                {languageNames[langCode].english}
-              </Text>
+      {supportedLanguages.map((langCode) => {
+        const langInfo = getLanguageInfo(langCode);
+        return (
+          <TouchableOpacity
+            key={langCode}
+            style={[
+              styles.languageButton,
+              language === langCode && styles.activeLanguageButton
+            ]}
+            onPress={() => handleLanguageChange(langCode)}
+            accessibilityLabel={`${langInfo.name} (${langInfo.nativeName})`}
+            accessibilityRole="radio"
+            accessibilityState={{ checked: language === langCode }}
+          >
+            <View style={styles.languageInfo}>
+              <Text style={styles.languageIconLarge}>{languageIcons[langCode]}</Text>
+              <View style={styles.languageTextContainer}>
+                <Text style={[
+                  styles.languageNameLarge,
+                  language === langCode && styles.activeText
+                ]}>
+                  {langInfo.nativeName}
+                </Text>
+                <Text style={styles.languageEnglishName}>
+                  {langInfo.name}
+                </Text>
+              </View>
             </View>
-          </View>
-          {language === langCode && <Text style={styles.checkmarkLarge}>✓</Text>}
-        </TouchableOpacity>
-      ))}
+            {language === langCode && <Text style={styles.checkmarkLarge}>✓</Text>}
+          </TouchableOpacity>
+        );
+      })}
 
       <Text style={styles.note}>
         {t('settings.languageChangeNote', 'アプリ内のテキストは選択した言語で表示されます。コンテンツ自体は引き続き日本語学習用の教材です。')}

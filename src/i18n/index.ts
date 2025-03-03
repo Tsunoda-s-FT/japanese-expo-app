@@ -1,46 +1,40 @@
-// src/i18n/index.ts
-// 多言語対応の中心的なモジュール
-
+/**
+ * 多言語対応の中心的なモジュール
+ */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { I18nManager } from 'react-native';
 import * as Localization from 'expo-localization';
 
-// サポートされる言語コード（ISO 639-1）
-export type LanguageCode = 
-  | 'en'     // 英語
-  | 'ja'     // 日本語
-  | 'zh'     // 中国語（簡体）
-  | 'ko'     // 韓国語
-  | 'es';    // スペイン語
+/** サポートされる言語コード（ISO 639-1） */
+export type LanguageCode = 'en' | 'ja' | 'zh' | 'ko' | 'es';
 
-// 右から左に表示する言語コード
-const RTL_LANGUAGES: LanguageCode[] = [];
+/** ストレージキー */
+const LANGUAGE_STORAGE_KEY = 'user_language';
 
-// 言語情報の定義
+/** デフォルト言語 */
+export const DEFAULT_LANGUAGE: LanguageCode = 'en';
+
+/** 言語情報 */
 export interface LanguageInfo {
   code: LanguageCode;
-  name: string;           // 英語での言語名
-  nativeName: string;     // その言語での言語名
-  rtl: boolean;           // 右から左の言語かどうか
-  fontFamily?: string;    // 特定のフォントが必要な場合
+  name: string;       // 英語での言語名
+  nativeName: string; // その言語での言語名
+  rtl: boolean;       // 右から左の言語かどうか
 }
 
-// 各言語の情報
+/** サポートされている言語情報 */
 export const LANGUAGES: LanguageInfo[] = [
   { code: 'en', name: 'English', nativeName: 'English', rtl: false },
   { code: 'ja', name: 'Japanese', nativeName: '日本語', rtl: false },
-  { code: 'zh', name: 'Chinese (Simplified)', nativeName: '简体中文', rtl: false },
+  { code: 'zh', name: 'Chinese', nativeName: '中文', rtl: false },
   { code: 'ko', name: 'Korean', nativeName: '한국어', rtl: false },
   { code: 'es', name: 'Spanish', nativeName: 'Español', rtl: false },
 ];
 
-// AsyncStorage のキー
-const LANGUAGE_STORAGE_KEY = 'user_language';
-
-// デフォルト言語
-export const DEFAULT_LANGUAGE: LanguageCode = 'en';
-
-// デバイスのロケールから最適な言語を判定
+/**
+ * デバイスのロケールから最適な言語を判定
+ * @returns サポートされている言語コード
+ */
 export const getDeviceLanguage = (): LanguageCode => {
   const deviceLocale = Localization.locale.split('-')[0];
   
@@ -53,7 +47,11 @@ export const getDeviceLanguage = (): LanguageCode => {
   return DEFAULT_LANGUAGE;
 };
 
-// 言語コードから言語情報を取得
+/**
+ * 言語コードから言語情報を取得
+ * @param code 言語コード
+ * @returns 言語情報
+ */
 export const getLanguageInfo = (code: LanguageCode): LanguageInfo => {
   const language = LANGUAGES.find(lang => lang.code === code);
   if (!language) {
@@ -62,15 +60,22 @@ export const getLanguageInfo = (code: LanguageCode): LanguageInfo => {
   return language;
 };
 
-// RTL設定を適用
+/**
+ * RTL設定を適用
+ * @param languageCode 言語コード
+ */
 export const applyRTL = (languageCode: LanguageCode): void => {
-  const isRTL = RTL_LANGUAGES.includes(languageCode);
+  const isRTL = getLanguageInfo(languageCode).rtl;
+  
   if (I18nManager.isRTL !== isRTL) {
     I18nManager.forceRTL(isRTL);
   }
 };
 
-// AsyncStorage から言語設定を取得
+/**
+ * AsyncStorage から言語設定を取得
+ * @returns 保存されている言語コード、またはデバイスのデフォルト言語
+ */
 export const getStoredLanguage = async (): Promise<LanguageCode> => {
   try {
     const storedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
@@ -85,7 +90,10 @@ export const getStoredLanguage = async (): Promise<LanguageCode> => {
   return getDeviceLanguage();
 };
 
-// AsyncStorage に言語設定を保存
+/**
+ * AsyncStorage に言語設定を保存
+ * @param languageCode 言語コード
+ */
 export const storeLanguage = async (languageCode: LanguageCode): Promise<void> => {
   try {
     await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, languageCode);

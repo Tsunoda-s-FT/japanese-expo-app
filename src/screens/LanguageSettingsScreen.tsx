@@ -5,8 +5,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../context/LanguageContext';
 import { LANGUAGES, LanguageCode } from '../i18n';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
-import { getFlagIconForLanguage, getNativeLanguageName, getEnglishLanguageName } from '../utils/languageUtils';
-import AppHeader from '../components/AppHeader';
+import { getFlagIconForLanguage, getNativeLanguageName, getEnglishLanguageName } from '../utils/language';
+import AppHeader from '../components/common/AppHeader';
 
 const LanguageSettingsScreen: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();

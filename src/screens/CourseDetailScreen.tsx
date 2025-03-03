@@ -9,9 +9,9 @@ import { getCourseById } from '../services/contentService';
 import { Course } from '../types/contentTypes';
 import { useProgress } from '../context/ProgressContext';
 import { useLanguage } from '../context/LanguageContext';
-import AppHeader from '../components/AppHeader';
+import AppHeader from '../components/common/AppHeader';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
-import { formatJapaneseDate } from '../utils/formatUtils';
+import { formatJapaneseDate } from '../utils/format';
 
 type CourseDetailRouteProp = RouteProp<MainStackParamList, 'CourseDetail'>;
 type RootNavProp = NativeStackNavigationProp<RootStackParamList>;

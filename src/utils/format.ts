@@ -1,4 +1,4 @@
-// src/utils/formatUtils.ts
+// src/utils/format.ts
 // アプリ全体で日付やテキストの一貫したフォーマットを行うためのユーティリティ
 
 /**
@@ -73,4 +73,14 @@ export function truncateText(text: string, maxLength: number): string {
     return text;
   }
   return text.substring(0, maxLength - 3) + '...';
+}
+
+/**
+ * 日本語テキストとフリガナ（読み方）を組み合わせてフォーマットする
+ * @param japanese 日本語テキスト
+ * @param reading 読み方（フリガナ）
+ * @returns フォーマットされた文字列
+ */
+export function formatFurigana(japanese: string, reading: string): string {
+  return `${japanese} (${reading})`;
 } 

@@ -1,4 +1,4 @@
-import { LanguageCode } from '../i18n';
+import { LanguageCode, LANGUAGES, getLanguageInfo } from '../i18n';
 
 /**
  * 言語コードに基づいて適切な国旗アイコン名を返す関数
@@ -23,14 +23,8 @@ export const getFlagIconForLanguage = (code: LanguageCode): string => {
  * @returns 言語のネイティブ名
  */
 export const getNativeLanguageName = (code: LanguageCode): string => {
-  switch (code) {
-    case 'en': return 'English';
-    case 'ja': return '日本語';
-    case 'zh': return '中文';
-    case 'ko': return '한국어';
-    case 'es': return 'Español';
-    default: return code;
-  }
+  const languageInfo = getLanguageInfo(code);
+  return languageInfo.nativeName;
 };
 
 /**
@@ -39,14 +33,8 @@ export const getNativeLanguageName = (code: LanguageCode): string => {
  * @returns 言語の英語名
  */
 export const getEnglishLanguageName = (code: LanguageCode): string => {
-  switch (code) {
-    case 'en': return 'English';
-    case 'ja': return 'Japanese';
-    case 'zh': return 'Chinese';
-    case 'ko': return 'Korean';
-    case 'es': return 'Spanish';
-    default: return code;
-  }
+  const languageInfo = getLanguageInfo(code);
+  return languageInfo.name;
 };
 
 /**
@@ -55,12 +43,14 @@ export const getEnglishLanguageName = (code: LanguageCode): string => {
  * @returns 言語に関する説明文
  */
 export const getLanguageDescription = (code: LanguageCode): string => {
+  const languageInfo = getLanguageInfo(code);
+  
   switch (code) {
     case 'en': return 'English language';
-    case 'ja': return 'Japanese language (日本語)';
-    case 'zh': return 'Simplified Chinese language (简体中文)';
-    case 'ko': return 'Korean language (한국어)';
-    case 'es': return 'Spanish language (Español)';
+    case 'ja': return `Japanese language (${languageInfo.nativeName})`;
+    case 'zh': return `Simplified Chinese language (${languageInfo.nativeName})`;
+    case 'ko': return `Korean language (${languageInfo.nativeName})`;
+    case 'es': return `Spanish language (${languageInfo.nativeName})`;
     default: return 'Select language';
   }
 };
@@ -72,7 +62,7 @@ export const getLanguageDescription = (code: LanguageCode): string => {
  * @returns フィードバックメッセージ
  */
 export const getLanguageChangeMessage = (code: LanguageCode, currentLanguage: LanguageCode): string => {
-  const nativeName = getNativeLanguageName(code);
+  const nativeName = getLanguageInfo(code).nativeName;
   
   // 現在の言語で変更メッセージを表示
   switch (currentLanguage) {

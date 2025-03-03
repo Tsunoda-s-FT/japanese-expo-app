@@ -6,15 +6,14 @@ import { useLanguage } from '../context/LanguageContext';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { LanguageCode } from '../i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FadeInView } from '../components/animations/FadeInView';
-import { SlideInView } from '../components/animations/SlideInView';
+import { FadeInView, SlideInView } from '../components/animations';
 
 // 言語アイコンマッピング
 const languageIcons: Record<LanguageCode, string> = {
   en: '🇺🇸',
   ja: '🇯🇵',
   zh: '🇨🇳',
-  ko: '🇰🇷',
+  ko: '🇰��',
   es: '🇪🇸'
 };
 

@@ -10,10 +10,8 @@ import { getCourseById } from '../services/contentService';
 import { useProgress } from '../context/ProgressContext';
 import { useQuizSession } from '../context/QuizSessionContext';
 import { Course, QuizQuestion } from '../types/contentTypes';
-import SegmentedText from '../components/SegmentedText';
-import AppButton from '../components/ui/AppButton';
-import AppProgressBar from '../components/ui/AppProgressBar';
-import AppLoading from '../components/ui/AppLoading';
+import SegmentedText from '../components/learning/SegmentedText';
+import { AppButton, AppProgressBar, AppLoading } from '../components/ui';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 
 type CourseQuizScreenRouteProp = RouteProp<SessionStackParamList, 'CourseQuiz'>;

@@ -9,9 +9,9 @@ import {
 import { Text } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useLanguage } from '../context/LanguageContext';
-import { colors, spacing, shadows } from '../theme/theme';
-import { LanguageCode } from '../i18n';
+import { useLanguage } from '../../context/LanguageContext';
+import { colors, spacing, shadows } from '../../theme/theme';
+import { LanguageCode, getLanguageInfo } from '../../i18n';
 
 const getLanguageDisplay = (code: LanguageCode): string => {
   switch(code) {
@@ -20,7 +20,7 @@ const getLanguageDisplay = (code: LanguageCode): string => {
     case 'zh': return 'CN';
     case 'ko': return 'KR';
     case 'es': return 'ES';
-    default: return '?';
+    default: return 'EN'; // デフォルトは英語
   }
 };
 
@@ -28,10 +28,10 @@ const getLanguageColor = (code: LanguageCode): string => {
   switch(code) {
     case 'en': return '#3c71c4';
     case 'ja': return '#d03438';
-    case 'zh': return '#de2910';
-    case 'ko': return '#003478';
-    case 'es': return '#c60b1e';
-    default: return colors.primary;
+    case 'zh': return '#d4b12f';
+    case 'ko': return '#1e7b1e';
+    case 'es': return '#9c27b0';
+    default: return '#888888';
   }
 };
 
@@ -64,33 +64,35 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   onLanguagePress,
   onSettingsPress,
 }) => {
-  const { language, t } = useLanguage();
   const navigation = useNavigation();
-  
+  const { language, setLanguage } = useLanguage();
+
   const handleBack = () => {
     if (onBackPress) {
       onBackPress();
-    } else if (navigation.canGoBack()) {
+    } else {
       navigation.goBack();
     }
   };
-  
+
   const handleClose = () => {
     if (onClosePress) {
       onClosePress();
     } else {
-      navigation.getParent()?.goBack();
+      navigation.goBack();
     }
   };
-  
+
   const handleLanguagePress = () => {
     if (onLanguagePress) {
       onLanguagePress();
     } else {
-      navigation.navigate('LanguageSettings' as never);
+      // 言語切り替えロジック
+      const nextLanguage: LanguageCode = language === 'en' ? 'ja' : 'en';
+      setLanguage(nextLanguage);
     }
   };
-  
+
   const handleSettingsPress = () => {
     if (onSettingsPress) {
       onSettingsPress();
@@ -98,24 +100,18 @@ const AppHeader: React.FC<AppHeaderProps> = ({
       navigation.navigate('Settings' as never);
     }
   };
-  
+
   return (
-    <View style={styles.container}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="transparent"
-        translucent={true}
-      />
-      
+    <>
+      <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.headerContent}>
-          <View style={styles.leftSection}>
+        <View style={styles.container}>
+          <View style={styles.leftContainer}>
             {showBack && (
               <TouchableOpacity
                 onPress={handleBack}
                 style={styles.iconButton}
-                accessibilityLabel={t('accessibility.back', '戻る')}
-                accessibilityRole="button"
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
                 <MaterialCommunityIcons
                   name="arrow-left"
@@ -124,13 +120,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 />
               </TouchableOpacity>
             )}
-            
             {showClose && (
               <TouchableOpacity
                 onPress={handleClose}
                 style={styles.iconButton}
-                accessibilityLabel={t('accessibility.close', '閉じる')}
-                accessibilityRole="button"
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
                 <MaterialCommunityIcons
                   name="close"
@@ -139,158 +133,119 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 />
               </TouchableOpacity>
             )}
-          </View>
-          
-          <View style={styles.titleSection}>
-            <Text 
-              style={styles.title} 
-              numberOfLines={1} 
-              ellipsizeMode="tail"
-            >
-              {title}
-            </Text>
-            {subtitle && (
-              <Text 
-                style={styles.subtitle} 
-                numberOfLines={1} 
-                ellipsizeMode="tail"
-              >
-                {subtitle}
+            <View style={styles.titleContainer}>
+              <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+                {title}
               </Text>
-            )}
+              {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+            </View>
           </View>
-          
-          <View style={styles.rightSection}>
+
+          <View style={styles.rightContainer}>
             {rightAction}
             
             {showLanguageSelector && (
               <TouchableOpacity
                 onPress={handleLanguagePress}
-                style={styles.iconButton}
-                accessibilityLabel={t('accessibility.changeLanguage', '言語を変更')}
-                accessibilityRole="button"
-              >
-                <View style={[
+                style={[
                   styles.languageButton,
                   { backgroundColor: getLanguageColor(language) }
-                ]}>
-                  <Text style={styles.languageText}>
-                    {getLanguageDisplay(language)}
-                  </Text>
-                </View>
+                ]}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Text style={styles.languageText}>
+                  {getLanguageDisplay(language)}
+                </Text>
               </TouchableOpacity>
             )}
-            
+
             {showSettings && (
               <TouchableOpacity
                 onPress={handleSettingsPress}
-                style={styles.iconButton}
-                accessibilityLabel={t('accessibility.settings', '設定')}
-                accessibilityRole="button"
+                style={[styles.iconButton, styles.settingsButton]}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
                 <MaterialCommunityIcons
                   name="cog"
                   size={24}
-                  color={colors.text}
+                  color={colors.textSecondary}
                 />
               </TouchableOpacity>
             )}
           </View>
         </View>
-      </SafeAreaView>
-      
-      {progress !== undefined && (
-        <View style={styles.progressContainer}>
-          <View style={styles.progressBackground}>
-            <View 
-              style={[
-                styles.progressFill, 
-                { width: `${Math.min(Math.max(progress * 100, 0), 100)}%` }
-              ]} 
-            />
+        
+        {progress !== undefined && (
+          <View style={styles.progressContainer}>
+            <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
           </View>
-        </View>
-      )}
-    </View>
+        )}
+      </SafeAreaView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.1)',
-  },
   safeArea: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.background,
+    ...shadows.small,
+    zIndex: 10,
   },
-  headerContent: {
-    height: 56,
+  container: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: spacing.md,
-    backgroundColor: colors.surface,
-    ...shadows.small,
+    paddingVertical: spacing.sm,
+    backgroundColor: colors.background,
   },
-  leftSection: {
+  leftContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    minWidth: 40,
-  },
-  titleSection: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing.sm,
   },
-  rightSection: {
+  rightContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    minWidth: 40,
+  },
+  titleContainer: {
+    marginLeft: spacing.xs,
+    flex: 1,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     color: colors.text,
-    textAlign: 'center',
   },
   subtitle: {
     fontSize: 12,
     color: colors.textSecondary,
-    textAlign: 'center',
+    marginTop: 2,
   },
   iconButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 2,
+    padding: 4,
+  },
+  settingsButton: {
+    marginLeft: spacing.sm,
   },
   languageButton: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginLeft: spacing.sm,
+    ...shadows.small,
   },
   languageText: {
-    color: '#FFFFFF',
+    color: 'white',
     fontSize: 12,
     fontWeight: 'bold',
   },
   progressContainer: {
-    height: 4,
+    height: 3,
+    backgroundColor: colors.border,
     width: '100%',
   },
-  progressBackground: {
-    height: '100%',
-    width: '100%',
-    backgroundColor: 'rgba(0,0,0,0.1)',
-  },
-  progressFill: {
+  progressBar: {
     height: '100%',
     backgroundColor: colors.primary,
   },

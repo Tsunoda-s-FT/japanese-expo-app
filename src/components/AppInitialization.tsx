@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLanguage } from '../context/LanguageContext';
-import { LanguageCode, getDeviceLanguage } from '../i18n';
+import { LanguageCode, getDeviceLanguage, getStoredLanguage } from '../i18n';
 import { colors } from '../theme/theme';
 import RootNavigator from '../navigation/RootNavigator';
-import { LocalizedText } from './LocalizedText';
+import { LocalizedText } from './common/LocalizedText';
 import LanguageSelectionScreen from '../screens/LanguageSelectionScreen';
 
 const AppInitialization: React.FC = () => {
@@ -28,22 +28,15 @@ const AppInitialization: React.FC = () => {
         setIsLoading(false);
       } else {
         // 保存された言語設定を読み込む
-        const savedLanguage = await AsyncStorage.getItem('user_language');
-        
-        if (savedLanguage && ['en', 'ja', 'zh', 'ko', 'es'].includes(savedLanguage as LanguageCode)) {
-          // 保存された言語設定がある場合
-          await setLanguage(savedLanguage as LanguageCode);
-        } else {
-          // デバイス言語を検出して設定
-          const deviceLanguage = getDeviceLanguage();
-          await setLanguage(deviceLanguage);
-        }
-        
+        const savedLanguage = await getStoredLanguage();
+        await setLanguage(savedLanguage);
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Error initializing language settings:', error);
+      console.error('Failed to load language settings:', error);
       // エラーが発生した場合はデフォルト言語を使用
+      const deviceLanguage = getDeviceLanguage();
+      await setLanguage(deviceLanguage);
       setIsLoading(false);
     }
   };

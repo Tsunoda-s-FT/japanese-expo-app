@@ -21,4 +21,4 @@ const QuizOption: React.FC<QuizOptionProps> = ({ label, onPress, selected, disab
   );
 };
 
-export default QuizOption;
+export default QuizOption; 

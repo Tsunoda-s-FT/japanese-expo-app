@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 import { colors, spacing, borderRadius, shadows } from '../../theme/theme';
 import { useLanguage } from '../../context/LanguageContext';
-import { LanguageCode } from '../../i18n';
+import { LanguageCode, LANGUAGES, getLanguageInfo } from '../../i18n';
 
 // 言語アイコンマッピング
 const languageIcons: Record<LanguageCode, string> = {
@@ -11,15 +11,6 @@ const languageIcons: Record<LanguageCode, string> = {
   zh: '🇨🇳',
   ko: '🇰🇷',
   es: '🇪🇸'
-};
-
-// 言語名のマッピング
-const languageNames: Record<LanguageCode, { native: string, english: string }> = {
-  en: { native: 'English', english: 'English' },
-  ja: { native: '日本語', english: 'Japanese' },
-  zh: { native: '中文', english: 'Chinese' },
-  ko: { native: '한국어', english: 'Korean' },
-  es: { native: 'Español', english: 'Spanish' }
 };
 
 interface LanguageChangeToastProps {
@@ -35,6 +26,7 @@ export const LanguageChangeToast: React.FC<LanguageChangeToastProps> = ({
 }) => {
   const { language: contextLanguage, t } = useLanguage();
   const language = propLanguage || contextLanguage;
+  const languageInfo = getLanguageInfo(language);
   
   // アニメーション用の値
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -104,7 +96,7 @@ export const LanguageChangeToast: React.FC<LanguageChangeToastProps> = ({
         <View style={styles.textContainer}>
           <Text style={styles.title}>{t('language.changed', '言語を変更しました')}</Text>
           <Text style={styles.subtitle}>
-            {languageNames[language].native} ({languageNames[language].english})
+            {languageInfo.nativeName} ({languageInfo.name})
           </Text>
         </View>
       </View>

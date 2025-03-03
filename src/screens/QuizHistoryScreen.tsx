@@ -6,10 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { getCourseById } from '../services/contentService';
-import AppCard from '../components/ui/AppCard';
+import { AppCard } from '../components/ui';
 import { colors, spacing, shadows } from '../theme/theme';
 import { commonStyles } from '../theme/styles';
-import { formatJapaneseDate } from '../utils/formatUtils';
+import { formatJapaneseDate } from '../utils/format';
 
 type QuizHistoryNavProp = NativeStackNavigationProp<MainStackParamList, 'QuizHistory'>;
 

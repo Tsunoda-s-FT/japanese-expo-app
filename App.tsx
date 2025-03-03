@@ -4,11 +4,14 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { paperTheme } from './src/theme/theme';
-import { LanguageProvider } from './src/context/LanguageContext';
 import { AppProvider } from './src/context/AppContext';
 import AppInitialization from './src/components/AppInitialization';
 import { colors } from './src/theme/theme';
 
+/**
+ * アプリケーションのルートコンポーネント
+ * すべてのプロバイダーを適切な順序で配置
+ */
 const App: React.FC = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -19,11 +22,9 @@ const App: React.FC = () => {
             backgroundColor={colors.surface}
             translucent={false} 
           />
-          <LanguageProvider>
-            <AppProvider>
-              <AppInitialization />
-            </AppProvider>
-          </LanguageProvider>
+          <AppProvider>
+            <AppInitialization />
+          </AppProvider>
         </PaperProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
