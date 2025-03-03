@@ -7,8 +7,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { getCourseById } from '../services/contentService';
 import { AppCard } from '../components';
-import { colors, spacing, shadows } from '../theme/theme';
-import { commonStyles } from '../theme/styles';
+import { colors, spacing, borderRadius, shadows, commonStyles } from '../theme/theme';
 import { formatJapaneseDate } from '../utils/format';
 
 type QuizHistoryNavProp = NativeStackNavigationProp<MainStackParamList, 'QuizHistory'>;

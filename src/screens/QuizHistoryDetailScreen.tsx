@@ -8,8 +8,7 @@ import { useProgress } from '../context/ProgressContext';
 import { getCourseById } from '../services/contentService';
 import { QuizQuestion } from '../types/contentTypes';
 import { AppCard } from '../components';
-import { colors, spacing, borderRadius, shadows } from '../theme/theme';
-import { commonStyles } from '../theme/styles';
+import { colors, spacing, borderRadius, shadows, commonStyles } from '../theme/theme';
 import { formatJapaneseDate } from '../utils/format';
 
 type QuizHistoryDetailRouteProp = RouteProp<MainStackParamList, 'QuizHistoryDetail'>;

@@ -8,8 +8,7 @@ import { Lesson } from '../types/contentTypes';
 import { getAllLessons } from '../services/contentService';
 import { useLanguage } from '../context/LanguageContext';
 import { AppLoading, AppHeader } from '../components';
-import { colors, spacing, borderRadius, shadows } from '../theme/theme';
-import { commonStyles } from '../theme/styles';
+import { colors, spacing, borderRadius, shadows, commonStyles } from '../theme/theme';
 
 // 画像のマッピング
 const lessonImages: { [key: string]: any } = {
