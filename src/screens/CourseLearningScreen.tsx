@@ -14,7 +14,7 @@ import AudioButton from '../components/learning/AudioButton';
 import RecordingButton from '../components/learning/RecordingButton';
 import PronunciationResultCard from '../components/learning/PronunciationResultCard';
 import { PronunciationEvaluationResult } from '../utils/audio';
-import { AppButton, AppProgressBar, AppLoading } from '../components/ui';
+import { AppButton, AppProgressBar, AppLoading } from '../components';
 import { colors, spacing } from '../theme/theme';
 
 type CourseLearningScreenRouteProp = RouteProp<SessionStackParamList, 'CourseLearning'>;

@@ -11,8 +11,9 @@ import { useProgress } from '../context/ProgressContext';
 import { useQuizSession } from '../context/QuizSessionContext';
 import { Course, QuizQuestion } from '../types/contentTypes';
 import SegmentedText from '../components/learning/SegmentedText';
-import { AppButton, AppProgressBar, AppLoading } from '../components/ui';
+import { AppButton, AppProgressBar, AppLoading } from '../components';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
+import QuizOption from '../components/learning/QuizOption';
 
 type CourseQuizScreenRouteProp = RouteProp<SessionStackParamList, 'CourseQuiz'>;
 type RootNavProp = NativeStackNavigationProp<RootStackParamList>;

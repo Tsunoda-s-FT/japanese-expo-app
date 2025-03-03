@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Title, Text } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Title, Text, IconButton, Surface } from 'react-native-paper';
 import { useProgress } from '../context/ProgressContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { getCourseById } from '../services/contentService';
-import { AppCard } from '../components/ui';
+import { AppCard } from '../components';
 import { colors, spacing, shadows } from '../theme/theme';
 import { commonStyles } from '../theme/styles';
 import { formatJapaneseDate } from '../utils/format';

@@ -7,7 +7,7 @@ import { MainStackParamList } from '../navigation/MainNavigator';
 import { useProgress } from '../context/ProgressContext';
 import { getCourseById } from '../services/contentService';
 import { QuizQuestion } from '../types/contentTypes';
-import { AppCard } from '../components/ui';
+import { AppCard } from '../components';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { commonStyles } from '../theme/styles';
 import { formatJapaneseDate } from '../utils/format';
