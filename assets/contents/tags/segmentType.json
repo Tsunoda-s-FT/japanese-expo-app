@@ -1,0 +1,122 @@
+[
+    {
+      "id": "base",
+      "labels": {
+        "ja": "語幹",
+        "en": "Base Form",
+        "zh": "词干",
+        "ko": "어간",
+        "es": "Forma Base"
+      }
+    },
+    {
+      "id": "polite_suffix",
+      "labels": {
+        "ja": "丁寧語接尾辞",
+        "en": "Polite Suffix",
+        "zh": "礼貌后缀",
+        "ko": "존댓말 접미사",
+        "es": "Sufijo Cortés"
+      }
+    },
+    {
+      "id": "honorific_prefix",
+      "labels": {
+        "ja": "尊敬接頭辞",
+        "en": "Honorific Prefix",
+        "zh": "尊敬前缀",
+        "ko": "존경 접두사",
+        "es": "Prefijo Honorífico"
+      }
+    },
+    {
+      "id": "honorific_form",
+      "labels": {
+        "ja": "尊敬語形",
+        "en": "Honorific Form",
+        "zh": "尊敬形式",
+        "ko": "존경어형",
+        "es": "Forma Honorífica"
+      }
+    },
+    {
+      "id": "humble_form",
+      "labels": {
+        "ja": "謙譲語形",
+        "en": "Humble Form",
+        "zh": "谦让形式",
+        "ko": "겸양어형",
+        "es": "Forma Humilde"
+      }
+    },
+    {
+      "id": "negative_form",
+      "labels": {
+        "ja": "否定形",
+        "en": "Negative Form",
+        "zh": "否定形式",
+        "ko": "부정형",
+        "es": "Forma Negativa"
+      }
+    },
+    {
+      "id": "past_form",
+      "labels": {
+        "ja": "過去形",
+        "en": "Past Form",
+        "zh": "过去形式",
+        "ko": "과거형",
+        "es": "Forma Pasada"
+      }
+    },
+    {
+      "id": "te_form",
+      "labels": {
+        "ja": "テ形",
+        "en": "Te-Form",
+        "zh": "て形式",
+        "ko": "테형",
+        "es": "Forma-Te"
+      }
+    },
+    {
+      "id": "question_marker",
+      "labels": {
+        "ja": "疑問標識",
+        "en": "Question Marker",
+        "zh": "疑问标记",
+        "ko": "의문 표지",
+        "es": "Marcador de Pregunta"
+      }
+    },
+    {
+      "id": "imperative_form",
+      "labels": {
+        "ja": "命令形",
+        "en": "Imperative Form",
+        "zh": "命令形式",
+        "ko": "명령형",
+        "es": "Forma Imperativa"
+      }
+    },
+    {
+      "id": "prohibitive_form",
+      "labels": {
+        "ja": "禁止形",
+        "en": "Prohibitive Form",
+        "zh": "禁止形式",
+        "ko": "금지형",
+        "es": "Forma Prohibitiva"
+      }
+    },
+    {
+      "id": "fixed_expression",
+      "labels": {
+        "ja": "定型表現",
+        "en": "Fixed Expression",
+        "zh": "固定表达",
+        "ko": "관용표현",
+        "es": "Expresión Fija"
+      }
+    }
+  ]

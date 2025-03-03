@@ -1,0 +1,104 @@
+[
+    {
+      "id": "statement",
+      "labels": {
+        "ja": "平叙文",
+        "en": "Statement",
+        "zh": "陈述句",
+        "ko": "평서문",
+        "es": "Declaración"
+      },
+      "descriptions": {
+        "ja": "事実や状態を述べる文",
+        "en": "Sentences that state facts or conditions",
+        "zh": "陈述事实或状态的句子",
+        "ko": "사실이나 상태를 서술하는 문장",
+        "es": "Oraciones que expresan hechos o condiciones"
+      }
+    },
+    {
+      "id": "question",
+      "labels": {
+        "ja": "疑問文",
+        "en": "Question",
+        "zh": "疑问句",
+        "ko": "의문문",
+        "es": "Pregunta"
+      },
+      "descriptions": {
+        "ja": "質問する文",
+        "en": "Sentences that ask questions",
+        "zh": "提出问题的句子",
+        "ko": "질문하는 문장",
+        "es": "Oraciones que hacen preguntas"
+      }
+    },
+    {
+      "id": "request",
+      "labels": {
+        "ja": "依頼文",
+        "en": "Request",
+        "zh": "请求句",
+        "ko": "의뢰문",
+        "es": "Petición"
+      },
+      "descriptions": {
+        "ja": "お願いする文",
+        "en": "Sentences that make requests",
+        "zh": "提出请求的句子",
+        "ko": "부탁하는 문장",
+        "es": "Oraciones que hacen peticiones"
+      }
+    },
+    {
+      "id": "command",
+      "labels": {
+        "ja": "命令文",
+        "en": "Command",
+        "zh": "命令句",
+        "ko": "명령문",
+        "es": "Orden"
+      },
+      "descriptions": {
+        "ja": "指示や命令をする文",
+        "en": "Sentences that give orders or instructions",
+        "zh": "给出指示或命令的句子",
+        "ko": "지시나 명령을 하는 문장",
+        "es": "Oraciones que dan órdenes o instrucciones"
+      }
+    },
+    {
+      "id": "prohibition",
+      "labels": {
+        "ja": "禁止文",
+        "en": "Prohibition",
+        "zh": "禁止句",
+        "ko": "금지문",
+        "es": "Prohibición"
+      },
+      "descriptions": {
+        "ja": "禁止を表す文",
+        "en": "Sentences that express prohibition",
+        "zh": "表示禁止的句子",
+        "ko": "금지를 표현하는 문장",
+        "es": "Oraciones que expresan prohibición"
+      }
+    },
+    {
+      "id": "expression",
+      "labels": {
+        "ja": "定型表現",
+        "en": "Fixed Expression",
+        "zh": "固定表达",
+        "ko": "관용표현",
+        "es": "Expresión Fija"
+      },
+      "descriptions": {
+        "ja": "挨拶や感嘆など特定の場面で使う決まり文句",
+        "en": "Set phrases used in specific situations such as greetings or exclamations",
+        "zh": "在特定场景如问候或感叹中使用的固定短语",
+        "ko": "인사나 감탄 등 특정 상황에서 사용하는 정형화된 표현",
+        "es": "Frases establecidas utilizadas en situaciones específicas como saludos o exclamaciones"
+      }
+    }
+  ]

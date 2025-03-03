@@ -1,0 +1,782 @@
+{
+  "id": "lesson_restaurant",
+  "version": "1.0.0",
+  "courses": [
+    {
+      "id": "course_restaurant_basic",
+      "phrases": [
+        {
+          "id": "phrase_irasshaimase",
+          "jpText": "いらっしゃいませ",
+          "reading": "いらっしゃいませ",
+          "politenessLevel": "polite",
+          "learningLevel": "essential",
+          "sentenceType": "expression",
+          "translations": {
+            "en": "Welcome (to our shop/restaurant)",
+            "zh": "欢迎光临（我们的店/餐厅）",
+            "ko": "어서 오세요 (저희 가게/식당에)",
+            "es": "Bienvenido/a (a nuestra tienda/restaurante)"
+          },
+          "audioPath": "audio/irasshaimase.mp3",
+          "imageRefs": ["images/illustrations/restaurant_welcome.png"],
+          "segments": [
+            {
+              "jpText": "いらっしゃいませ",
+              "reading": "いらっしゃいませ",
+              "partOfSpeech": "expression",
+              "segmentType": "honorific_form"
+            }
+          ],
+          "description": {
+            "ja": "店やレストランなどで客が入ってきた時の歓迎の挨拶です。「来る」の尊敬語に「〜ませ」をつけた丁寧な表現です。",
+            "en": "A welcoming greeting used when customers enter a store or restaurant. It's a polite expression using the honorific form of 'to come' with '-mase'.",
+            "zh": "当顾客进入商店或餐厅时使用的欢迎问候语。这是一个礼貌的表达，使用'来'的尊敬形式加上'〜ませ'。",
+            "ko": "가게나 레스토랑 등에서 손님이 들어왔을 때의 환영 인사입니다. '오다'의 존경어에 '~마세'를 붙인 정중한 표현입니다.",
+            "es": "Un saludo de bienvenida utilizado cuando los clientes entran en una tienda o restaurante. Es una expresión educada que usa la forma honorífica de 'venir' con '-mase'."
+          },
+          "usageContext": {
+            "ja": "店員からお客さんへの一方通行の挨拶なので、お客さんが返事をする必要はありません。日本のレストランやショップでは必ず聞こえる表現です。",
+            "en": "This is a one-way greeting from staff to customers, so customers don't need to respond. It's an expression you'll definitely hear in Japanese restaurants and shops.",
+            "zh": "这是服务员对顾客的单向问候，因此顾客不需要回应。这是在日本餐厅和商店中一定会听到的表达。",
+            "ko": "점원이 손님에게 하는 일방적인 인사이므로, 손님이 대답할 필요는 없습니다. 일본의 레스토랑이나 상점에서는 반드시 들리는 표현입니다.",
+            "es": "Este es un saludo unidireccional del personal a los clientes, por lo que los clientes no necesitan responder. Es una expresión que definitivamente escuchará en restaurantes y tiendas japonesas."
+          },
+          "examples": [
+            {
+              "id": "ex_irasshaimase_1",
+              "jpText": "スタッフ：いらっしゃいませ！\n客：（静かに席に座る）",
+              "audioPath": "audio/examples/ex_irasshaimase_dialog_1.mp3",
+              "translations": {
+                "en": "Staff: Welcome!\nCustomer: (quietly sits down)",
+                "zh": "员工：欢迎光临！\n顾客：（静静地坐下）",
+                "ko": "직원: 어서 오세요!\n손님: (조용히 자리에 앉는다)",
+                "es": "Personal: ¡Bienvenido/a!\nCliente: (se sienta silenciosamente)"
+              }
+            }
+          ]
+        },
+        {
+          "id": "phrase_menu_onegaishimasu",
+          "jpText": "メニューをお願いします",
+          "reading": "めにゅーをおねがいします",
+          "politenessLevel": "polite",
+          "learningLevel": "essential",
+          "sentenceType": "request",
+          "translations": {
+            "en": "Menu, please",
+            "zh": "请给我菜单",
+            "ko": "메뉴 부탁합니다",
+            "es": "El menú, por favor"
+          },
+          "audioPath": "audio/menu_onegaishimasu.mp3",
+          "imageRefs": ["images/illustrations/request_menu.png"],
+          "segments": [
+            {
+              "jpText": "メニュー",
+              "reading": "めにゅー",
+              "partOfSpeech": "noun",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "を",
+              "reading": "を",
+              "partOfSpeech": "particle",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "お願いします",
+              "reading": "おねがいします",
+              "partOfSpeech": "expression",
+              "segmentType": "polite_suffix"
+            }
+          ],
+          "description": {
+            "ja": "レストランでメニューを頼むための丁寧な表現です。「ください」より丁寧な「お願いします」を使っています。",
+            "en": "A polite expression for requesting a menu at a restaurant. It uses 'onegaishimasu' which is more polite than 'kudasai'.",
+            "zh": "在餐厅请求菜单的礼貌表达。使用比'ください'更礼貌的'お願いします'。",
+            "ko": "레스토랑에서 메뉴를 부탁하기 위한 정중한 표현입니다. '주세요'보다 정중한 '부탁합니다'를 사용하고 있습니다.",
+            "es": "Una expresión educada para solicitar un menú en un restaurante. Utiliza 'onegaishimasu' que es más educado que 'kudasai'."
+          },
+          "usageContext": {
+            "ja": "席に着いたらまずメニューを見たい時に使います。忙しいスタッフに気づいてもらうために、少し手を上げながら言うこともあります。",
+            "en": "Used when you want to see the menu first after being seated. You might say this while slightly raising your hand to get the attention of busy staff.",
+            "zh": "当你入座后首先想看菜单时使用。你可能会在稍微举手的同时说这句话，以引起忙碌员工的注意。",
+            "ko": "자리에 앉은 후 먼저 메뉴를 보고 싶을 때 사용합니다. 바쁜 직원에게 알아차려 달라고 약간 손을 들면서 말하기도 합니다.",
+            "es": "Se usa cuando quieres ver primero el menú después de sentarte. Podrías decir esto mientras levantas ligeramente la mano para llamar la atención del personal ocupado."
+          },
+          "examples": [
+            {
+              "id": "ex_menu_1",
+              "jpText": "客：すみません、メニューをお願いします。\nスタッフ：はい、少々お待ちください。",
+              "audioPath": "audio/examples/ex_menu_dialog_1.mp3",
+              "translations": {
+                "en": "Customer: Excuse me, menu please.\nStaff: Yes, please wait a moment.",
+                "zh": "顾客：对不起，请给我菜单。\n员工：好的，请稍等。",
+                "ko": "손님: 죄송합니다, 메뉴 부탁합니다.\n직원: 네, 잠시만 기다려 주세요.",
+                "es": "Cliente: Disculpe, el menú por favor.\nPersonal: Sí, espere un momento por favor."
+              }
+            }
+          ]
+        },
+        {
+          "id": "phrase_chumon_onegaishimasu",
+          "jpText": "注文をお願いします",
+          "reading": "ちゅうもんをおねがいします",
+          "politenessLevel": "polite",
+          "learningLevel": "essential",
+          "sentenceType": "expression",
+          "translations": {
+            "en": "I'd like to order, please",
+            "zh": "请点餐",
+            "ko": "주문 부탁합니다",
+            "es": "Me gustaría ordenar, por favor"
+          },
+          "audioPath": "audio/chumon_onegaishimasu.mp3",
+          "imageRefs": ["images/illustrations/ordering.png"],
+          "segments": [
+            {
+              "jpText": "注文",
+              "reading": "ちゅうもん",
+              "partOfSpeech": "noun",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "を",
+              "reading": "を",
+              "partOfSpeech": "particle",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "お願いします",
+              "reading": "おねがいします",
+              "partOfSpeech": "expression",
+              "segmentType": "polite_suffix"
+            }
+          ],
+          "description": {
+            "ja": "注文の準備ができたことを店員に伝える表現です。メニューを見終わって注文したい時に使います。",
+            "en": "An expression to inform the staff that you're ready to order. Used when you've finished looking at the menu and want to order.",
+            "zh": "向服务员表示您已准备好点餐的表达。当您看完菜单并想点餐时使用。",
+            "ko": "주문 준비가 되었음을 점원에게 알리는 표현입니다. 메뉴를 다 보고 주문하고 싶을 때 사용합니다.",
+            "es": "Una expresión para informar al personal que está listo para ordenar. Se usa cuando ha terminado de mirar el menú y desea ordenar."
+          },
+          "usageContext": {
+            "ja": "メニューを見終わり、何を注文するか決まった時に使います。店員を呼ぶ際に「すみません」と一緒に言うことが多いです。",
+            "en": "Used when you've finished looking at the menu and decided what to order. Often said with 'sumimasen' (excuse me) when calling a server.",
+            "zh": "当您看完菜单并决定点什么时使用。通常在叫服务员时与'すみません'（对不起）一起说。",
+            "ko": "메뉴를 다 보고 무엇을 주문할지 정해졌을 때 사용합니다. 점원을 부를 때 '죄송합니다'와 함께 말하는 경우가 많습니다.",
+            "es": "Se usa cuando has terminado de mirar el menú y has decidido qué ordenar. A menudo se dice con 'sumimasen' (disculpe) cuando se llama a un camarero."
+          },
+          "examples": [
+            {
+              "id": "ex_chumon_1",
+              "jpText": "客：すみません、注文をお願いします。\nスタッフ：はい、ご注文をどうぞ。",
+              "audioPath": "audio/examples/ex_chumon_dialog_1.mp3",
+              "translations": {
+                "en": "Customer: Excuse me, I'd like to order, please.\nStaff: Yes, what would you like to order?",
+                "zh": "顾客：对不起，请点餐。\n员工：好的，请点餐。",
+                "ko": "손님: 죄송합니다, 주문 부탁합니다.\n직원: 네, 주문해 주세요.",
+                "es": "Cliente: Disculpe, me gustaría ordenar, por favor.\nPersonal: Sí, ¿qué le gustaría ordenar?"
+              }
+            }
+          ]
+        },
+        {
+          "id": "phrase_osusume_wa_nan_desu_ka",
+          "jpText": "おすすめは何ですか",
+          "reading": "おすすめはなんですか",
+          "politenessLevel": "polite",
+          "learningLevel": "essential",
+          "sentenceType": "question",
+          "translations": {
+            "en": "What do you recommend?",
+            "zh": "有什么推荐的吗？",
+            "ko": "추천 메뉴는 무엇입니까?",
+            "es": "¿Qué recomienda?"
+          },
+          "audioPath": "audio/osusume_wa_nan_desu_ka.mp3",
+          "imageRefs": ["images/illustrations/recommendation.png"],
+          "segments": [
+            {
+              "jpText": "おすすめ",
+              "reading": "おすすめ",
+              "partOfSpeech": "noun",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "は",
+              "reading": "は",
+              "partOfSpeech": "particle",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "何",
+              "reading": "なん",
+              "partOfSpeech": "pronoun",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "ですか",
+              "reading": "ですか",
+              "partOfSpeech": "auxiliary",
+              "segmentType": "question_marker"
+            }
+          ],
+          "description": {
+            "ja": "店員におすすめの料理やメニューを尋ねる表現です。迷った時や、その店の名物を知りたい時に使います。",
+            "en": "An expression to ask the staff about recommended dishes or menu items. Used when you're undecided or want to know the specialty of the restaurant.",
+            "zh": "向服务员询问推荐菜品或菜单项目的表达。当你犹豫不决或想知道餐厅的特色时使用。",
+            "ko": "점원에게 추천 요리나 메뉴를 묻는 표현입니다. 고민될 때나, 그 가게의 명물을 알고 싶을 때 사용합니다.",
+            "es": "Una expresión para preguntar al personal sobre platos o elementos del menú recomendados. Se usa cuando estás indeciso o quieres conocer la especialidad del restaurante."
+          },
+          "usageContext": {
+            "ja": "初めて行くレストランでメニューが多すぎて選べない時や、その店の特色を知りたい時に使うと、良いアドバイスがもらえることが多いです。",
+            "en": "When you visit a restaurant for the first time and there are too many menu items to choose from, or when you want to know the characteristics of the restaurant, using this often gets you good advice.",
+            "zh": "当你第一次去一家餐厅，菜单选择太多无法选择，或者当你想了解该餐厅的特色时，使用这个通常会得到很好的建议。",
+            "ko": "처음 가는 레스토랑에서 메뉴가 너무 많아 선택하기 어려울 때나, 그 가게의 특색을 알고 싶을 때 사용하면, 좋은 조언을 받을 수 있는 경우가 많습니다.",
+            "es": "Cuando visitas un restaurante por primera vez y hay demasiados elementos en el menú para elegir, o cuando quieres conocer las características del restaurante, usar esto a menudo te da buenos consejos."
+          },
+          "examples": [
+            {
+              "id": "ex_osusume_1",
+              "jpText": "客：おすすめは何ですか？\nスタッフ：本日のおすすめは海鮮丼です。新鮮な魚を使っています。",
+              "audioPath": "audio/examples/ex_osusume_dialog_1.mp3",
+              "translations": {
+                "en": "Customer: What do you recommend?\nStaff: Today's recommendation is the seafood bowl. We use fresh fish.",
+                "zh": "顾客：有什么推荐的吗？\n员工：今天的推荐是海鲜盖饭。我们使用新鲜的鱼。",
+                "ko": "손님: 추천 메뉴는 무엇입니까?\n직원: 오늘의 추천 메뉴는 해산물 덮밥입니다. 신선한 생선을 사용하고 있습니다.",
+                "es": "Cliente: ¿Qué recomienda?\nPersonal: La recomendación de hoy es el cuenco de mariscos. Usamos pescado fresco."
+              }
+            }
+          ]
+        },
+        {
+          "id": "phrase_kore_kudasai",
+          "jpText": "これください",
+          "reading": "これください",
+          "politenessLevel": "polite",
+          "learningLevel": "essential",
+          "sentenceType": "request",
+          "translations": {
+            "en": "I'll have this, please",
+            "zh": "请给我这个",
+            "ko": "이것 주세요",
+            "es": "Esto, por favor"
+          },
+          "audioPath": "audio/kore_kudasai.mp3",
+          "imageRefs": ["images/illustrations/pointing_menu.png"],
+          "segments": [
+            {
+              "jpText": "これ",
+              "reading": "これ",
+              "partOfSpeech": "pronoun",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "ください",
+              "reading": "ください",
+              "partOfSpeech": "expression",
+              "segmentType": "request_form"
+            }
+          ],
+          "description": {
+            "ja": "メニューやショーケースの料理を指して注文する基本的な表現です。発音が難しい料理名があるときに特に便利です。",
+            "en": "A basic expression for ordering by pointing to a dish on the menu or in a showcase. Especially useful when there are dish names that are difficult to pronounce.",
+            "zh": "通过指向菜单或展示柜中的菜品来点餐的基本表达。当有难以发音的菜名时特别有用。",
+            "ko": "메뉴나 쇼케이스의 요리를 가리켜서 주문하는 기본적인 표현입니다. 발음하기 어려운 요리명이 있을 때 특히 편리합니다.",
+            "es": "Una expresión básica para ordenar señalando un plato en el menú o en una vitrina. Especialmente útil cuando hay nombres de platos difíciles de pronunciar."
+          },
+          "usageContext": {
+            "ja": "メニューの写真や実物を指しながら使います。「これ」の代わりに「この料理」と言うこともできます。日本語があまり話せない外国人でも使いやすい表現です。",
+            "en": "Used while pointing to a photo on the menu or the actual dish. You can also say 'kono ryōri' (this dish) instead of 'kore'. It's an easy expression for foreigners who don't speak much Japanese.",
+            "zh": "在指向菜单上的照片或实际菜品时使用。您也可以说'この料理'（这道菜）而不是'これ'。这是一个对不太会说日语的外国人来说很容易使用的表达。",
+            "ko": "메뉴의 사진이나 실물을 가리키면서 사용합니다. '이것' 대신에 '이 요리'라고 말할 수도 있습니다. 일본어를 잘 못하는 외국인도 사용하기 쉬운 표현입니다.",
+            "es": "Se usa mientras se señala una foto en el menú o el plato real. También puedes decir 'kono ryōri' (este plato) en lugar de 'kore'. Es una expresión fácil para extranjeros que no hablan mucho japonés."
+          },
+          "examples": [
+            {
+              "id": "ex_kore_1",
+              "jpText": "客：（メニューを指さして）これください。\nスタッフ：はい、ラーメン一つですね。",
+              "audioPath": "audio/examples/ex_kore_dialog_1.mp3",
+              "translations": {
+                "en": "Customer: (pointing to the menu) I'll have this, please.\nStaff: Yes, one ramen, right?",
+                "zh": "顾客：（指着菜单）请给我这个。\n员工：好的，一份拉面，对吧？",
+                "ko": "손님: (메뉴를 가리키며) 이것 주세요.\n직원: 네, 라면 하나군요.",
+                "es": "Cliente: (señalando el menú) Esto, por favor.\nPersonal: Sí, un ramen, ¿verdad?"
+              }
+            }
+          ]
+        },
+        {
+          "id": "phrase_oishii_desu",
+          "jpText": "美味しいです",
+          "reading": "おいしいです",
+          "politenessLevel": "polite",
+          "learningLevel": "essential",
+          "sentenceType": "statement",
+          "translations": {
+            "en": "It's delicious",
+            "zh": "很好吃",
+            "ko": "맛있습니다",
+            "es": "Está delicioso"
+          },
+          "audioPath": "audio/oishii_desu.mp3",
+          "imageRefs": ["images/illustrations/enjoying_food.png"],
+          "segments": [
+            {
+              "jpText": "美味しい",
+              "reading": "おいしい",
+              "partOfSpeech": "i_adjective",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "です",
+              "reading": "です",
+              "partOfSpeech": "auxiliary",
+              "segmentType": "polite_suffix"
+            }
+          ],
+          "description": {
+            "ja": "食べ物や飲み物が美味しいときに使う表現です。「おいしい」は日本語で最も基本的な味の褒め言葉です。",
+            "en": "An expression used when food or drinks are delicious. 'Oishii' is the most basic complimentary word for taste in Japanese.",
+            "zh": "当食物或饮料美味时使用的表达。'おいしい'是日语中最基本的赞美味道的词。",
+            "ko": "음식이나 음료가 맛있을 때 사용하는 표현입니다. '맛있다'는 일본어로 가장 기본적인 맛에 대한 칭찬 단어입니다.",
+            "es": "Una expresión utilizada cuando la comida o bebidas están deliciosas. 'Oishii' es la palabra elogiosa más básica para el sabor en japonés."
+          },
+          "usageContext": {
+            "ja": "レストランで料理を食べている時や、食べた後に店員に伝えたい時に使います。「とても」や「すごく」を前につけて強調することもできます。",
+            "en": "Used when eating a dish at a restaurant or when you want to tell the staff after eating. You can emphasize by adding 'totemo' or 'sugoku' (very) before it.",
+            "zh": "在餐厅吃饭时或想在用餐后告诉服务员时使用。你可以通过在前面加上'とても'或'すごく'（非常）来强调。",
+            "ko": "레스토랑에서 요리를 먹고 있을 때나, 먹은 후에 점원에게 전하고 싶을 때 사용합니다. '매우' 또는 '굉장히'를 앞에 붙여 강조할 수도 있습니다.",
+            "es": "Se usa cuando comes un plato en un restaurante o cuando quieres decírselo al personal después de comer. Puedes enfatizar agregando 'totemo' o 'sugoku' (muy) antes."
+          },
+          "examples": [
+            {
+              "id": "ex_oishii_1",
+              "jpText": "スタッフ：お料理はいかがですか？\n客：とても美味しいです！",
+              "audioPath": "audio/examples/ex_oishii_dialog_1.mp3",
+              "translations": {
+                "en": "Staff: How is the food?\nCustomer: It's very delicious!",
+                "zh": "员工：菜肴怎么样？\n顾客：非常好吃！",
+                "ko": "직원: 음식은 어떠세요?\n손님: 매우 맛있습니다!",
+                "es": "Personal: ¿Cómo está la comida?\nCliente: ¡Está muy deliciosa!"
+              }
+            }
+          ],
+          "variations": [
+            {
+              "id": "var_oishii",
+              "jpText": "美味しい",
+              "reading": "おいしい",
+              "audioPath": "audio/oishii.mp3",
+              "politenessLevel": "casual",
+              "translations": {
+                "en": "Delicious (casual)",
+                "zh": "好吃（随意）",
+                "ko": "맛있다 (친근한)",
+                "es": "Delicioso (informal)"
+              },
+              "description": {
+                "ja": "「美味しいです」の普通形です。友達同士など、カジュアルな場面で使います。",
+                "en": "The plain form of 'oishii desu'. Used in casual situations, such as among friends.",
+                "zh": "'美味しいです'的普通形式。在随意的场合使用，例如朋友之间。",
+                "ko": "'맛있습니다'의 일반형입니다. 친구 사이 등, 캐주얼한 상황에서 사용합니다.",
+                "es": "La forma simple de 'oishii desu'. Se usa en situaciones informales, como entre amigos."
+              }
+            }
+          ]
+        },
+        {
+          "id": "phrase_okaikei_onegaishimasu",
+          "jpText": "お会計をお願いします",
+          "reading": "おかいけいをおねがいします",
+          "politenessLevel": "polite",
+          "learningLevel": "essential",
+          "sentenceType": "request",
+          "translations": {
+            "en": "Check, please",
+            "zh": "请结账",
+            "ko": "계산 부탁합니다",
+            "es": "La cuenta, por favor"
+          },
+          "audioPath": "audio/okaikei_onegaishimasu.mp3",
+          "imageRefs": ["images/illustrations/bill_payment.png"],
+          "segments": [
+            {
+              "jpText": "お会計",
+              "reading": "おかいけい",
+              "partOfSpeech": "noun",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "を",
+              "reading": "を",
+              "partOfSpeech": "particle",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "お願いします",
+              "reading": "おねがいします",
+              "partOfSpeech": "expression",
+              "segmentType": "polite_suffix"
+            }
+          ],
+          "description": {
+            "ja": "食事を終え、支払いをしたい時に使う表現です。「お会計」は「支払い」を丁寧に言った言葉です。",
+            "en": "An expression used when you've finished eating and want to pay. 'Okaikei' is a polite word for 'payment'.",
+            "zh": "当你吃完饭想付款时使用的表达。'お会計'是'付款'的礼貌说法。",
+            "ko": "식사를 마치고 지불하고 싶을 때 사용하는 표현입니다. '계산'은 '지불'을 정중하게 말한 단어입니다.",
+            "es": "Una expresión utilizada cuando has terminado de comer y quieres pagar. 'Okaikei' es una palabra educada para 'pago'."
+          },
+          "usageContext": {
+            "ja": "食事が終わり、店を出たい時に使います。店員を呼ぶ時には「すみません」と一緒に使うことが多いです。「チェックお願いします」と言うこともできます。",
+            "en": "Used when you've finished your meal and want to leave the restaurant. Often used with 'sumimasen' (excuse me) when calling the staff. You can also say 'chekku onegaishimasu' (check please).",
+            "zh": "当你吃完饭想离开餐厅时使用。在叫服务员时通常与'すみません'（对不起）一起使用。你也可以说'チェックお願いします'（请结账）。",
+            "ko": "식사가 끝나고 가게를 나가고 싶을 때 사용합니다. 점원을 부를 때는 '죄송합니다'와 함께 사용하는 경우가 많습니다. '체크 부탁합니다'라고 말할 수도 있습니다.",
+            "es": "Se usa cuando has terminado tu comida y quieres salir del restaurante. A menudo se usa con 'sumimasen' (disculpe) cuando se llama al personal. También puedes decir 'chekku onegaishimasu' (la cuenta por favor)."
+          },
+          "examples": [
+            {
+              "id": "ex_okaikei_1",
+              "jpText": "客：すみません、お会計をお願いします。\nスタッフ：はい、少々お待ちください。",
+              "audioPath": "audio/examples/ex_okaikei_dialog_1.mp3",
+              "translations": {
+                "en": "Customer: Excuse me, check please.\nStaff: Yes, please wait a moment.",
+                "zh": "顾客：对不起，请结账。\n员工：好的，请稍等。",
+                "ko": "손님: 죄송합니다, 계산 부탁합니다.\n직원: 네, 잠시만 기다려 주세요.",
+                "es": "Cliente: Disculpe, la cuenta por favor.\nPersonal: Sí, espere un momento por favor."
+              }
+            }
+          ]
+        },
+        {
+          "id": "phrase_gochisousama_deshita",
+          "jpText": "ごちそうさまでした",
+          "reading": "ごちそうさまでした",
+          "politenessLevel": "polite",
+          "learningLevel": "essential",
+          "sentenceType": "expression",
+          "translations": {
+            "en": "Thank you for the meal (after eating)",
+            "zh": "多谢款待（饭后）",
+            "ko": "잘 먹었습니다 (식사 후)",
+            "es": "Gracias por la comida (después de comer)"
+          },
+          "audioPath": "audio/gochisousama_deshita.mp3",
+          "imageRefs": ["images/illustrations/after_meal.png"],
+          "segments": [
+            {
+              "jpText": "ごちそうさま",
+              "reading": "ごちそうさま",
+              "partOfSpeech": "expression",
+              "segmentType": "base"
+            },
+            {
+              "jpText": "でした",
+              "reading": "でした",
+              "partOfSpeech": "auxiliary",
+              "segmentType": "past_form"
+            }
+          ],
+          "description": {
+            "ja": "食事を終えた後に言う挨拶です。「ご馳走」（豪華な食事の意味）に「様」をつけて敬意を表し、過去形の「でした」で終了を表します。",
+            "en": "A greeting said after finishing a meal. It adds 'sama' to 'gochisou' (meaning luxurious meal) to show respect, and ends with the past tense 'deshita' to indicate completion.",
+            "zh": "吃完饭后说的问候语。在'ご馳走'（意为豪华餐点）后加上'様'表示尊敬，以过去式'でした'结尾表示完成。",
+            "ko": "식사를 마친 후에 말하는 인사입니다. '고치소'(호화로운 식사의 의미)에 '사마'를 붙여 경의를 표하고, 과거형 '데시타'로 종료를 표시합니다.",
+            "es": "Un saludo que se dice después de terminar una comida. Agrega 'sama' a 'gochisou' (que significa comida lujosa) para mostrar respeto, y termina con el tiempo pasado 'deshita' para indicar finalización."
+          },
+          "usageContext": {
+            "ja": "食事を終えてテーブルを離れる時や、レストランを出る時に使います。食事を提供してくれた人や店への感謝を表す表現です。",
+            "en": "Used when leaving the table after eating or when leaving a restaurant. It's an expression of gratitude to the person or establishment that provided the meal.",
+            "zh": "在吃完饭离开餐桌或离开餐厅时使用。这是对提供食物的人或餐厅表示感谢的表达。",
+            "ko": "식사를 마치고 테이블을 떠날 때나, 레스토랑을 나갈 때 사용합니다. 식사를 제공해 준 사람이나 가게에 대한 감사를 표현하는 표현입니다.",
+            "es": "Se usa al dejar la mesa después de comer o al salir de un restaurante. Es una expresión de gratitud hacia la persona o establecimiento que proporcionó la comida."
+          },
+          "examples": [
+            {
+              "id": "ex_gochisousama_1",
+              "jpText": "客：（会計を済ませた後）ごちそうさまでした。\nスタッフ：ありがとうございました。またのご来店をお待ちしております。",
+              "audioPath": "audio/examples/ex_gochisousama_dialog_1.mp3",
+              "translations": {
+                "en": "Customer: (after paying) Thank you for the meal.\nStaff: Thank you. We look forward to your next visit.",
+                "zh": "顾客：（付款后）多谢款待。\n员工：谢谢。期待您的下次光临。",
+                "ko": "손님: (계산을 마친 후) 잘 먹었습니다.\n직원: 감사합니다. 또 방문해 주시기를 기다리고 있겠습니다.",
+                "es": "Cliente: (después de pagar) Gracias por la comida.\nPersonal: Gracias. Esperamos su próxima visita."
+              }
+            }
+          ],
+          "variations": [
+            {
+              "id": "var_gochisousama",
+              "jpText": "ごちそうさま",
+              "reading": "ごちそうさま",
+              "audioPath": "audio/gochisousama.mp3",
+              "politenessLevel": "casual",
+              "translations": {
+                "en": "Thanks for the meal (casual)",
+                "zh": "多谢款待（随意）",
+                "ko": "잘 먹었어 (친근한)",
+                "es": "Gracias por la comida (informal)"
+              },
+              "description": {
+                "ja": "「ごちそうさまでした」よりもカジュアルな表現で、家族や友人との食事の後に使います。",
+                "en": "A more casual expression than 'gochisousama deshita', used after meals with family or friends.",
+                "zh": "比'ごちそうさまでした'更随意的表达，在与家人或朋友一起吃饭后使用。",
+                "ko": "'잘 먹었습니다'보다 더 캐주얼한 표현으로, 가족이나 친구와의 식사 후에 사용합니다.",
+                "es": "Una expresión más informal que 'gochisousama deshita', utilizada después de las comidas con familiares o amigos."
+              }
+            }
+          ]
+        }
+      ],
+      "quizQuestions": [
+        {
+          "id": "quiz_restaurant_1",
+          "linkedPhraseId": "phrase_irasshaimase",
+          "questionText": {
+            "ja": "「いらっしゃいませ」はどのような時に使いますか？",
+            "en": "When do you use 'いらっしゃいませ'?",
+            "zh": "什么时候使用'いらっしゃいませ'？",
+            "ko": "'いらっしゃいませ'는 언제 사용합니까?",
+            "es": "¿Cuándo se usa 'いらっしゃいませ'?"
+          },
+          "options": [
+            {
+              "ja": "レストランを出るとき",
+              "en": "When leaving a restaurant",
+              "zh": "离开餐厅时",
+              "ko": "레스토랑을 나갈 때",
+              "es": "Al salir de un restaurante"
+            },
+            {
+              "ja": "食事を終えた後",
+              "en": "After finishing a meal",
+              "zh": "吃完饭后",
+              "ko": "식사를 마친 후",
+              "es": "Después de terminar una comida"
+            },
+            {
+              "ja": "お客さんがお店に入ってきたとき",
+              "en": "When customers enter a shop",
+              "zh": "当顾客进入商店时",
+              "ko": "손님이 가게에 들어왔을 때",
+              "es": "Cuando los clientes entran en una tienda"
+            },
+            {
+              "ja": "注文をするとき",
+              "en": "When placing an order",
+              "zh": "点餐时",
+              "ko": "주문할 때",
+              "es": "Al hacer un pedido"
+            }
+          ],
+          "answerIndex": 2,
+          "explanation": {
+            "ja": "「いらっしゃいませ」は、店員がお客さんがお店に入ってきたときに使う歓迎の挨拶です。",
+            "en": "'いらっしゃいませ' is a welcoming greeting used by staff when customers enter a shop.",
+            "zh": "'いらっしゃいませ'是服务员在顾客进入商店时使用的欢迎问候语。",
+            "ko": "'いらっしゃいませ'는 점원이 손님이 가게에 들어왔을 때 사용하는 환영 인사입니다.",
+            "es": "'いらっしゃいませ' es un saludo de bienvenida utilizado por el personal cuando los clientes entran en una tienda."
+          }
+        },
+        {
+          "id": "quiz_restaurant_2",
+          "linkedPhraseId": "phrase_osusume_wa_nan_desu_ka",
+          "questionText": {
+            "ja": "「おすすめは何ですか」を使うのはどんな時ですか？",
+            "en": "When would you use 'おすすめは何ですか'?",
+            "zh": "什么时候会使用'おすすめは何ですか'？",
+            "ko": "'おすすめは何ですか'를 사용하는 것은 어떤 때입니까?",
+            "es": "¿Cuándo usarías 'おすすめは何ですか'?"
+          },
+          "options": [
+            {
+              "ja": "支払いをしたいとき",
+              "en": "When you want to pay",
+              "zh": "当你想付款时",
+              "ko": "지불하고 싶을 때",
+              "es": "Cuando quieres pagar"
+            },
+            {
+              "ja": "店員におすすめの料理を尋ねたいとき",
+              "en": "When you want to ask the staff for recommended dishes",
+              "zh": "当你想向服务员询问推荐菜品时",
+              "ko": "점원에게 추천 요리를 물어보고 싶을 때",
+              "es": "Cuando quieres preguntar al personal por platos recomendados"
+            },
+            {
+              "ja": "料理を注文するとき",
+              "en": "When ordering food",
+              "zh": "点餐时",
+              "ko": "요리를 주문할 때",
+              "es": "Al ordenar comida"
+            },
+            {
+              "ja": "食事が美味しいと伝えたいとき",
+              "en": "When you want to say the food is delicious",
+              "zh": "当你想表达食物很好吃时",
+              "ko": "식사가 맛있다고 전하고 싶을 때",
+              "es": "Cuando quieres decir que la comida está deliciosa"
+            }
+          ],
+          "answerIndex": 1,
+          "explanation": {
+            "ja": "「おすすめは何ですか」は、店員におすすめの料理や特別メニューを尋ねたいときに使う表現です。",
+            "en": "'おすすめは何ですか' is an expression used when you want to ask the staff about recommended dishes or special menu items.",
+            "zh": "'おすすめは何ですか'是当你想向服务员询问推荐菜品或特别菜单项目时使用的表达。",
+            "ko": "'おすすめは何ですか'는 점원에게 추천 요리나 특별 메뉴를 물어보고 싶을 때 사용하는 표현입니다.",
+            "es": "'おすすめは何ですか' es una expresión utilizada cuando quieres preguntar al personal sobre platos recomendados o elementos especiales del menú."
+          }
+        },
+        {
+          "id": "quiz_restaurant_3",
+          "linkedPhraseId": "phrase_oishii_desu",
+          "questionText": {
+            "ja": "次の文章を完成させてください：「この料理は___です。」",
+            "en": "Complete the following sentence: 'This dish is ___.'",
+            "zh": "完成下面的句子：这道菜是___。",
+            "ko": "다음 문장을 완성하세요: '이 요리는 ___입니다.'",
+            "es": "Complete la siguiente oración: 'Este plato está ___'."
+          },
+          "options": [
+            {
+              "ja": "美味しいです",
+              "en": "美味しいです",
+              "zh": "美味しいです",
+              "ko": "美味しいです",
+              "es": "美味しいです"
+            },
+            {
+              "ja": "お願いします",
+              "en": "お願いします",
+              "zh": "お願いします",
+              "ko": "お願いします",
+              "es": "お願いします"
+            },
+            {
+              "ja": "いらっしゃいませ",
+              "en": "いらっしゃいませ",
+              "zh": "いらっしゃいませ",
+              "ko": "いらっしゃいませ",
+              "es": "いらっしゃいませ"
+            },
+            {
+              "ja": "ごちそうさまでした",
+              "en": "ごちそうさまでした",
+              "zh": "ごちそうさまでした",
+              "ko": "ごちそうさまでした",
+              "es": "ごちそうさまでした"
+            }
+          ],
+          "answerIndex": 0,
+          "explanation": {
+            "ja": "「この料理は美味しいです」が正しい文章です。「美味しいです」は「おいしいです」と読み、食べ物や飲み物が美味しいという意味です。",
+            "en": "'この料理は美味しいです' (Kono ryouri wa oishii desu) is the correct sentence. '美味しいです' (oishii desu) means that food or drinks are delicious.",
+            "zh": "'この料理は美味しいです'（这道菜很好吃）是正确的句子。'美味しいです'（读作'oishii desu'）意味着食物或饮料很美味。",
+            "ko": "'この料理は美味しいです'(이 요리는 맛있습니다)가 올바른 문장입니다. '美味しいです'는 '오이시이데스'라고 읽고, 음식이나 음료가 맛있다는 의미입니다.",
+            "es": "'この料理は美味しいです' (Kono ryouri wa oishii desu) es la oración correcta. '美味しいです' (oishii desu) significa que la comida o bebidas están deliciosas."
+          }
+        },
+        {
+          "id": "quiz_restaurant_4",
+          "linkedPhraseId": "phrase_okaikei_onegaishimasu",
+          "questionText": {
+            "ja": "「お会計をお願いします」はどのような時に使いますか？",
+            "en": "When do you use 'お会計をお願いします'?",
+            "zh": "什么时候使用'お会計をお願いします'？",
+            "ko": "'お会計をお願いします'는 언제 사용합니까?",
+            "es": "¿Cuándo se usa 'お会計をお願いします'?"
+          },
+          "options": [
+            {
+              "ja": "食事を始める前に",
+              "en": "Before starting a meal",
+              "zh": "在开始用餐前",
+              "ko": "식사를 시작하기 전에",
+              "es": "Antes de comenzar una comida"
+            },
+            {
+              "ja": "メニューを注文する時に",
+              "en": "When ordering from the menu",
+              "zh": "从菜单点餐时",
+              "ko": "메뉴를 주문할 때",
+              "es": "Al ordenar del menú"
+            },
+            {
+              "ja": "食事を終えて支払いをしたい時に",
+              "en": "When you've finished eating and want to pay",
+              "zh": "当你吃完饭想付款时",
+              "ko": "식사를 마치고 지불하고 싶을 때",
+              "es": "Cuando has terminado de comer y quieres pagar"
+            },
+            {
+              "ja": "追加の注文をしたい時に",
+              "en": "When you want to order more items",
+              "zh": "当你想追加点餐时",
+              "ko": "추가 주문을 하고 싶을 때",
+              "es": "Cuando quieres pedir más artículos"
+            }
+          ],
+          "answerIndex": 2,
+          "explanation": {
+            "ja": "「お会計をお願いします」は、食事を終えて支払いをしたい時に使う表現です。「チェックお願いします」という言い方もあります。",
+            "en": "'お会計をお願いします' is an expression used when you've finished eating and want to pay. You can also say 'チェックお願いします' (chekku onegaishimasu).",
+            "zh": "'お会計をお願いします'是当你吃完饭想付款时使用的表达。你也可以说'チェックお願いします'（请结账）。",
+            "ko": "'お会計をお願いします'는 식사를 마치고 지불하고 싶을 때 사용하는 표현입니다. '체크 부탁합니다'라는 말도 있습니다.",
+            "es": "'お会計をお願いします' es una expresión utilizada cuando has terminado de comer y quieres pagar. También puedes decir 'チェックお願いします' (chekku onegaishimasu)."
+          }
+        },
+        {
+          "id": "quiz_restaurant_5",
+          "linkedPhraseId": "phrase_gochisousama_deshita",
+          "questionText": {
+            "ja": "「ごちそうさまでした」と「いただきます」の違いは何ですか？",
+            "en": "What is the difference between 'ごちそうさまでした' and 'いただきます'?",
+            "zh": "'ごちそうさまでした'和'いただきます'有什么区别？",
+            "ko": "'ごちそうさまでした'와 'いただきます'의 차이점은 무엇입니까?",
+            "es": "¿Cuál es la diferencia entre 'ごちそうさまでした' y 'いただきます'?"
+          },
+          "options": [
+            {
+              "ja": "「ごちそうさまでした」は食事の前、「いただきます」は食事の後に使う",
+              "en": "'ごちそうさまでした' is used before eating, 'いただきます' is used after eating",
+              "zh": "'ごちそうさまでした'在用餐前使用，'いただきます'在用餐后使用",
+              "ko": "'ごちそうさまでした'는 식사 전, 'いただきます'는 식사 후에 사용",
+              "es": "'ごちそうさまでした' se usa antes de comer, 'いただきます' se usa después de comer"
+            },
+            {
+              "ja": "「ごちそうさまでした」は食事の後、「いただきます」は食事の前に使う",
+              "en": "'ごちそうさまでした' is used after eating, 'いただきます' is used before eating",
+              "zh": "'ごちそうさまでした'在用餐后使用，'いただきます'在用餐前使用",
+              "ko": "'ごちそうさまでした'는 식사 후, 'いただきます'는 식사 전에 사용",
+              "es": "'ごちそうさまでした' se usa después de comer, 'いただきます' se usa antes de comer"
+            },
+            {
+              "ja": "「ごちそうさまでした」は朝食に、「いただきます」は夕食に使う",
+              "en": "'ごちそうさまでした' is used for breakfast, 'いただきます' is used for dinner",
+              "zh": "'ごちそうさまでした'用于早餐，'いただきます'用于晚餐",
+              "ko": "'ごちそうさまでした'는 아침 식사에, 'いただきます'는 저녁 식사에 사용",
+              "es": "'ごちそうさまでした' se usa para el desayuno, 'いただきます' se usa para la cena"
+            },
+            {
+              "ja": "「ごちそうさまでした」はレストランで、「いただきます」は家庭で使う",
+              "en": "'ごちそうさまでした' is used in restaurants, 'いただきます' is used at home",
+              "zh": "'ごちそうさまでした'在餐厅使用，'いただきます'在家中使用",
+              "ko": "'ごちそうさまでした'는 레스토랑에서, 'いただきます'는 가정에서 사용",
+              "es": "'ごちそうさまでした' se usa en restaurantes, 'いただきます' se usa en casa"
+            }
+          ],
+          "answerIndex": 1,
+          "explanation": {
+            "ja": "「ごちそうさまでした」は食事を終えた後に使い、「いただきます」は食事を始める前に使います。どちらも食事に関する感謝の気持ちを表す言葉です。",
+            "en": "'ごちそうさまでした' is used after finishing a meal, while 'いただきます' is used before starting a meal. Both express gratitude related to the meal.",
+            "zh": "'ごちそうさまでした'在吃完饭后使用，而'いただきます'在开始用餐前使用。两者都表达了与用餐相关的感谢之情。",
+            "ko": "'ごちそうさまでした'는 식사를 마친 후에 사용하고, 'いただきます'는 식사를 시작하기 전에 사용합니다. 둘 다 식사에 관한 감사의 마음을 표현하는 말입니다.",
+            "es": "'ごちそうさまでした' se usa después de terminar una comida, mientras que 'いただきます' se usa antes de comenzar una comida. Ambos expresan gratitud relacionada con la comida."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+    "id": "lesson_business",
+    "version": "1.0.0",
+    "title": {
+      "ja": "ビジネス日本語",
+      "en": "Business Japanese",
+      "zh": "商务日语",
+      "ko": "비즈니스 일본어",
+      "es": "Japonés para negocios"
+    },
+    "description": {
+      "ja": "職場で役立つビジネス敬語と基本フレーズを学びましょう。",
+      "en": "Learn useful business honorific language and basic phrases for the workplace.",
+      "zh": "学习在职场中有用的商务敬语和基本短语。",
+      "ko": "직장에서 유용한 비즈니스 경어와 기본 표현을 배워봅시다.",
+      "es": "Aprenda lenguaje honorífico empresarial útil y frases básicas para el lugar de trabajo."
+    },
+    "category": "business",
+    "thumbnailPath": "images/thumbnail.png",
+    "totalEstimatedTime": "20分",
+    "targetLearningLevel": "common",
+    "politenessLevels": ["polite", "honorific", "humble"],
+    "tags": ["business", "office", "formal", "workplace"],
+    "totalPhrases": 5,
+    "totalQuizzes": 4,
+    "courses": [
+      {
+        "id": "course_business_basic",
+        "title": {
+          "ja": "ビジネス基本表現",
+          "en": "Basic Business Expressions",
+          "zh": "商务基本表达",
+          "ko": "비즈니스 기본 표현",
+          "es": "Expresiones básicas de negocios"
+        },
+        "description": {
+          "ja": "日本のオフィスでよく使われる基本的なビジネス表現を学びます。",
+          "en": "Learn fundamental business expressions commonly used in Japanese offices.",
+          "zh": "学习日本办公室中常用的基本商务表达。",
+          "ko": "일본 사무실에서 자주 사용되는 기본적인 비즈니스 표현을 배웁니다.",
+          "es": "Aprenda expresiones comerciales fundamentales comúnmente utilizadas en oficinas japonesas."
+        },
+        "level": "common",
+        "estimatedTime": "20分",
+        "tags": ["business", "formal", "office"]
+      }
+    ]
+  }

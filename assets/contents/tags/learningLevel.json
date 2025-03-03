@@ -1,0 +1,53 @@
+[
+    {
+      "id": "essential",
+      "labels": {
+        "ja": "入門",
+        "en": "Essential",
+        "zh": "入门",
+        "ko": "입문",
+        "es": "Esencial"
+      },
+      "descriptions": {
+        "ja": "最初に覚えるべき基本表現（JLPT N5-N4相当）",
+        "en": "Basic expressions to learn first (equivalent to JLPT N5-N4)",
+        "zh": "首先应该学习的基本表达（相当于JLPT N5-N4）",
+        "ko": "처음에 외워야 할 기본 표현(JLPT N5-N4 수준)",
+        "es": "Expresiones básicas para aprender primero (equivalente a JLPT N5-N4)"
+      }
+    },
+    {
+      "id": "common",
+      "labels": {
+        "ja": "一般",
+        "en": "Common",
+        "zh": "常用",
+        "ko": "일반",
+        "es": "Común"
+      },
+      "descriptions": {
+        "ja": "日常生活でよく使われる表現（JLPT N3相当）",
+        "en": "Expressions commonly used in daily life (equivalent to JLPT N3)",
+        "zh": "日常生活中常用的表达（相当于JLPT N3）",
+        "ko": "일상생활에서 자주 사용되는 표현(JLPT N3 수준)",
+        "es": "Expresiones comúnmente utilizadas en la vida diaria (equivalente a JLPT N3)"
+      }
+    },
+    {
+      "id": "advanced",
+      "labels": {
+        "ja": "上級",
+        "en": "Advanced",
+        "zh": "高级",
+        "ko": "상급",
+        "es": "Avanzado"
+      },
+      "descriptions": {
+        "ja": "より深い日本語理解のための表現（JLPT N2-N1相当）",
+        "en": "Expressions for deeper understanding of Japanese (equivalent to JLPT N2-N1)",
+        "zh": "用于更深入理解日语的表达（相当于JLPT N2-N1）",
+        "ko": "더 깊은 일본어 이해를 위한 표현(JLPT N2-N1 수준)",
+        "es": "Expresiones para una comprensión más profunda del japonés (equivalente a JLPT N2-N1)"
+      }
+    }
+  ]

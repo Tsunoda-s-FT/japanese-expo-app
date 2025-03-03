@@ -1,0 +1,70 @@
+[
+    {
+      "id": "casual",
+      "labels": {
+        "ja": "カジュアル",
+        "en": "Casual",
+        "zh": "随意",
+        "ko": "친근체",
+        "es": "Informal"
+      },
+      "descriptions": {
+        "ja": "友達や家族との会話で使う砕けた表現",
+        "en": "Relaxed expressions used with friends and family",
+        "zh": "与朋友和家人交流时使用的随意表达",
+        "ko": "친구나 가족과의 대화에서 사용하는 편안한 표현",
+        "es": "Expresiones relajadas utilizadas con amigos y familia"
+      }
+    },
+    {
+      "id": "polite",
+      "labels": {
+        "ja": "丁寧語",
+        "en": "Polite",
+        "zh": "礼貌",
+        "ko": "존댓말",
+        "es": "Cortés"
+      },
+      "descriptions": {
+        "ja": "一般的な社会生活で使う「です・ます」形の表現",
+        "en": "Standard polite expressions with 'desu/masu' forms used in daily social interactions",
+        "zh": "日常社交中使用的「です・ます」形式的礼貌表达",
+        "ko": "일상 사회 생활에서 사용하는 '입니다/합니다' 형태의 표현",
+        "es": "Expresiones educadas estándar con formas 'desu/masu' utilizadas en interacciones sociales diarias"
+      }
+    },
+    {
+      "id": "honorific",
+      "labels": {
+        "ja": "尊敬語",
+        "en": "Honorific",
+        "zh": "尊敬语",
+        "ko": "존경어",
+        "es": "Honorífico"
+      },
+      "descriptions": {
+        "ja": "相手を立てる表現（目上の人やお客様に対して）",
+        "en": "Expressions that show respect to the listener (used with superiors or customers)",
+        "zh": "表示对听者尊重的表达（用于上级或客户）",
+        "ko": "상대방을 높이는 표현(윗사람이나 고객에게 사용)",
+        "es": "Expresiones que muestran respeto al oyente (usadas con superiores o clientes)"
+      }
+    },
+    {
+      "id": "humble",
+      "labels": {
+        "ja": "謙譲語",
+        "en": "Humble",
+        "zh": "谦让语",
+        "ko": "겸양어",
+        "es": "Humilde"
+      },
+      "descriptions": {
+        "ja": "自分を低める表現（目上の人やビジネスの場で）",
+        "en": "Expressions that humble oneself (used with superiors or in business settings)",
+        "zh": "表示自谦的表达（用于上级或商务场合）",
+        "ko": "자신을 낮추는 표현(윗사람이나 비즈니스 상황에서)",
+        "es": "Expresiones que humillan a uno mismo (usadas con superiores o en entornos de negocios)"
+      }
+    }
+  ]

@@ -1,0 +1,48 @@
+{
+    "id": "lesson_greetings",
+    "version": "1.0.0",
+    "title": {
+      "ja": "あいさつ",
+      "en": "Greetings",
+      "zh": "问候语",
+      "ko": "인사",
+      "es": "Saludos"
+    },
+    "description": {
+      "ja": "N5レベルの基本挨拶表現を学び、日常会話の基礎を身につけましょう。",
+      "en": "Learn basic greeting expressions for N5 level and master the basics of daily conversation.",
+      "zh": "学习N5级别的基本问候表达，掌握日常对话的基础。",
+      "ko": "N5 레벨의 기본 인사 표현을 배우고 일상 대화의 기초를 습득합시다.",
+      "es": "Aprenda expresiones básicas de saludo para el nivel N5 y domine los fundamentos de la conversación diaria."
+    },
+    "category": "basic",
+    "thumbnailPath": "images/thumbnail.png",
+    "totalEstimatedTime": "15分",
+    "targetLearningLevel": "essential",
+    "politenessLevels": ["casual", "polite"],
+    "tags": ["greeting", "daily", "essential"],
+    "totalPhrases": 8,
+    "totalQuizzes": 4,
+    "courses": [
+      {
+        "id": "course_greetings_basic",
+        "title": {
+          "ja": "あいさつ(基本)",
+          "en": "Greetings (Basic)",
+          "zh": "问候语（基础）",
+          "ko": "인사 (기본)",
+          "es": "Saludos (Básico)"
+        },
+        "description": {
+          "ja": "基本あいさつを学習し、クイズで意味を確認しましょう。",
+          "en": "Learn basic greetings and confirm their meanings with quizzes.",
+          "zh": "学习基本问候语，并通过测验确认含义。",
+          "ko": "기본 인사말을 배우고 퀴즈로 의미를 확인합시다.",
+          "es": "Aprenda saludos básicos y confirme sus significados con cuestionarios."
+        },
+        "level": "essential",
+        "estimatedTime": "15分",
+        "tags": ["greeting", "daily", "essential"]
+      }
+    ]
+  }

@@ -1,0 +1,604 @@
+{
+    "id": "lesson_business",
+    "version": "1.0.0",
+    "courses": [
+      {
+        "id": "course_business_basic",
+        "phrases": [
+          {
+            "id": "phrase_otsukaresama_desu",
+            "jpText": "お疲れ様です",
+            "reading": "おつかれさまです",
+            "politenessLevel": "polite",
+            "learningLevel": "common",
+            "sentenceType": "expression",
+            "translations": {
+              "en": "Good work / Hello (workplace greeting)",
+              "zh": "辛苦了 / 你好（职场问候）",
+              "ko": "수고하셨습니다 / 안녕하세요 (직장 인사)",
+              "es": "Buen trabajo / Hola (saludo en el lugar de trabajo)"
+            },
+            "audioPath": "audio/otsukaresama_desu.mp3",
+            "imageRefs": ["images/illustrations/office_greeting.png"],
+            "segments": [
+              {
+                "jpText": "お疲れ様",
+                "reading": "おつかれさま",
+                "partOfSpeech": "expression",
+                "segmentType": "base"
+              },
+              {
+                "jpText": "です",
+                "reading": "です",
+                "partOfSpeech": "auxiliary",
+                "segmentType": "polite_suffix"
+              }
+            ],
+            "description": {
+              "ja": "職場での一般的な挨拶で、同僚の労をねぎらう意味があります。",
+              "en": "A common workplace greeting that acknowledges the other person's efforts.",
+              "zh": "一种常见的职场问候语，表示对他人努力的认可。",
+              "ko": "직장에서의 일반적인 인사로, 상대방의 노고를 인정하는 의미가 있습니다.",
+              "es": "Un saludo común en el lugar de trabajo que reconoce los esfuerzos de la otra persona."
+            },
+            "usageContext": {
+              "ja": "朝の挨拶としても、仕事中の挨拶としても、また帰りの挨拶としても使えます。同僚や部下に対して使うのが一般的です。",
+              "en": "Can be used as a morning greeting, during work, or when leaving. Typically used with colleagues or subordinates.",
+              "zh": "可以用作早上问候、工作期间或离开时。通常用于同事或下属。",
+              "ko": "아침 인사로도, 업무 중 인사로도, 또한 퇴근 인사로도 사용할 수 있습니다. 동료나 부하 직원에게 사용하는 것이 일반적입니다.",
+              "es": "Se puede usar como saludo matutino, durante el trabajo o al salir. Normalmente se usa con colegas o subordinados."
+            },
+            "examples": [
+              {
+                "id": "ex_otsukaresama_1",
+                "jpText": "山田：お疲れ様です、佐藤さん。今日の会議資料は準備できましたか？\n佐藤：お疲れ様です。はい、すでに完成しています。",
+                "audioPath": "audio/examples/ex_otsukaresama_dialog_1.mp3",
+                "translations": {
+                  "en": "Yamada: Hello, Sato-san. Are the meeting materials for today ready?\nSato: Hello. Yes, they're already complete.",
+                  "zh": "山田：辛苦了，佐藤先生。今天的会议资料准备好了吗？\n佐藤：辛苦了。是的，已经完成了。",
+                  "ko": "야마다: 수고하셨습니다, 사토 씨. 오늘 회의 자료는 준비되었습니까?\n사토: 수고하셨습니다. 네, 이미 완성되어 있습니다.",
+                  "es": "Yamada: Hola, Sato-san. ¿Están listos los materiales para la reunión de hoy?\nSato: Hola. Sí, ya están completos."
+                }
+              }
+            ],
+            "variations": [
+              {
+                "id": "var_otsukaresama_deshita",
+                "jpText": "お疲れ様でした",
+                "reading": "おつかれさまでした",
+                "audioPath": "audio/otsukaresama_deshita.mp3",
+                "politenessLevel": "polite",
+                "translations": {
+                  "en": "Good work (past/completed work)",
+                  "zh": "辛苦了（过去完成的工作）",
+                  "ko": "수고하셨습니다 (과거/완료된 일)",
+                  "es": "Buen trabajo (trabajo pasado/completado)"
+                },
+                "description": {
+                  "ja": "「お疲れ様です」の過去形で、仕事や作業が終わった後に使います。",
+                  "en": "The past tense of 'otsukaresama desu', used after work or tasks are completed.",
+                  "zh": "'お疲れ様です'的过去式，在工作或任务完成后使用。",
+                  "ko": "'お疲れ様です'의 과거형으로, 일이나 작업이 끝난 후에 사용합니다.",
+                  "es": "El tiempo pasado de 'otsukaresama desu', utilizado después de que el trabajo o las tareas se completan."
+                }
+              }
+            ]
+          },
+          {
+            "id": "phrase_shitsurei_shimasu",
+            "jpText": "失礼します",
+            "reading": "しつれいします",
+            "politenessLevel": "humble",
+            "learningLevel": "common",
+            "sentenceType": "expression",
+            "translations": {
+              "en": "Excuse me (when entering/leaving)",
+              "zh": "打扰了（进入/离开时）",
+              "ko": "실례합니다 (들어가거나 나갈 때)",
+              "es": "Disculpe (al entrar/salir)"
+            },
+            "audioPath": "audio/shitsurei_shimasu.mp3",
+            "imageRefs": ["images/illustrations/entering_room.png"],
+            "segments": [
+              {
+                "jpText": "失礼",
+                "reading": "しつれい",
+                "partOfSpeech": "noun",
+                "segmentType": "base"
+              },
+              {
+                "jpText": "します",
+                "reading": "します",
+                "partOfSpeech": "verb",
+                "segmentType": "polite_suffix"
+              }
+            ],
+            "description": {
+              "ja": "部屋に入る時や出る時、会話に割り込む時など、相手の邪魔をする可能性がある時に使う謙譲表現です。",
+              "en": "A humble expression used when entering or leaving a room, interrupting a conversation, or any time you might be disturbing someone.",
+              "zh": "一种谦让表达，用于进入或离开房间、打断对话或任何可能打扰他人的时候。",
+              "ko": "방에 들어가거나 나갈 때, 대화에 끼어들 때 등, 상대방을 방해할 가능성이 있을 때 사용하는 겸양 표현입니다.",
+              "es": "Una expresión humilde utilizada al entrar o salir de una habitación, interrumpir una conversación o en cualquier momento en que pueda estar molestando a alguien."
+            },
+            "usageContext": {
+              "ja": "上司の部屋に入る時や会議室を出る時、電話を切る時などに使います。「失礼いたします」とすると、さらに丁寧になります。",
+              "en": "Used when entering a superior's room, leaving a meeting room, ending a phone call, etc. 'Shitsurei itashimasu' is an even more polite version.",
+              "zh": "用于进入上司的房间、离开会议室、结束电话等。'失礼いたします'是更礼貌的版本。",
+              "ko": "상사의 방에 들어갈 때나 회의실을 나갈 때, 전화를 끊을 때 등에 사용합니다. '失礼いたします'라고 하면 더 정중해집니다.",
+              "es": "Se usa al entrar en la habitación de un superior, salir de una sala de reuniones, terminar una llamada telefónica, etc. 'Shitsurei itashimasu' es una versión aún más educada."
+            },
+            "examples": [
+              {
+                "id": "ex_shitsurei_1",
+                "jpText": "田中：すみません、部長。お時間よろしいでしょうか？\n部長：ああ、どうぞ。\n田中：失礼します。（部屋に入る）",
+                "audioPath": "audio/examples/ex_shitsurei_dialog_1.mp3",
+                "translations": {
+                  "en": "Tanaka: Excuse me, Director. Do you have a moment?\nDirector: Ah, please.\nTanaka: Excuse me. (enters the room)",
+                  "zh": "田中：对不起，部长。您有时间吗？\n部长：啊，请进。\n田中：打扰了。（进入房间）",
+                  "ko": "타나카: 죄송합니다, 부장님. 시간 괜찮으시겠습니까?\n부장: 아, 들어오세요.\n타나카: 실례합니다. (방에 들어감)",
+                  "es": "Tanaka: Disculpe, Director. ¿Tiene un momento?\nDirector: Ah, adelante.\nTanaka: Con permiso. (entra en la habitación)"
+                }
+              }
+            ],
+            "variations": [
+              {
+                "id": "var_shitsurei_itashimasu",
+                "jpText": "失礼いたします",
+                "reading": "しつれいいたします",
+                "audioPath": "audio/shitsurei_itashimasu.mp3",
+                "politenessLevel": "humble",
+                "translations": {
+                  "en": "Excuse me (more humble)",
+                  "zh": "打扰了（更谦虚）",
+                  "ko": "실례하겠습니다 (더 겸손한)",
+                  "es": "Disculpe (más humilde)"
+                },
+                "description": {
+                  "ja": "「失礼します」よりもさらに丁寧な表現で、特に目上の人や重要なクライアントと話す時に使います。",
+                  "en": "An even more polite version of 'shitsurei shimasu', used especially when speaking with superiors or important clients.",
+                  "zh": "比'失礼します'更礼貌的表达，特别是在与上级或重要客户交谈时使用。",
+                  "ko": "'失礼します'보다 더 정중한 표현으로, 특히 윗사람이나 중요한 클라이언트와 대화할 때 사용합니다.",
+                  "es": "Una versión aún más educada de 'shitsurei shimasu', utilizada especialmente al hablar con superiores o clientes importantes."
+                }
+              }
+            ]
+          },
+          {
+            "id": "phrase_yoroshiku_onegaishimasu",
+            "jpText": "よろしくお願いします",
+            "reading": "よろしくおねがいします",
+            "politenessLevel": "polite",
+            "learningLevel": "common",
+            "sentenceType": "request",
+            "translations": {
+              "en": "Please treat me favorably / I look forward to working with you",
+              "zh": "请多关照 / 期待与您合作",
+              "ko": "잘 부탁드립니다 / 함께 일하게 되어 기쁩니다",
+              "es": "Le ruego su amabilidad / Espero trabajar con usted"
+            },
+            "audioPath": "audio/yoroshiku_onegaishimasu.mp3",
+            "imageRefs": ["images/illustrations/bowing.png"],
+            "segments": [
+              {
+                "jpText": "よろしく",
+                "reading": "よろしく",
+                "partOfSpeech": "adverb",
+                "segmentType": "base"
+              },
+              {
+                "jpText": "お願いします",
+                "reading": "おねがいします",
+                "partOfSpeech": "expression",
+                "segmentType": "polite_suffix"
+              }
+            ],
+            "description": {
+              "ja": "相手への信頼と協力を求める丁寧な表現で、ビジネスシーンでは様々な状況で頻繁に使われます。",
+              "en": "A polite expression asking for trust and cooperation, frequently used in various business situations.",
+              "zh": "一种礼貌的表达，寻求信任和合作，在各种商业情况下经常使用。",
+              "ko": "상대방에게 신뢰와 협조를 구하는 정중한 표현으로, 비즈니스 상황에서는 다양한 상황에서 자주 사용됩니다.",
+              "es": "Una expresión educada que pide confianza y cooperación, frecuentemente utilizada en varias situaciones de negocios."
+            },
+            "usageContext": {
+              "ja": "初対面の挨拶、仕事の依頼、会議の終わりなど、相手との協力関係を築きたい場面で広く使われます。",
+              "en": "Widely used in situations where you want to build a cooperative relationship with the other person, such as first meetings, requesting work, or at the end of meetings.",
+              "zh": "广泛用于希望与对方建立合作关系的情况，如初次见面、工作请求或会议结束时。",
+              "ko": "처음 만났을 때의 인사, 일의 의뢰, 회의의 마무리 등, 상대방과의 협력 관계를 구축하고 싶은 장면에서 널리 사용됩니다.",
+              "es": "Ampliamente utilizado en situaciones donde desea construir una relación cooperativa con la otra persona, como primeras reuniones, solicitudes de trabajo o al final de reuniones."
+            },
+            "examples": [
+              {
+                "id": "ex_yoroshiku_1",
+                "jpText": "中村：このプロジェクトの資料を明日までに作成してもらえますか？\n鈴木：はい、了解しました。よろしくお願いします。",
+                "audioPath": "audio/examples/ex_yoroshiku_dialog_1.mp3",
+                "translations": {
+                  "en": "Nakamura: Could you create the materials for this project by tomorrow?\nSuzuki: Yes, understood. I'll do my best.",
+                  "zh": "中村：你能在明天之前准备好这个项目的资料吗？\n铃木：是的，我明白了。请多关照。",
+                  "ko": "나카무라: 이 프로젝트의 자료를 내일까지 작성해 주실 수 있을까요?\n스즈키: 네, 알겠습니다. 잘 부탁드립니다.",
+                  "es": "Nakamura: ¿Podrías crear los materiales para este proyecto para mañana?\nSuzuki: Sí, entendido. Haré mi mejor esfuerzo."
+                }
+              }
+            ],
+            "variations": [
+              {
+                "id": "var_yoroshiku_onegaiitashimasu",
+                "jpText": "よろしくお願いいたします",
+                "reading": "よろしくおねがいいたします",
+                "audioPath": "audio/yoroshiku_onegaiitashimasu.mp3",
+                "politenessLevel": "humble",
+                "translations": {
+                  "en": "I respectfully ask for your favor/cooperation (more formal)",
+                  "zh": "恳请多多关照（更正式）",
+                  "ko": "잘 부탁드립니다 (더 격식있는)",
+                  "es": "Le ruego respetuosamente su favor/cooperación (más formal)"
+                },
+                "description": {
+                  "ja": "「よろしくお願いします」よりさらに丁寧な表現で、より正式な場面や目上の人に使います。",
+                  "en": "An even more polite version of 'yoroshiku onegaishimasu', used in more formal situations or with superiors.",
+                  "zh": "比'よろしくお願いします'更礼貌的表达，用于更正式的场合或对上级。",
+                  "ko": "'よろしくお願いします'보다 더 정중한 표현으로, 더 공식적인 장면이나 윗사람에게 사용합니다.",
+                  "es": "Una versión aún más educada de 'yoroshiku onegaishimasu', utilizada en situaciones más formales o con superiores."
+                }
+              }
+            ]
+          },
+          {
+            "id": "phrase_moushiwake_arimasen",
+            "jpText": "申し訳ありません",
+            "reading": "もうしわけありません",
+            "politenessLevel": "humble",
+            "learningLevel": "common",
+            "sentenceType": "expression",
+            "translations": {
+              "en": "I am very sorry (formal apology)",
+              "zh": "非常抱歉（正式道歉）",
+              "ko": "대단히 죄송합니다 (공식적인 사과)",
+              "es": "Lo siento mucho (disculpa formal)"
+            },
+            "audioPath": "audio/moushiwake_arimasen.mp3",
+            "imageRefs": ["images/illustrations/apologizing.png"],
+            "segments": [
+              {
+                "jpText": "申し訳",
+                "reading": "もうしわけ",
+                "partOfSpeech": "noun",
+                "segmentType": "base"
+              },
+              {
+                "jpText": "ありません",
+                "reading": "ありません",
+                "partOfSpeech": "auxiliary",
+                "segmentType": "negative_form"
+              }
+            ],
+            "description": {
+              "ja": "ビジネスシーンでのフォーマルな謝罪表現で、「すみません」よりも重い謝罪の意味を持ちます。",
+              "en": "A formal apology expression in business settings, carrying a stronger sense of apology than 'sumimasen'.",
+              "zh": "商业环境中的正式道歉表达，比'すみません'带有更强的歉意。",
+              "ko": "비즈니스 상황에서의 공식적인 사과 표현으로, '죄송합니다'보다 더 무거운 사과의 의미를 갖습니다.",
+              "es": "Una expresión de disculpa formal en entornos empresariales, que lleva un sentido de disculpa más fuerte que 'sumimasen'."
+            },
+            "usageContext": {
+              "ja": "ミスをした時、遅刻した時、顧客に迷惑をかけた時など、重大な失礼や問題が発生した際に使います。",
+              "en": "Used when making mistakes, being late, causing trouble to customers, or when serious discourtesy or problems occur.",
+              "zh": "在犯错、迟到、给客户造成麻烦或发生严重失礼或问题时使用。",
+              "ko": "실수했을 때, 지각했을 때, 고객에게 폐를 끼쳤을 때 등, 중대한 실례나 문제가 발생했을 때 사용합니다.",
+              "es": "Utilizado al cometer errores, llegar tarde, causar problemas a los clientes o cuando ocurren descortesías o problemas graves."
+            },
+            "examples": [
+              {
+                "id": "ex_moushiwake_1",
+                "jpText": "社員：申し訳ありません、納期に間に合わないかもしれません。\n上司：なぜだ？何が問題なんだ？",
+                "audioPath": "audio/examples/ex_moushiwake_dialog_1.mp3",
+                "translations": {
+                  "en": "Employee: I'm very sorry, we might not meet the delivery deadline.\nManager: Why? What's the problem?",
+                  "zh": "员工：非常抱歉，我们可能无法按时交付。\n上司：为什么？有什么问题？",
+                  "ko": "직원: 대단히 죄송합니다, 납기에 맞지 않을 수도 있습니다.\n상사: 왜지? 무슨 문제가 있나?",
+                  "es": "Empleado: Lo siento mucho, es posible que no cumplamos con el plazo de entrega.\nGerente: ¿Por qué? ¿Cuál es el problema?"
+                }
+              }
+            ],
+            "variations": [
+              {
+                "id": "var_moushiwake_gozaimasen",
+                "jpText": "申し訳ございません",
+                "reading": "もうしわけございません",
+                "audioPath": "audio/moushiwake_gozaimasen.mp3",
+                "politenessLevel": "humble",
+                "translations": {
+                  "en": "I am terribly sorry (very formal apology)",
+                  "zh": "非常非常抱歉（非常正式的道歉）",
+                  "ko": "정말 죄송합니다 (매우 공식적인 사과)",
+                  "es": "Estoy terriblemente arrepentido (disculpa muy formal)"
+                },
+                "description": {
+                  "ja": "「申し訳ありません」よりもさらに丁寧な謝罪表現で、顧客やVIPなど特に重要な相手に使います。",
+                  "en": "An even more polite apology than 'moushiwake arimasen', used for especially important people like customers or VIPs.",
+                  "zh": "比'申し訳ありません'更礼貌的道歉，用于客户或贵宾等特别重要的人。",
+                  "ko": "'申し訳ありません'보다 더 정중한 사과 표현으로, 고객이나 VIP 등 특히 중요한 상대에게 사용합니다.",
+                  "es": "Una disculpa aún más educada que 'moushiwake arimasen', utilizada para personas especialmente importantes como clientes o VIPs."
+                }
+              }
+            ]
+          },
+          {
+            "id": "phrase_omedetou_gozaimasu",
+            "jpText": "おめでとうございます",
+            "reading": "おめでとうございます",
+            "politenessLevel": "polite",
+            "learningLevel": "common",
+            "sentenceType": "expression",
+            "translations": {
+              "en": "Congratulations (polite)",
+              "zh": "恭喜（礼貌）",
+              "ko": "축하합니다 (정중한)",
+              "es": "Felicitaciones (formal)"
+            },
+            "audioPath": "audio/omedetou_gozaimasu.mp3",
+            "imageRefs": ["images/illustrations/congratulating.png"],
+            "segments": [
+              {
+                "jpText": "おめでとう",
+                "reading": "おめでとう",
+                "partOfSpeech": "expression",
+                "segmentType": "base"
+              },
+              {
+                "jpText": "ございます",
+                "reading": "ございます",
+                "partOfSpeech": "auxiliary",
+                "segmentType": "polite_suffix"
+              }
+            ],
+            "description": {
+              "ja": "相手の成功や記念日を祝福する丁寧な表現です。ビジネスシーンでは昇進、受賞、業績達成などの際に使われます。",
+              "en": "A polite expression to congratulate someone on their success or special occasion. In business, used for promotions, awards, achievements, etc.",
+              "zh": "一种礼貌的表达，祝贺他人的成功或特殊场合。在商业中，用于晋升、奖项、成就等。",
+              "ko": "상대방의 성공이나 기념일을 축하하는 정중한 표현입니다. 비즈니스 상황에서는 승진, 수상, 업적 달성 등의 경우에 사용됩니다.",
+              "es": "Una expresión educada para felicitar a alguien por su éxito u ocasión especial. En los negocios, se usa para ascensos, premios, logros, etc."
+            },
+            "usageContext": {
+              "ja": "同僚の昇進、会社の周年記念、プロジェクトの成功、受賞などのポジティブな出来事を祝う時に使います。メールや口頭で使えます。",
+              "en": "Used to celebrate positive events such as a colleague's promotion, company anniversary, project success, or receiving an award. Can be used in emails or verbally.",
+              "zh": "用于庆祝积极事件，如同事晋升、公司周年纪念、项目成功或获奖。可以在电子邮件或口头中使用。",
+              "ko": "동료의 승진, 회사의 주년 기념, 프로젝트의 성공, 수상 등의 긍정적인 일을 축하할 때 사용합니다. 이메일이나 구두로 사용할 수 있습니다.",
+              "es": "Utilizado para celebrar eventos positivos como el ascenso de un colega, aniversario de la empresa, éxito del proyecto o recepción de un premio. Se puede usar en correos electrónicos o verbalmente."
+            },
+            "examples": [
+              {
+                "id": "ex_omedetou_1",
+                "jpText": "部長：鈴木さん、プロジェクトマネージャーへの昇進、おめでとうございます。\n鈴木：ありがとうございます。これからもよろしくお願いいたします。",
+                "audioPath": "audio/examples/ex_omedetou_dialog_1.mp3",
+                "translations": {
+                  "en": "Director: Suzuki-san, congratulations on your promotion to Project Manager.\nSuzuki: Thank you. I look forward to your continued support.",
+                  "zh": "部长：铃木先生，恭喜您晋升为项目经理。\n铃木：谢谢您。今后也请多关照。",
+                  "ko": "부장: 스즈키 씨, 프로젝트 매니저로의 승진, 축하합니다.\n스즈키: 감사합니다. 앞으로도 잘 부탁드립니다.",
+                  "es": "Director: Suzuki-san, felicitaciones por su ascenso a Gerente de Proyecto.\nSuzuki: Gracias. Espero contar con su continuo apoyo."
+                }
+              }
+            ],
+            "variations": [
+              {
+                "id": "var_omedetou",
+                "jpText": "おめでとう",
+                "reading": "おめでとう",
+                "audioPath": "audio/omedetou.mp3",
+                "politenessLevel": "casual",
+                "translations": {
+                  "en": "Congratulations (casual)",
+                  "zh": "恭喜（随意）",
+                  "ko": "축하해 (친근한)",
+                  "es": "Felicitaciones (informal)"
+                },
+                "description": {
+                  "ja": "カジュアルな祝福の表現で、友人や親しい同僚に使います。ビジネスシーンではあまり使われません。",
+                  "en": "A casual congratulatory expression used with friends or close colleagues. Not commonly used in business settings.",
+                  "zh": "一种随意的祝贺表达，用于朋友或亲密的同事。在商业环境中不常使用。",
+                  "ko": "친근한 축하 표현으로, 친구나 친한 동료에게 사용합니다. 비즈니스 상황에서는 잘 사용되지 않습니다.",
+                  "es": "Una expresión de felicitación informal utilizada con amigos o colegas cercanos. No se usa comúnmente en entornos empresariales."
+                }
+              }
+            ]
+          }
+        ],
+        "quizQuestions": [
+          {
+            "id": "quiz_business_1",
+            "linkedPhraseId": "phrase_otsukaresama_desu",
+            "questionText": {
+              "ja": "「お疲れ様です」はどのような時に使いますか？",
+              "en": "When do you use 'お疲れ様です'?",
+              "zh": "什么时候使用'お疲れ様です'？",
+              "ko": "'お疲れ様です'는 언제 사용합니까?",
+              "es": "¿Cuándo se usa 'お疲れ様です'?"
+            },
+            "options": [
+              {
+                "ja": "取引先の客に挨拶する時",
+                "en": "When greeting a client from another company",
+                "zh": "当向其他公司的客户打招呼时",
+                "ko": "거래처 고객에게 인사할 때",
+                "es": "Al saludar a un cliente de otra empresa"
+              },
+              {
+                "ja": "職場の同僚に挨拶する時",
+                "en": "When greeting colleagues at work",
+                "zh": "当向工作场所的同事打招呼时",
+                "ko": "직장 동료에게 인사할 때",
+                "es": "Al saludar a los colegas en el trabajo"
+              },
+              {
+                "ja": "初対面の人に自己紹介する時",
+                "en": "When introducing yourself to someone for the first time",
+                "zh": "当第一次向某人自我介绍时",
+                "ko": "처음 만나는 사람에게 자기소개할 때",
+                "es": "Al presentarse a alguien por primera vez"
+              },
+              {
+                "ja": "顧客にお詫びをする時",
+                "en": "When apologizing to a customer",
+                "zh": "当向客户道歉时",
+                "ko": "고객에게 사과할 때",
+                "es": "Al disculparse con un cliente"
+              }
+            ],
+            "answerIndex": 1,
+            "explanation": {
+              "ja": "「お疲れ様です」は職場の同僚や部下に対する挨拶として使われる表現です。上司から部下に、または同僚同士で使います。",
+              "en": "'お疲れ様です' is an expression used as a greeting for colleagues or subordinates in the workplace. It's used from superiors to subordinates, or between colleagues.",
+              "zh": "'お疲れ様です'是作为工作场所中对同事或下属的问候使用的表达。由上级对下级使用，或者同事之间使用。",
+              "ko": "'お疲れ様です'는 직장의 동료나 부하 직원에 대한 인사로 사용되는 표현입니다. 상사가 부하에게, 또는 동료 간에 사용합니다.",
+              "es": "'お疲れ様です' es una expresión utilizada como saludo para colegas o subordinados en el lugar de trabajo. Se usa de superiores a subordinados, o entre colegas."
+            }
+          },
+          {
+            "id": "quiz_business_2",
+            "linkedPhraseId": "phrase_shitsurei_shimasu",
+            "questionText": {
+              "ja": "「失礼します」の使い方として正しいのはどれですか？",
+              "en": "Which is the correct usage of '失礼します'?",
+              "zh": "以下哪项是'失礼します'的正确用法？",
+              "ko": "다음 중 '失礼します'의 올바른 사용법은 무엇입니까?",
+              "es": "¿Cuál es el uso correcto de '失礼します'?"
+            },
+            "options": [
+              {
+                "ja": "謝罪の表現として",
+                "en": "As an expression of apology",
+                "zh": "作为道歉的表达",
+                "ko": "사과의 표현으로",
+                "es": "Como expresión de disculpa"
+              },
+              {
+                "ja": "感謝の表現として",
+                "en": "As an expression of gratitude",
+                "zh": "作为感谢的表达",
+                "ko": "감사의 표현으로",
+                "es": "Como expresión de gratitud"
+              },
+              {
+                "ja": "部屋に入る時や出る時の表現として",
+                "en": "As an expression when entering or leaving a room",
+                "zh": "作为进入或离开房间时的表达",
+                "ko": "방에 들어가거나 나갈 때의 표현으로",
+                "es": "Como expresión al entrar o salir de una habitación"
+              },
+              {
+                "ja": "初対面の挨拶として",
+                "en": "As a greeting when meeting someone for the first time",
+                "zh": "作为初次见面的问候",
+                "ko": "처음 만났을 때의 인사로",
+                "es": "Como saludo al conocer a alguien por primera vez"
+              }
+            ],
+            "answerIndex": 2,
+            "explanation": {
+              "ja": "「失礼します」は主に部屋に入る時や出る時、また電話を切る時など、相手の邪魔をする可能性がある時に使う表現です。",
+              "en": "'失礼します' is mainly used when entering or leaving a room, or when hanging up the phone, or any time you might be disturbing someone.",
+              "zh": "'失礼します'主要用于进入或离开房间，或挂断电话，或任何可能打扰他人的时候。",
+              "ko": "'失礼します'는 주로 방에 들어가거나 나갈 때, 또는 전화를 끊을 때 등, 상대방을 방해할 가능성이 있을 때 사용하는 표현입니다.",
+              "es": "'失礼します' se usa principalmente al entrar o salir de una habitación, o al colgar el teléfono, o en cualquier momento en que pueda estar molestando a alguien."
+            }
+          },
+          {
+            "id": "quiz_business_3",
+            "linkedPhraseId": "phrase_yoroshiku_onegaishimasu",
+            "questionText": {
+              "ja": "「よろしくお願いします」と「よろしくお願いいたします」の違いは何ですか？",
+              "en": "What is the difference between 'よろしくお願いします' and 'よろしくお願いいたします'?",
+              "zh": "'よろしくお願いします'和'よろしくお願いいたします'有什么区别？",
+              "ko": "'よろしくお願いします'와 'よろしくお願いいたします'의 차이점은 무엇입니까?",
+              "es": "¿Cuál es la diferencia entre 'よろしくお願いします' y 'よろしくお願いいたします'?"
+            },
+            "options": [
+              {
+                "ja": "意味が異なる",
+                "en": "They have different meanings",
+                "zh": "它们有不同的含义",
+                "ko": "의미가 다르다",
+                "es": "Tienen diferentes significados"
+              },
+              {
+                "ja": "使う場面が全く異なる",
+                "en": "They are used in completely different situations",
+                "zh": "它们在完全不同的情况下使用",
+                "ko": "사용하는 장면이 완전히 다르다",
+                "es": "Se usan en situaciones completamente diferentes"
+              },
+              {
+                "ja": "丁寧さのレベルが異なる",
+                "en": "They have different levels of politeness",
+                "zh": "它们有不同程度的礼貌",
+                "ko": "정중함의 수준이 다르다",
+                "es": "Tienen diferentes niveles de cortesía"
+              },
+              {
+                "ja": "年代による言葉の違い",
+                "en": "They are different expressions based on generation",
+                "zh": "它们是基于不同世代的表达",
+                "ko": "세대에 따른 단어의 차이",
+                "es": "Son expresiones diferentes según la generación"
+              }
+            ],
+            "answerIndex": 2,
+            "explanation": {
+              "ja": "「よろしくお願いします」と「よろしくお願いいたします」は同じ意味ですが、「いたします」を使った表現の方がより丁寧です。特に目上の人や顧客に対して「よろしくお願いいたします」を使うことが多いです。",
+              "en": "'よろしくお願いします' and 'よろしくお願いいたします' have the same meaning, but the expression using 'いたします' is more polite. 'よろしくお願いいたします' is often used especially with superiors or customers.",
+              "zh": "'よろしくお願いします'和'よろしくお願いいたします'有相同的含义，但使用'いたします'的表达更礼貌。'よろしくお願いいたします'通常特别用于上级或客户。",
+              "ko": "'よろしくお願いします'와 'よろしくお願いいたします'는 같은 의미이지만, '이타시마스'를 사용한 표현이 더 정중합니다. 특히 윗사람이나 고객에게 'よろしくお願いいたします'를 사용하는 경우가 많습니다.",
+              "es": "'よろしくお願いします' y 'よろしくお願いいたします' tienen el mismo significado, pero la expresión que usa 'いたします' es más educada. 'よろしくお願いいたします' se usa a menudo especialmente con superiores o clientes."
+            }
+          },
+          {
+            "id": "quiz_business_4",
+            "linkedPhraseId": "phrase_moushiwake_arimasen",
+            "questionText": {
+              "ja": "ビジネスシーンで謝罪する場合、「すみません」と「申し訳ありません」はどのように使い分けますか？",
+              "en": "In a business setting, how do you distinguish between 'すみません' and '申し訳ありません' when apologizing?",
+              "zh": "在商业环境中，当道歉时，如何区分'すみません'和'申し訳ありません'？",
+              "ko": "비즈니스 상황에서 사과할 때, '죄송합니다'와 '대단히 죄송합니다'를 어떻게 구분해서 사용합니까?",
+              "es": "En un entorno empresarial, ¿cómo se distingue entre 'すみません' y '申し訳ありません' al disculparse?"
+            },
+            "options": [
+              {
+                "ja": "「すみません」は重大な謝罪、「申し訳ありません」は軽い謝罪",
+                "en": "'すみません' is for serious apologies, '申し訳ありません' is for light apologies",
+                "zh": "'すみません'用于严重道歉，'申し訳ありません'用于轻微道歉",
+                "ko": "'죄송합니다'는 중대한 사과, '대단히 죄송합니다'는 가벼운 사과",
+                "es": "'すみません' es para disculpas serias, '申し訳ありません' es para disculpas ligeras"
+              },
+              {
+                "ja": "「すみません」は軽い謝罪、「申し訳ありません」はより重大な謝罪",
+                "en": "'すみません' is for light apologies, '申し訳ありません' is for more serious apologies",
+                "zh": "'すみません'用于轻微道歉，'申し訳ありません'用于更严重的道歉",
+                "ko": "'죄송합니다'는 가벼운 사과, '대단히 죄송합니다'는 더 중대한 사과",
+                "es": "'すみません' es para disculpas ligeras, '申し訳ありません' es para disculpas más serias"
+              },
+              {
+                "ja": "「すみません」は目上の人に、「申し訳ありません」は目下の人に使う",
+                "en": "'すみません' is used with superiors, '申し訳ありません' is used with subordinates",
+                "zh": "'すみません'用于上级，'申し訳ありません'用于下级",
+                "ko": "'죄송합니다'는 윗사람에게, '대단히 죄송합니다'는 아랫사람에게 사용",
+                "es": "'すみません' se usa con superiores, '申し訳ありません' se usa con subordinados"
+              },
+              {
+                "ja": "「すみません」は外部の人に、「申し訳ありません」は社内の人に使う",
+                "en": "'すみません' is used with people outside the company, '申し訳ありません' is used with people inside the company",
+                "zh": "'すみません'用于公司外部人员，'申し訳ありません'用于公司内部人员",
+                "ko": "'죄송합니다'는 외부 사람에게, '대단히 죄송합니다'는 사내 사람에게 사용",
+                "es": "'すみません' se usa con personas fuera de la empresa, '申し訳ありません' se usa con personas dentro de la empresa"
+              }
+            ],
+            "answerIndex": 1,
+            "explanation": {
+              "ja": "「すみません」は比較的軽い謝罪や注意を引く時に使い、「申し訳ありません」はより重大な謝罪の場面で使います。ミスや問題が大きいほど「申し訳ありません」「申し訳ございません」のような重い表現を使います。",
+              "en": "'すみません' is used for relatively light apologies or to get attention, while '申し訳ありません' is used in situations requiring more serious apologies. The bigger the mistake or problem, the more likely you'll use heavier expressions like '申し訳ありません' or '申し訳ございません'.",
+              "zh": "'すみません'用于相对轻微的道歉或引起注意，而'申し訳ありません'用于需要更严重道歉的情况。错误或问题越大，越有可能使用像'申し訳ありません'或'申し訳ございません'这样的更重的表达。",
+              "ko": "'죄송합니다'는 비교적 가벼운 사과나 주의를 끌 때 사용하고, '대단히 죄송합니다'는 더 중대한 사과 상황에서 사용합니다. 실수나 문제가 클수록 '대단히 죄송합니다' '정말 죄송합니다'와 같은 무거운 표현을 사용합니다.",
+              "es": "'すみません' se usa para disculpas relativamente ligeras o para llamar la atención, mientras que '申し訳ありません' se usa en situaciones que requieren disculpas más serias. Cuanto mayor sea el error o problema, más probable es que utilice expresiones más pesadas como '申し訳ありません' o '申し訳ございません'."
+            }
+          }
+        ]
+      }
+    ]
+  }

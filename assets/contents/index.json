@@ -1,0 +1,37 @@
+{
+    "version": "1.0.0",
+    "lastUpdated": "2025-03-04",
+    "supportedLanguages": ["ja", "en", "zh", "ko", "es"],
+    "availableLessons": [
+      {
+        "id": "lesson_greetings",
+        "version": "1.0.0",
+        "requiredAppVersion": "1.0.0",
+        "size": 3500000,
+        "isPremium": false,
+        "lastUpdated": "2025-03-04",
+        "supportedLanguages": ["ja", "en", "zh", "ko", "es"],
+        "tags": ["essential", "daily", "conversation"]
+      },
+      {
+        "id": "lesson_business",
+        "version": "1.0.0",
+        "requiredAppVersion": "1.0.0",
+        "size": 4200000,
+        "isPremium": true,
+        "lastUpdated": "2025-03-04",
+        "supportedLanguages": ["ja", "en", "zh", "ko", "es"],
+        "tags": ["common", "business", "formal"]
+      },
+      {
+        "id": "lesson_restaurant",
+        "version": "1.0.0",
+        "requiredAppVersion": "1.0.0",
+        "size": 5100000,
+        "isPremium": false,
+        "lastUpdated": "2025-03-04",
+        "supportedLanguages": ["ja", "en", "zh", "ko", "es"],
+        "tags": ["essential", "daily", "food"]
+      }
+    ]
+  }

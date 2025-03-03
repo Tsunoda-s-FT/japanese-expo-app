@@ -1,0 +1,48 @@
+{
+  "id": "lesson_restaurant",
+  "version": "1.0.0",
+  "title": {
+    "ja": "レストランでの会話",
+    "en": "Restaurant Conversations",
+    "zh": "餐厅对话",
+    "ko": "레스토랑에서의 대화",
+    "es": "Conversaciones en restaurantes"
+  },
+  "description": {
+    "ja": "レストランで役立つ表現を学び、スムーズに注文や会話ができるようになりましょう。",
+    "en": "Learn useful expressions for restaurants and become able to order and converse smoothly.",
+    "zh": "学习在餐厅有用的表达，能够顺利地点餐和交谈。",
+    "ko": "레스토랑에서 유용한 표현을 배우고 원활하게 주문하고 대화할 수 있게 됩시다.",
+    "es": "Aprenda expresiones útiles para restaurantes y sea capaz de ordenar y conversar con fluidez."
+  },
+  "category": "daily",
+  "thumbnailPath": "images/thumbnail.png",
+  "totalEstimatedTime": "20分",
+  "targetLearningLevel": "essential",
+  "politenessLevels": ["polite"],
+  "tags": ["restaurant", "food", "order", "daily"],
+  "totalPhrases": 8,
+  "totalQuizzes": 5,
+  "courses": [
+    {
+      "id": "course_restaurant_basic",
+      "title": {
+        "ja": "レストラン基本表現",
+        "en": "Basic Restaurant Expressions",
+        "zh": "餐厅基本表达",
+        "ko": "레스토랑 기본 표현",
+        "es": "Expresiones básicas de restaurante"
+      },
+      "description": {
+        "ja": "レストランでの注文や会話に必要な基本表現を学びます。",
+        "en": "Learn fundamental expressions needed for ordering and conversing in restaurants.",
+        "zh": "学习在餐厅点餐和交谈所需的基本表达。",
+        "ko": "레스토랑에서의 주문과 대화에 필요한 기본 표현을 배웁니다.",
+        "es": "Aprenda expresiones fundamentales necesarias para ordenar y conversar en restaurantes."
+      },
+      "level": "essential",
+      "estimatedTime": "20分",
+      "tags": ["restaurant", "food", "order", "daily"]
+    }
+  ]
+}

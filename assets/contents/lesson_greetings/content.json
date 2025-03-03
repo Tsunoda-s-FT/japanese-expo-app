@@ -1,0 +1,573 @@
+{
+    "id": "lesson_greetings",
+    "version": "1.0.0",
+    "courses": [
+      {
+        "id": "course_greetings_basic",
+        "phrases": [
+          {
+            "id": "phrase_ohayou_gozaimasu",
+            "jpText": "おはようございます",
+            "reading": "おはようございます",
+            "politenessLevel": "polite",
+            "learningLevel": "essential",
+            "sentenceType": "expression",
+            "translations": {
+              "en": "Good morning (polite)",
+              "zh": "早上好（礼貌）",
+              "ko": "안녕하세요 (아침 인사)",
+              "es": "Buenos días (formal)"
+            },
+            "audioPath": "audio/ohayou_gozaimasu.mp3",
+            "imageRefs": ["images/illustrations/greeting_morning.png"],
+            "segments": [
+              {
+                "jpText": "おはよう",
+                "reading": "おはよう",
+                "partOfSpeech": "expression",
+                "segmentType": "base"
+              },
+              {
+                "jpText": "ございます",
+                "reading": "ございます",
+                "partOfSpeech": "auxiliary",
+                "segmentType": "polite_suffix"
+              }
+            ],
+            "description": {
+              "ja": "朝の丁寧な挨拶で、会社の同僚や目上の方に対して使います。",
+              "en": "A polite morning greeting used with colleagues at work and people you respect.",
+              "zh": "一种礼貌的早晨问候，用于工作中的同事和您尊敬的人。",
+              "ko": "아침의 정중한 인사로, 회사 동료나 윗분들에게 사용합니다.",
+              "es": "Un saludo educado matutino utilizado con colegas del trabajo y personas a las que respetas."
+            },
+            "usageContext": {
+              "ja": "朝の挨拶として使う、午前中（11時頃まで）に使うのが一般的です。",
+              "en": "Used as a morning greeting, typically until around 11 AM.",
+              "zh": "作为早上的问候使用，通常使用到上午11点左右。",
+              "ko": "아침 인사로 사용하며, 보통 오전 11시경까지 사용합니다.",
+              "es": "Utilizado como saludo matutino, generalmente hasta las 11 AM."
+            },
+            "examples": [
+              {
+                "id": "ex_ohayou_1",
+                "jpText": "田中：おはようございます、鈴木さん。\n鈴木：おはようございます、田中さん。今日は良い天気ですね。",
+                "audioPath": "audio/examples/ex_ohayou_dialog_1.mp3",
+                "translations": {
+                  "en": "Tanaka: Good morning, Suzuki-san.\nSuzuki: Good morning, Tanaka-san. It's nice weather today, isn't it?",
+                  "zh": "田中：早上好，铃木先生。\n铃木：早上好，田中先生。今天天气真好啊。",
+                  "ko": "타나카: 안녕하세요, 스즈키 씨.\n스즈키: 안녕하세요, 타나카 씨. 오늘은 날씨가 좋네요.",
+                  "es": "Tanaka: Buenos días, Suzuki-san.\nSuzuki: Buenos días, Tanaka-san. Hace buen tiempo hoy, ¿verdad?"
+                }
+              },
+              {
+                "id": "ex_ohayou_2",
+                "jpText": "学生：おはようございます、先生。\n先生：おはよう、みなさん。今日は新しい文法を勉強しましょう。",
+                "audioPath": "audio/examples/ex_ohayou_dialog_2.mp3",
+                "translations": {
+                  "en": "Students: Good morning, teacher.\nTeacher: Good morning, everyone. Let's study new grammar today.",
+                  "zh": "学生们：早上好，老师。\n老师：早上好，大家。今天我们来学习新语法吧。",
+                  "ko": "학생들: 안녕하세요, 선생님.\n선생님: 안녕, 여러분. 오늘은 새로운 문법을 공부합시다.",
+                  "es": "Estudiantes: Buenos días, profesor.\nProfesor: Buenos días a todos. Estudiemos nueva gramática hoy."
+                }
+              }
+            ],
+            "variations": [
+              {
+                "id": "var_ohayou",
+                "jpText": "おはよう",
+                "reading": "おはよう",
+                "audioPath": "audio/ohayou.mp3",
+                "politenessLevel": "casual",
+                "translations": {
+                  "en": "Good morning (casual)",
+                  "zh": "早上好（随意）",
+                  "ko": "안녕 (아침 인사, 친근한)",
+                  "es": "Buenos días (informal)"
+                },
+                "description": {
+                  "ja": "朝のカジュアルな挨拶で、友達や家族に使います。",
+                  "en": "A casual morning greeting used with friends and family.",
+                  "zh": "一种随意的早晨问候，用于朋友和家人。",
+                  "ko": "아침의 친근한 인사로, 친구나 가족에게 사용합니다.",
+                  "es": "Un saludo matutino informal utilizado con amigos y familia."
+                }
+              }
+            ]
+          },
+          {
+            "id": "phrase_konnichiwa",
+            "jpText": "こんにちは",
+            "reading": "こんにちは",
+            "politenessLevel": "polite",
+            "learningLevel": "essential",
+            "sentenceType": "expression",
+            "translations": {
+              "en": "Hello (daytime greeting)",
+              "zh": "你好（白天问候语）",
+              "ko": "안녕하세요 (낮 인사)",
+              "es": "Hola (saludo durante el día)"
+            },
+            "audioPath": "audio/konnichiwa.mp3",
+            "imageRefs": ["images/illustrations/greeting_daytime.png"],
+            "segments": [
+              {
+                "jpText": "こんにちは",
+                "reading": "こんにちは",
+                "partOfSpeech": "expression",
+                "segmentType": "fixed_expression"
+              }
+            ],
+            "description": {
+              "ja": "昼間の挨拶で、一日中使えますが、主に午前11時から夕方まで使います。",
+              "en": "A daytime greeting that can be used throughout the day, but mainly from 11 AM to evening.",
+              "zh": "白天的问候，可以整天使用，但主要从上午11点到傍晚使用。",
+              "ko": "낮 인사로, 하루 종일 사용할 수 있지만 주로 오전 11시부터 저녁까지 사용합니다.",
+              "es": "Un saludo diurno que puede usarse durante todo el día, pero principalmente desde las 11 AM hasta la tarde."
+            },
+            "usageContext": {
+              "ja": "初対面の人から親しい人まで広く使える便利な挨拶です。",
+              "en": "A versatile greeting that can be widely used from first meetings to close acquaintances.",
+              "zh": "一种多功能的问候，可以广泛用于初次见面到密切的熟人。",
+              "ko": "처음 만난 사람부터 친한 사람까지 널리 사용할 수 있는 다용도 인사입니다.",
+              "es": "Un saludo versátil que puede usarse ampliamente desde primeros encuentros hasta conocidos cercanos."
+            },
+            "examples": [
+              {
+                "id": "ex_konnichiwa_1",
+                "jpText": "山田：こんにちは、佐藤さん。お元気ですか？\n佐藤：こんにちは、山田さん。はい、元気です。",
+                "audioPath": "audio/examples/ex_konnichiwa_dialog_1.mp3",
+                "translations": {
+                  "en": "Yamada: Hello, Sato-san. How are you?\nSato: Hello, Yamada-san. Yes, I'm fine.",
+                  "zh": "山田：你好，佐藤先生。你好吗？\n佐藤：你好，山田先生。是的，我很好。",
+                  "ko": "야마다: 안녕하세요, 사토 씨. 잘 지내세요?\n사토: 안녕하세요, 야마다 씨. 네, 잘 지내요.",
+                  "es": "Yamada: Hola, Sato-san. ¿Cómo estás?\nSato: Hola, Yamada-san. Sí, estoy bien."
+                }
+              }
+            ]
+          },
+          {
+            "id": "phrase_konbanwa",
+            "jpText": "こんばんは",
+            "reading": "こんばんは",
+            "politenessLevel": "polite",
+            "learningLevel": "essential",
+            "sentenceType": "expression",
+            "translations": {
+              "en": "Good evening",
+              "zh": "晚上好",
+              "ko": "안녕하세요 (저녁 인사)",
+              "es": "Buenas noches (saludo)"
+            },
+            "audioPath": "audio/konbanwa.mp3",
+            "imageRefs": ["images/illustrations/greeting_evening.png"],
+            "segments": [
+              {
+                "jpText": "こんばんは",
+                "reading": "こんばんは",
+                "partOfSpeech": "expression",
+                "segmentType": "fixed_expression"
+              }
+            ],
+            "description": {
+              "ja": "夕方から夜の挨拶として使います。日が暮れてから寝るまでの間に使用します。",
+              "en": "Used as an evening greeting from sunset until bedtime.",
+              "zh": "作为傍晚到晚上的问候使用。从日落到睡觉前使用。",
+              "ko": "저녁부터 밤의 인사로 사용합니다. 해가 진 후부터 잠자리에 들기 전까지 사용합니다.",
+              "es": "Utilizado como saludo nocturno desde la puesta del sol hasta la hora de acostarse."
+            },
+            "usageContext": {
+              "ja": "夕方以降に初めて会う人に使う挨拶です。同じ人に対して何度も使うことはありません。",
+              "en": "A greeting used when meeting someone for the first time after sunset. Not used repeatedly to the same person.",
+              "zh": "在日落后第一次见到某人时使用的问候。不会对同一个人重复使用。",
+              "ko": "해가 진 후 처음 만나는 사람에게 사용하는 인사입니다. 같은 사람에게 여러 번 사용하지 않습니다.",
+              "es": "Un saludo utilizado al encontrarse con alguien por primera vez después del atardecer. No se usa repetidamente con la misma persona."
+            },
+            "examples": [
+              {
+                "id": "ex_konbanwa_1",
+                "jpText": "中村：こんばんは、木村さん。今日は遅くまでお仕事ですか？\n木村：こんばんは。はい、少し残業しています。",
+                "audioPath": "audio/examples/ex_konbanwa_dialog_1.mp3",
+                "translations": {
+                  "en": "Nakamura: Good evening, Kimura-san. Are you working late today?\nKimura: Good evening. Yes, I'm doing a bit of overtime.",
+                  "zh": "中村：晚上好，木村先生。今天工作到很晚吗？\n木村：晚上好。是的，我加班一会儿。",
+                  "ko": "나카무라: 안녕하세요, 키무라 씨. 오늘은 늦게까지 일하시나요?\n키무라: 안녕하세요. 네, 조금 야근 중입니다.",
+                  "es": "Nakamura: Buenas noches, Kimura-san. ¿Trabajas hasta tarde hoy?\nKimura: Buenas noches. Sí, estoy haciendo un poco de horas extras."
+                }
+              }
+            ]
+          },
+          {
+            "id": "phrase_sayounara",
+            "jpText": "さようなら",
+            "reading": "さようなら",
+            "politenessLevel": "polite",
+            "learningLevel": "essential",
+            "sentenceType": "expression",
+            "translations": {
+              "en": "Goodbye",
+              "zh": "再见",
+              "ko": "안녕히 계세요",
+              "es": "Adiós"
+            },
+            "audioPath": "audio/sayounara.mp3",
+            "imageRefs": ["images/illustrations/farewell.png"],
+            "segments": [
+              {
+                "jpText": "さようなら",
+                "reading": "さようなら",
+                "partOfSpeech": "expression",
+                "segmentType": "fixed_expression"
+              }
+            ],
+            "description": {
+              "ja": "別れる時の挨拶で、特に長い間会わない場合に使います。",
+              "en": "A farewell greeting, especially used when you won't see the person for a long time.",
+              "zh": "告别问候，特别是当你长时间不会见到那个人时使用。",
+              "ko": "작별 인사로, 특히 오랫동안 만나지 않을 때 사용합니다.",
+              "es": "Un saludo de despedida, especialmente utilizado cuando no verás a la persona durante mucho tiempo."
+            },
+            "usageContext": {
+              "ja": "日常的な「またね」よりも少しフォーマルで、長期間会わない時によく使います。学校の終業時にもよく使われます。",
+              "en": "More formal than casual 'see you later' and often used when parting for a longer period. Also commonly used at the end of the school day.",
+              "zh": "比日常的再见更正式，通常在长时间分别时使用。也常在学校放学时使用。",
+              "ko": "일상적인 '다음에 봐'보다 조금 더 격식있고, 장기간 만나지 않을 때 자주 사용합니다. 학교 종료 시간에도 자주 사용됩니다.",
+              "es": "Más formal que el casual 'hasta luego' y a menudo utilizado cuando te separas por un período más largo. También comúnmente utilizado al final del día escolar."
+            },
+            "examples": [
+              {
+                "id": "ex_sayounara_1",
+                "jpText": "李：さようなら、田中先生。夏休みに楽しんでください。\n田中：さようなら、李さん。また9月に会いましょう。",
+                "audioPath": "audio/examples/ex_sayounara_dialog_1.mp3",
+                "translations": {
+                  "en": "Li: Goodbye, Tanaka-sensei. Enjoy your summer vacation.\nTanaka: Goodbye, Li-san. Let's meet again in September.",
+                  "zh": "李：再见，田中老师。祝您暑假愉快。\n田中：再见，李先生。9月再见。",
+                  "ko": "리: 안녕히 계세요, 타나카 선생님. 여름 방학 즐겁게 보내세요.\n타나카: 안녕히, 리 씨. 9월에 다시 만나요.",
+                  "es": "Li: Adiós, profesor Tanaka. Disfrute de sus vacaciones de verano.\nTanaka: Adiós, Li-san. Nos vemos de nuevo en septiembre."
+                }
+              }
+            ],
+            "variations": [
+              {
+                "id": "var_ja_mata",
+                "jpText": "じゃ、また",
+                "reading": "じゃ、また",
+                "audioPath": "audio/ja_mata.mp3",
+                "politenessLevel": "casual",
+                "translations": {
+                  "en": "See you later (casual)",
+                  "zh": "回头见（随意）",
+                  "ko": "그럼, 또 봐 (친근한)",
+                  "es": "Hasta luego (informal)"
+                },
+                "description": {
+                  "ja": "友達同士で使うカジュアルな別れの挨拶です。まもなくまた会う予定がある時に使います。",
+                  "en": "A casual farewell greeting used between friends. Used when you plan to meet again soon.",
+                  "zh": "朋友之间使用的随意告别问候。当你计划不久再见面时使用。",
+                  "ko": "친구 사이에서 사용하는 친근한 작별 인사입니다. 곧 다시 만날 예정이 있을 때 사용합니다.",
+                  "es": "Un saludo de despedida informal utilizado entre amigos. Se usa cuando planeas volver a encontrarte pronto."
+                }
+              }
+            ]
+          },
+          {
+            "id": "phrase_arigatou_gozaimasu",
+            "jpText": "ありがとうございます",
+            "reading": "ありがとうございます",
+            "politenessLevel": "polite",
+            "learningLevel": "essential",
+            "sentenceType": "expression",
+            "translations": {
+              "en": "Thank you (polite)",
+              "zh": "谢谢（礼貌）",
+              "ko": "감사합니다 (정중한)",
+              "es": "Gracias (formal)"
+            },
+            "audioPath": "audio/arigatou_gozaimasu.mp3",
+            "imageRefs": ["images/illustrations/thanking.png"],
+            "segments": [
+              {
+                "jpText": "ありがとう",
+                "reading": "ありがとう",
+                "partOfSpeech": "expression",
+                "segmentType": "base"
+              },
+              {
+                "jpText": "ございます",
+                "reading": "ございます",
+                "partOfSpeech": "auxiliary",
+                "segmentType": "polite_suffix"
+              }
+            ],
+            "description": {
+              "ja": "感謝を表す丁寧な表現で、目上の人や初対面の人、公式な場面で使います。",
+              "en": "A polite expression of gratitude used with superiors, people you meet for the first time, or in formal situations.",
+              "zh": "一种礼貌的感谢表达，用于上级、初次见面的人或正式场合。",
+              "ko": "윗사람, 처음 만난 사람, 공식적인 상황에서 사용하는 정중한 감사 표현입니다.",
+              "es": "Una expresión educada de gratitud utilizada con superiores, personas que conoces por primera vez o en situaciones formales."
+            },
+            "usageContext": {
+              "ja": "何かをしてもらった時や物をもらった時に使う表現です。「どうも」を前につけると、さらに丁寧になります。",
+              "en": "An expression used when someone does something for you or gives you something. Adding 'dōmo' before it makes it even more polite.",
+              "zh": "当有人为你做某事或给你东西时使用的表达。在前面加上'どうも'会使其更加礼貌。",
+              "ko": "누군가가 당신을 위해 무언가를 하거나 물건을 줄 때 사용하는 표현입니다. 앞에 '도모'를 추가하면 더 정중해집니다.",
+              "es": "Una expresión utilizada cuando alguien hace algo por ti o te da algo. Agregar 'dōmo' antes lo hace aún más educado."
+            },
+            "examples": [
+              {
+                "id": "ex_arigatou_1",
+                "jpText": "店員：こちらレシートです。\n客：ありがとうございます。",
+                "audioPath": "audio/examples/ex_arigatou_dialog_1.mp3",
+                "translations": {
+                  "en": "Clerk: Here is your receipt.\nCustomer: Thank you.",
+                  "zh": "店员：这是您的收据。\n顾客：谢谢。",
+                  "ko": "점원: 여기 영수증입니다.\n손님: 감사합니다.",
+                  "es": "Dependiente: Aquí está su recibo.\nCliente: Gracias."
+                }
+              }
+            ],
+            "variations": [
+              {
+                "id": "var_arigatou",
+                "jpText": "ありがとう",
+                "reading": "ありがとう",
+                "audioPath": "audio/arigatou.mp3",
+                "politenessLevel": "casual",
+                "translations": {
+                  "en": "Thank you (casual)",
+                  "zh": "谢谢（随意）",
+                  "ko": "고마워 (친근한)",
+                  "es": "Gracias (informal)"
+                },
+                "description": {
+                  "ja": "友達や家族など親しい間柄で使うカジュアルな感謝の表現です。",
+                  "en": "A casual expression of gratitude used with friends, family, and close relationships.",
+                  "zh": "一种随意的感谢表达，用于朋友、家人和亲密关系。",
+                  "ko": "친구, 가족 등 친한 사이에서 사용하는 친근한 감사 표현입니다.",
+                  "es": "Una expresión informal de gratitud utilizada con amigos, familia y relaciones cercanas."
+                }
+              },
+              {
+                "id": "var_doumo_arigatou_gozaimasu",
+                "jpText": "どうもありがとうございます",
+                "reading": "どうもありがとうございます",
+                "audioPath": "audio/doumo_arigatou_gozaimasu.mp3",
+                "politenessLevel": "polite",
+                "translations": {
+                  "en": "Thank you very much (more polite)",
+                  "zh": "非常感谢（更礼貌）",
+                  "ko": "정말 감사합니다 (더 정중한)",
+                  "es": "Muchas gracias (más formal)"
+                },
+                "description": {
+                  "ja": "「ありがとうございます」よりもさらに丁寧な感謝の表現です。",
+                  "en": "An even more polite expression of gratitude than 'arigatō gozaimasu'.",
+                  "zh": "比'ありがとうございます'更礼貌的感谢表达。",
+                  "ko": "'ありがとうございます'보다 더 정중한 감사 표현입니다.",
+                  "es": "Una expresión de gratitud aún más educada que 'arigatō gozaimasu'."
+                }
+              }
+            ]
+          }
+        ],
+        "quizQuestions": [
+          {
+            "id": "quiz_greetings_1",
+            "linkedPhraseId": "phrase_ohayou_gozaimasu",
+            "questionText": {
+              "ja": "「おはようございます」の意味は？",
+              "en": "What is the meaning of 'おはようございます'?",
+              "zh": "'おはようございます'的意思是？",
+              "ko": "'おはようございます'의 의미는?",
+              "es": "¿Cuál es el significado de 'おはようございます'?"
+            },
+            "options": [
+              {
+                "ja": "おはよう（丁寧）",
+                "en": "Good morning (polite)",
+                "zh": "早上好（礼貌）",
+                "ko": "안녕하세요 (아침 인사)",
+                "es": "Buenos días (formal)"
+              },
+              {
+                "ja": "こんばんは",
+                "en": "Good evening",
+                "zh": "晚上好",
+                "ko": "안녕하세요 (저녁 인사)",
+                "es": "Buenas noches"
+              },
+              {
+                "ja": "ありがとう",
+                "en": "Thank you",
+                "zh": "谢谢",
+                "ko": "감사합니다",
+                "es": "Gracias"
+              },
+              {
+                "ja": "さようなら",
+                "en": "Goodbye",
+                "zh": "再见",
+                "ko": "안녕히 계세요",
+                "es": "Adiós"
+              }
+            ],
+            "answerIndex": 0,
+            "explanation": {
+              "ja": "「おはようございます」は朝の挨拶です。",
+              "en": "'おはようございます' is a morning greeting.",
+              "zh": "'おはようございます'是早上的问候语。",
+              "ko": "'おはようございます'는 아침 인사입니다.",
+              "es": "'おはようございます' es un saludo matutino."
+            }
+          },
+          {
+            "id": "quiz_greetings_2",
+            "linkedPhraseId": "phrase_konnichiwa",
+            "questionText": {
+              "ja": "「こんにちは」はいつ使いますか？",
+              "en": "When do you use 'こんにちは'?",
+              "zh": "什么时候使用'こんにちは'？",
+              "ko": "'こんにちは'는 언제 사용합니까?",
+              "es": "¿Cuándo se usa 'こんにちは'?"
+            },
+            "options": [
+              {
+                "ja": "朝に",
+                "en": "In the morning",
+                "zh": "在早上",
+                "ko": "아침에",
+                "es": "Por la mañana"
+              },
+              {
+                "ja": "夜に",
+                "en": "At night",
+                "zh": "在晚上",
+                "ko": "밤에",
+                "es": "Por la noche"
+              },
+              {
+                "ja": "昼間に",
+                "en": "During the day",
+                "zh": "在白天",
+                "ko": "낮에",
+                "es": "Durante el día"
+              },
+              {
+                "ja": "別れる時に",
+                "en": "When parting",
+                "zh": "道别时",
+                "ko": "헤어질 때",
+                "es": "Al despedirse"
+              }
+            ],
+            "answerIndex": 2,
+            "explanation": {
+              "ja": "「こんにちは」は昼間の挨拶として使います。主に午前11時から夕方まで使用されます。",
+              "en": "'こんにちは' is used as a daytime greeting. It's mainly used from 11 AM until evening.",
+              "zh": "'こんにちは'用作白天的问候。主要在上午11点至傍晚使用。",
+              "ko": "'こんにちは'는 낮 인사로 사용됩니다. 주로 오전 11시부터 저녁까지 사용됩니다.",
+              "es": "'こんにちは' se usa como saludo diurno. Se usa principalmente desde las 11 AM hasta la tarde."
+            }
+          },
+          {
+            "id": "quiz_greetings_3",
+            "linkedPhraseId": "phrase_konbanwa",
+            "questionText": {
+              "ja": "次の文章を完成させてください：「夜に初めて会った人には＿＿＿と言います。」",
+              "en": "Complete the following sentence: 'When meeting someone for the first time at night, you say ___.'",
+              "zh": "完成下面的句子：晚上第一次见到某人时，你说___。",
+              "ko": "다음 문장을 완성하세요: '밤에 처음 만난 사람에게는 ___라고 말합니다.'",
+              "es": "Complete la siguiente oración: 'Al conocer a alguien por primera vez por la noche, dices ___'."
+            },
+            "options": [
+              {
+                "ja": "おはようございます",
+                "en": "おはようございます",
+                "zh": "おはようございます",
+                "ko": "おはようございます",
+                "es": "おはようございます"
+              },
+              {
+                "ja": "こんにちは",
+                "en": "こんにちは",
+                "zh": "こんにちは",
+                "ko": "こんにちは",
+                "es": "こんにちは"
+              },
+              {
+                "ja": "こんばんは",
+                "en": "こんばんは",
+                "zh": "こんばんは",
+                "ko": "こんばんは",
+                "es": "こんばんは"
+              },
+              {
+                "ja": "さようなら",
+                "en": "さようなら",
+                "zh": "さようなら",
+                "ko": "さようなら",
+                "es": "さようなら"
+              }
+            ],
+            "answerIndex": 2,
+            "explanation": {
+              "ja": "夜に初めて会った人には「こんばんは」と言います。日が暮れてから使う挨拶です。",
+              "en": "When meeting someone for the first time at night, you say 'konbanwa'. It's a greeting used after sunset.",
+              "zh": "晚上第一次见到某人时，你说'こんばんは'。这是日落后使用的问候语。",
+              "ko": "밤에 처음 만난 사람에게는 'こんばんは'라고 말합니다. 해가 진 후에 사용하는 인사입니다.",
+              "es": "Al conocer a alguien por primera vez por la noche, dices 'konbanwa'. Es un saludo que se usa después del atardecer."
+            }
+          },
+          {
+            "id": "quiz_greetings_4",
+            "linkedPhraseId": "phrase_arigatou_gozaimasu",
+            "questionText": {
+              "ja": "「ありがとうございます」と「ありがとう」の違いは何ですか？",
+              "en": "What is the difference between 'ありがとうございます' and 'ありがとう'?",
+              "zh": "'ありがとうございます'和'ありがとう'有什么区别？",
+              "ko": "'ありがとうございます'와 'ありがとう'의 차이점은 무엇입니까?",
+              "es": "¿Cuál es la diferencia entre 'ありがとうございます' y 'ありがとう'?"
+            },
+            "options": [
+              {
+                "ja": "意味が違う",
+                "en": "They have different meanings",
+                "zh": "它们有不同的含义",
+                "ko": "의미가 다르다",
+                "es": "Tienen diferentes significados"
+              },
+              {
+                "ja": "丁寧さのレベルが違う",
+                "en": "They have different levels of politeness",
+                "zh": "它们有不同程度的礼貌",
+                "ko": "정중함의 수준이 다르다",
+                "es": "Tienen diferentes niveles de cortesía"
+              },
+              {
+                "ja": "使用する時間帯が違う",
+                "en": "They are used at different times of day",
+                "zh": "它们在一天中的不同时间使用",
+                "ko": "사용하는 시간대가 다르다",
+                "es": "Se usan en diferentes momentos del día"
+              },
+              {
+                "ja": "地域による方言の違い",
+                "en": "They are regional dialects",
+                "zh": "它们是地区方言",
+                "ko": "지역에 따른 방언의 차이",
+                "es": "Son dialectos regionales"
+              }
+            ],
+            "answerIndex": 1,
+            "explanation": {
+              "ja": "「ありがとうございます」は丁寧な表現で、「ありがとう」はカジュアルな表現です。丁寧さのレベルが違います。",
+              "en": "'ありがとうございます' is a polite expression, while 'ありがとう' is casual. They differ in their level of politeness.",
+              "zh": "'ありがとうございます'是礼貌表达，而'ありがとう'是随意表达。它们在礼貌程度上有所不同。",
+              "ko": "'ありがとうございます'는 정중한 표현이고, 'ありがとう'는 친근한 표현입니다. 정중함의 수준이 다릅니다.",
+              "es": "'ありがとうございます' es una expresión educada, mientras que 'ありがとう' es informal. Difieren en su nivel de cortesía."
+            }
+          }
+        ]
+      }
+    ]
+  }
