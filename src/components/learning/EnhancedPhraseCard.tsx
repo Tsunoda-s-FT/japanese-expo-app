@@ -16,7 +16,12 @@ interface EnhancedPhraseCardProps {
 }
 
 const EnhancedPhraseCard: React.FC<EnhancedPhraseCardProps> = ({ phrase, lessonId }) => {
+  // 表示/非表示の状態管理
+  const [showDescription, setShowDescription] = useState(true);
+  const [showUsageContext, setShowUsageContext] = useState(false);
   const [showExamples, setShowExamples] = useState(false);
+  const [showVariations, setShowVariations] = useState(false);
+  
   const { language, t } = useLanguage();
 
   // 音声再生ハンドラー
@@ -134,118 +139,161 @@ const EnhancedPhraseCard: React.FC<EnhancedPhraseCardProps> = ({ phrase, lessonI
           </Text>
         </View>
         
-        {/* 説明（存在する場合） */}
+        {/* 説明（存在する場合）- デフォルトで表示し、タップで非表示切替 */}
         {phrase.description && (
-          <View style={styles.descriptionContainer}>
-            <Text style={styles.descriptionLabel}>{t('description', '説明')}:</Text>
-            <Text style={styles.description}>
-              {getLocalizedText(phrase.description, language)}
-            </Text>
-          </View>
-        )}
-        
-        {/* 使用コンテキスト（存在する場合） */}
-        {phrase.usageContext && (
-          <View style={styles.usageContainer}>
-            <Text style={styles.usageLabel}>{t('usage', '使用場面')}:</Text>
-            <Text style={styles.usage}>
-              {getLocalizedText(phrase.usageContext, language)}
-            </Text>
-          </View>
-        )}
-        
-        {/* 例文の表示/非表示ボタン */}
-        {examples.length > 0 && (
           <TouchableOpacity 
-            style={styles.exampleToggleContainer}
-            onPress={() => setShowExamples(!showExamples)}
+            style={styles.sectionContainer}
+            onPress={() => setShowDescription(!showDescription)}
             activeOpacity={0.7}
           >
-            <Text style={styles.examplesLabel}>
-              {t('examples', '例文')}
-            </Text>
-            <MaterialCommunityIcons
-              name={showExamples ? "chevron-up" : "chevron-down"}
-              size={24}
-              color={colors.primary}
-            />
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionLabel}>{t('description', language === 'en' ? 'Description' : '説明')}</Text>
+              <MaterialCommunityIcons
+                name={showDescription ? "chevron-up" : "chevron-down"}
+                size={20}
+                color={colors.primary}
+              />
+            </View>
+            
+            {showDescription && (
+              <Text style={styles.sectionContent}>
+                {getLocalizedText(phrase.description, language)}
+              </Text>
+            )}
           </TouchableOpacity>
         )}
         
-        {/* 展開式の例文セクション */}
-        {showExamples && examples.length > 0 && (
-          <View style={styles.examplesContainer}>
-            {examples.map((example: ExampleSentence, index: number) => (
-              <View key={index} style={styles.exampleItem}>
-                <View style={styles.exampleHeader}>
-                  <View style={styles.exampleTextContainer}>
-                    <Text style={styles.exampleJapanese}>{example.jpText}</Text>
-                    {example.reading && (
-                      <Text style={styles.exampleReading}>{example.reading}</Text>
-                    )}
-                  </View>
-                  {(example.audio || example.audioPath) && (
-                    <PaperIconButton
-                      icon="volume-high"
-                      size={20}
-                      iconColor={colors.primary}
-                      onPress={() => handlePlayExampleAudio(example.audioPath 
-                        ? `assets/contents/${lessonId}/${example.audioPath}` 
-                        : example.audio || '')}
-                    />
-                  )}
-                </View>
-                <Text style={styles.exampleTranslation}>
-                  {getTranslation(example.translations, language)}
-                </Text>
-              </View>
-            ))}
-          </View>
+        {/* 使用コンテキスト（存在する場合）- タップで表示切替 */}
+        {phrase.usageContext && (
+          <TouchableOpacity 
+            style={styles.sectionContainer}
+            onPress={() => setShowUsageContext(!showUsageContext)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionLabel}>{t('usage', language === 'en' ? 'Usage Context' : '使用場面')}</Text>
+              <MaterialCommunityIcons
+                name={showUsageContext ? "chevron-up" : "chevron-down"}
+                size={20}
+                color={colors.primary}
+              />
+            </View>
+            
+            {showUsageContext && (
+              <Text style={styles.sectionContent}>
+                {getLocalizedText(phrase.usageContext, language)}
+              </Text>
+            )}
+          </TouchableOpacity>
         )}
         
-        {/* バリエーション（存在する場合） */}
-        {phrase.variations && phrase.variations.length > 0 && (
-          <View style={styles.variationsContainer}>
-            <Text style={styles.variationsLabel}>{t('variations', 'バリエーション')}:</Text>
-            {phrase.variations.map((variation: PhraseVariation, index: number) => (
-              <View key={index} style={styles.variationItem}>
-                <View style={styles.variationHeader}>
-                  <Text style={styles.variationJapanese}>{variation.jpText}</Text>
-                  {variation.audioPath && (
-                    <PaperIconButton
-                      icon="volume-high"
-                      size={20}
-                      iconColor={colors.primary}
-                      onPress={() => playAudio(`assets/contents/${lessonId}/${variation.audioPath}`)}
-                    />
-                  )}
-                </View>
-                {variation.reading && (
-                  <Text style={styles.variationReading}>{variation.reading}</Text>
-                )}
-                <View style={styles.variationBadgeContainer}>
-                  {variation.politenessLevel && (
-                    <View style={[
-                      styles.smallBadge,
-                      { backgroundColor: getPolitenessColor(variation.politenessLevel) }
-                    ]}>
-                      <Text style={styles.smallBadgeText}>
-                        {getLocalizedTagText('politenessLevel', variation.politenessLevel, language)}
-                      </Text>
+        {/* 例文（存在する場合）- タップで表示切替 */}
+        {examples.length > 0 && (
+          <TouchableOpacity 
+            style={styles.sectionContainer}
+            onPress={() => setShowExamples(!showExamples)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionLabel}>{t('examples', language === 'en' ? 'Examples' : '例文')}</Text>
+              <MaterialCommunityIcons
+                name={showExamples ? "chevron-up" : "chevron-down"}
+                size={20}
+                color={colors.primary}
+              />
+            </View>
+            
+            {showExamples && (
+              <View style={styles.examplesContainer}>
+                {examples.map((example: ExampleSentence, index: number) => (
+                  <View key={index} style={styles.exampleItem}>
+                    <View style={styles.exampleHeader}>
+                      <View style={styles.exampleTextContainer}>
+                        <Text style={styles.exampleJapanese}>{example.jpText}</Text>
+                        {example.reading && (
+                          <Text style={styles.exampleReading}>{example.reading}</Text>
+                        )}
+                      </View>
+                      {(example.audio || example.audioPath) && (
+                        <PaperIconButton
+                          icon="volume-high"
+                          size={20}
+                          iconColor={colors.primary}
+                          onPress={() => handlePlayExampleAudio(example.audioPath 
+                            ? `assets/contents/${lessonId}/${example.audioPath}` 
+                            : example.audio || '')}
+                        />
+                      )}
                     </View>
-                  )}
-                </View>
-                <Text style={styles.variationTranslation}>
-                  {getTranslation(variation.translations, language)}
-                </Text>
-                {variation.description && (
-                  <Text style={styles.variationDescription}>
-                    {getLocalizedText(variation.description, language)}
-                  </Text>
-                )}
+                    <Text style={styles.exampleTranslation}>
+                      {getTranslation(example.translations, language)}
+                    </Text>
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
+            )}
+          </TouchableOpacity>
+        )}
+        
+        {/* バリエーション（存在する場合）- タップで表示切替 */}
+        {phrase.variations && phrase.variations.length > 0 && (
+          <TouchableOpacity 
+            style={styles.sectionContainer}
+            onPress={() => setShowVariations(!showVariations)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionLabel}>{t('variations', language === 'en' ? 'Variations' : 'バリエーション')}</Text>
+              <MaterialCommunityIcons
+                name={showVariations ? "chevron-up" : "chevron-down"}
+                size={20}
+                color={colors.primary}
+              />
+            </View>
+            
+            {showVariations && (
+              <View style={styles.variationsContainer}>
+                {phrase.variations.map((variation: PhraseVariation, index: number) => (
+                  <View key={index} style={styles.variationItem}>
+                    <View style={styles.variationHeader}>
+                      <Text style={styles.variationJapanese}>{variation.jpText}</Text>
+                      {variation.audioPath && (
+                        <PaperIconButton
+                          icon="volume-high"
+                          size={20}
+                          iconColor={colors.primary}
+                          onPress={() => playAudio(`assets/contents/${lessonId}/${variation.audioPath}`)}
+                        />
+                      )}
+                    </View>
+                    {variation.reading && (
+                      <Text style={styles.variationReading}>{variation.reading}</Text>
+                    )}
+                    <View style={styles.variationBadgeContainer}>
+                      {variation.politenessLevel && (
+                        <View style={[
+                          styles.smallBadge,
+                          { backgroundColor: getPolitenessColor(variation.politenessLevel) }
+                        ]}>
+                          <Text style={styles.smallBadgeText}>
+                            {getLocalizedTagText('politenessLevel', variation.politenessLevel, language)}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text style={styles.variationTranslation}>
+                      {getTranslation(variation.translations, language)}
+                    </Text>
+                    {variation.description && (
+                      <Text style={styles.variationDescription}>
+                        {getLocalizedText(variation.description, language)}
+                      </Text>
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
+          </TouchableOpacity>
         )}
       </Card.Content>
     </Card>
@@ -314,58 +362,36 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.text,
   },
-  descriptionContainer: {
-    marginTop: spacing.sm,
+  sectionContainer: {
     marginBottom: spacing.md,
+    borderRadius: borderRadius.sm,
+    backgroundColor: colors.background,
+    overflow: 'hidden',
   },
-  descriptionLabel: {
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: spacing.sm,
+    backgroundColor: 'rgba(0,0,0,0.03)',
+  },
+  sectionLabel: {
     fontWeight: 'bold',
-    marginBottom: spacing.xs,
     color: colors.text,
   },
-  description: {
+  sectionContent: {
+    padding: spacing.sm,
     color: colors.text,
     fontSize: 14,
     lineHeight: 20,
   },
-  usageContainer: {
-    marginBottom: spacing.md,
-    padding: spacing.sm,
-    backgroundColor: '#F5F5F5',
-    borderRadius: borderRadius.sm,
-  },
-  usageLabel: {
-    fontWeight: 'bold',
-    marginBottom: spacing.xs,
-    color: colors.text,
-  },
-  usage: {
-    color: colors.text,
-    fontSize: 14,
-    fontStyle: 'italic',
-  },
-  exampleToggleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.sm,
-    backgroundColor: colors.background,
-    borderRadius: borderRadius.sm,
-    marginBottom: spacing.md,
-  },
-  examplesLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
   examplesContainer: {
-    marginBottom: spacing.md,
+    padding: spacing.sm,
   },
   exampleItem: {
     marginBottom: spacing.md,
     padding: spacing.sm,
-    backgroundColor: colors.background,
+    backgroundColor: colors.surface,
     borderRadius: borderRadius.sm,
     borderLeftWidth: 3,
     borderLeftColor: colors.primary,
@@ -395,10 +421,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   variationsContainer: {
-    marginTop: spacing.md,
     padding: spacing.sm,
-    backgroundColor: '#F5F5F5',
-    borderRadius: borderRadius.sm,
   },
   variationsLabel: {
     fontSize: 16,

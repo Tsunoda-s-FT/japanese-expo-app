@@ -19,7 +19,7 @@ import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 type CourseLearningScreenRouteProp = RouteProp<SessionStackParamList, 'CourseLearning'>;
 type SessionNavProp = NativeStackNavigationProp<SessionStackParamList>;
 
-export default function UpdatedCourseLearningScreen() {
+export default function CourseLearningScreen() {
   const navigation = useNavigation<SessionNavProp>();
   const route = useRoute<CourseLearningScreenRouteProp>();
   const { courseId } = route.params;
@@ -156,14 +156,20 @@ export default function UpdatedCourseLearningScreen() {
           </View>
         )}
 
-        {/* 強化版フレーズカード */}
+        {/* EnhancedPhraseCardを表示 */}
         {lessonId && (
-          <EnhancedPhraseCard phrase={currentPhrase} lessonId={lessonId} />
+          <EnhancedPhraseCard 
+            phrase={currentPhrase} 
+            lessonId={lessonId} 
+          />
         )}
         
         {/* 音声と録音ボタン */}
         <View style={styles.audioButtonsContainer}>
-          <AudioButton audioPath={currentPhrase.audio ?? ''} style={styles.audioButton} />
+          <AudioButton 
+            audioPath={currentPhrase.audio ?? ''} 
+            style={styles.audioButton} 
+          />
           <RecordingButton
             phraseId={currentPhrase.id}
             style={styles.recordButton}
@@ -174,7 +180,7 @@ export default function UpdatedCourseLearningScreen() {
           />
         </View>
 
-        {/* 発音評価結果 - 位置変更済み（例文の下・解説の上） */}
+        {/* 発音評価結果 */}
         {showResult && evaluationResult && (
           <Card style={styles.evaluationContainer}>
             <Card.Content>

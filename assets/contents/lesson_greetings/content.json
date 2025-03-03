@@ -42,7 +42,7 @@
               "es": "Un saludo educado matutino utilizado con colegas del trabajo y personas a las que respetas."
             },
             "usageContext": {
-              "ja": "朝の挨拶として使う、午前中（11時頃まで）に使うのが一般的です。",
+              "ja": "朝の挨拶として使う、午前中に使うのが一般的です。",
               "en": "Used as a morning greeting, typically until around 11 AM.",
               "zh": "作为早上的问候使用，通常使用到上午11点左右。",
               "ko": "아침 인사로 사용하며, 보통 오전 11시경까지 사용합니다.",
@@ -58,17 +58,6 @@
                   "zh": "田中：早上好，铃木先生。\n铃木：早上好，田中先生。今天天气真好啊。",
                   "ko": "타나카: 안녕하세요, 스즈키 씨.\n스즈키: 안녕하세요, 타나카 씨. 오늘은 날씨가 좋네요.",
                   "es": "Tanaka: Buenos días, Suzuki-san.\nSuzuki: Buenos días, Tanaka-san. Hace buen tiempo hoy, ¿verdad?"
-                }
-              },
-              {
-                "id": "ex_ohayou_2",
-                "jpText": "学生：おはようございます、先生。\n先生：おはよう、みなさん。今日は新しい文法を勉強しましょう。",
-                "audioPath": "audio/examples/ex_ohayou_dialog_2.mp3",
-                "translations": {
-                  "en": "Students: Good morning, teacher.\nTeacher: Good morning, everyone. Let's study new grammar today.",
-                  "zh": "学生们：早上好，老师。\n老师：早上好，大家。今天我们来学习新语法吧。",
-                  "ko": "학생들: 안녕하세요, 선생님.\n선생님: 안녕, 여러분. 오늘은 새로운 문법을 공부합시다.",
-                  "es": "Estudiantes: Buenos días, profesor.\nProfesor: Buenos días a todos. Estudiemos nueva gramática hoy."
                 }
               }
             ],

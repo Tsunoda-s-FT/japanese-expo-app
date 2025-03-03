@@ -1,136 +1,174 @@
-// レッスンの構造を定義
-export interface Lesson {
-  id: string;
-  title: string;
-  description: string;
-  category: string; // e.g., "basic", "business", "travel"
-  thumbnail: string;
-  totalEstimatedTime: string; // e.g., "30分"
-  courses: Course[];
-}
+import { Content, Lesson, Course, Phrase, QuizQuestion, ExampleSentence } from '../types/contentTypes';
+import { LanguageCode } from '../i18n/i18n';
 
-// コース全体の構造を定義
-export interface Course {
+// 新しいコンテンツ構造のデータを静的に読み込む
+// ※Expo環境ではdynamic importができないため静的インポートに限定しています
+import indexJson from '../../assets/contents/index.json';
+
+// レッスン毎のメタデータとコンテンツ
+import greetingsMetadata from '../../assets/contents/lesson_greetings/metadata.json';
+import greetingsContent from '../../assets/contents/lesson_greetings/content.json';
+import businessMetadata from '../../assets/contents/lesson_business/metadata.json';
+import businessContent from '../../assets/contents/lesson_business/content.json';
+import restaurantMetadata from '../../assets/contents/lesson_restaurant/metadata.json';
+import restaurantContent from '../../assets/contents/lesson_restaurant/content.json';
+
+// タグデータ
+import learningLevelTags from '../../assets/contents/tags/learningLevel.json';
+import partOfSpeechTags from '../../assets/contents/tags/partOfSpeech.json';
+import politenessLevelTags from '../../assets/contents/tags/politenessLevel.json';
+import segmentTypeTags from '../../assets/contents/tags/segmentType.json';
+import sentenceTypeTags from '../../assets/contents/tags/sentenceType.json';
+
+// コースメタデータの型定義
+interface CourseMetadata {
   id: string;
-  title: string;
-  description: string;
+  title: Record<LanguageCode, string>;
+  description: Record<LanguageCode, string>;
   level: string;
-  estimatedTime: string; // e.g., "10分"
-  phrases: Phrase[];
-  quizQuestions: QuizQuestion[];
-  tags: string[]; // e.g., ["greeting", "daily", "formal"]
+  estimatedTime: string;
+  tags: string[];
 }
 
-// 文節の構造を定義
-export interface Segment {
-  jpText: string;
-  reading?: string;
-  partOfSpeech?: string;
-  segmentType?: string;  // 新規: base, polite_suffix, honorific_prefix など
+// レッスンIDごとのデータマッピング
+const lessonData: { [key: string]: { metadata: any; content: any } } = {
+  'lesson_greetings': {
+    metadata: greetingsMetadata,
+    content: greetingsContent
+  },
+  'lesson_business': {
+    metadata: businessMetadata,
+    content: businessContent
+  },
+  'lesson_restaurant': {
+    metadata: restaurantMetadata,
+    content: restaurantContent
+  }
+};
+
+/**
+ * 新しいコンテンツ構造からコンテンツを読み込む
+ * @param language 言語コード
+ * @returns Content オブジェクト
+ */
+export function loadNewContent(language: LanguageCode = 'ja'): Content {
+  try {
+    // 指定された言語のレッスン情報を変換
+    const lessons: Lesson[] = indexJson.availableLessons.map(lessonIndex => {
+      const lessonId = lessonIndex.id;
+      
+      // レッスンデータを取得
+      const lessonInfo = lessonData[lessonId];
+      if (!lessonInfo) {
+        throw new Error(`Lesson data not found for ID: ${lessonId}`);
+      }
+      
+      const { metadata, content } = lessonInfo;
+      
+      // 言語に応じたタイトルと説明を取得
+      const title = metadata.title[language] || metadata.title.ja;
+      const description = metadata.description[language] || metadata.description.ja;
+      
+      // コースを変換
+      const courses: Course[] = metadata.courses.map((courseMetadata: CourseMetadata) => {
+        const courseId = courseMetadata.id;
+        
+        // コースコンテンツを取得
+        const courseContent = content.courses.find((c: any) => c.id === courseId);
+        if (!courseContent) {
+          throw new Error(`Course content not found for ID: ${courseId}`);
+        }
+        
+        // 言語に応じたコースのタイトルと説明
+        const courseTitle = courseMetadata.title[language] || courseMetadata.title.ja;
+        const courseDescription = courseMetadata.description[language] || courseMetadata.description.ja;
+        
+        // フレーズを変換
+        const phrases: Phrase[] = courseContent.phrases.map((phrase: any) => {
+          return transformPhrase(phrase, lessonId, language);
+        });
+        
+        // クイズ問題を変換
+        const quizQuestions: QuizQuestion[] = courseContent.quizQuestions
+          ? courseContent.quizQuestions.map((quiz: any) => transformQuizQuestion(quiz, language))
+          : [];
+        
+        // コースオブジェクトを作成
+        return {
+          id: courseId,
+          title: courseTitle,
+          description: courseDescription,
+          level: courseMetadata.level,
+          estimatedTime: courseMetadata.estimatedTime,
+          tags: courseMetadata.tags,
+          phrases: phrases,
+          quizQuestions: quizQuestions
+        };
+      });
+      
+      // レッスンオブジェクトを作成
+      return {
+        id: lessonId,
+        title: title,
+        description: description,
+        category: metadata.category,
+        thumbnail: `assets/contents/${lessonId}/${metadata.thumbnailPath}`,
+        totalEstimatedTime: metadata.totalEstimatedTime,
+        courses: courses
+      };
+    });
+    
+    return { lessons };
+  } catch (error) {
+    console.error('Error in loadNewContent:', error);
+    throw error;
+  }
 }
 
-// 多言語対応の翻訳を定義
-export interface Translations {
-  en: string;
-  ja?: string;
-  zh?: string;
-  ko?: string;
-  es?: string;
-  [key: string]: string | undefined;
+/**
+ * フレーズデータを変換するヘルパー関数
+ */
+function transformPhrase(phrase: any, lessonId: string, language: LanguageCode): Phrase {
+  // オーディオパスを調整（相対パスを絶対パスに変換）
+  const audioPath = phrase.audioPath 
+    ? `assets/contents/${lessonId}/${phrase.audioPath}` 
+    : undefined;
+  
+  // 例文を変換
+  const exampleSentences: ExampleSentence[] = (phrase.examples || []).map((example: any) => {
+    return {
+      id: example.id,
+      jpText: example.jpText,
+      reading: example.reading,
+      translations: example.translations,
+      audio: example.audioPath ? `assets/contents/${lessonId}/${example.audioPath}` : undefined,
+      segments: example.segments || []
+    };
+  });
+  
+  // フレーズオブジェクトを作成
+  return {
+    id: phrase.id,
+    jpText: phrase.jpText,
+    reading: phrase.reading,
+    translations: phrase.translations,
+    audio: audioPath,
+    segments: phrase.segments || [],
+    exampleSentences: exampleSentences,
+    words: phrase.words || []
+  };
 }
 
-// 多言語対応のテキスト
-export interface LocalizedText {
-  ja: string;
-  en?: string;
-  zh?: string;
-  ko?: string;
-  es?: string;
-  [key: string]: string | undefined;
-}
-
-// 例文の構造を定義（拡張版）
-export interface ExampleSentence {
-  id: string;
-  jpText: string;
-  reading?: string;
-  segments?: Segment[];
-  translations: Translations;
-  audio?: string;        // 旧形式との互換性のため残す
-  audioPath?: string;    // 新形式: レッスンディレクトリからの相対パス
-}
-
-// フレーズのバリエーション（新規）
-export interface PhraseVariation {
-  id: string;
-  jpText: string;
-  reading?: string;
-  audioPath?: string;
-  politenessLevel?: string;
-  translations: Translations;
-  description?: LocalizedText;
-}
-
-// フレーズの構造を定義（拡張版）
-export interface Phrase {
-  id: string;
-  jpText: string;
-  reading?: string;
-  segments?: Segment[];
-  translations: Translations;
-  audio?: string;
-  politenessLevel?: string;  // 新規: casual, polite, honorific, humble
-  learningLevel?: string;    // 新規: essential, common, advanced
-  sentenceType?: string;     // 新規: statement, question, request など
-  description?: LocalizedText;
-  usageContext?: LocalizedText;
-  exampleSentences?: ExampleSentence[];  // 旧形式との互換性のため残す
-  examples?: ExampleSentence[];          // 新形式: examples
-  variations?: PhraseVariation[];        // 新規: バリエーション
-  notes?: string;                        // オプショナルなメモフィールド
-  words?: string[];
-  imageRefs?: string[];                  // 新規: 画像への参照
-}
-
-// クイズ問題の構造を定義
-export interface QuizQuestion {
-  id: string;
-  linkedPhraseId: string;
-  questionSuffixJp: string;
-  options: string[];
-  answerIndex: number;
-  explanation: string;
-}
-
-// 進捗管理用の型定義
-export interface QuizSessionLog {
-  sessionId: string;
-  courseId: string;
-  date: string;
-  status: 'ongoing' | 'completed' | 'aborted';
-  answers: {
-    questionId: string;
-    selectedOptionIndex: number;
-    isCorrect: boolean;
-  }[];
-  correctCount: number;
-  totalCount: number;
-  stoppedAtQuestionIndex?: number;
-}
-
-export interface CourseProgress {
-  courseId: string;
-  learnedPhraseIds: Set<string>;
-  completedQuizIds: Set<string>;
-  lastAccessedDate: Date;
-}
-
-export interface LessonProgress {
-  completedCourseIds: Set<string>;
-  lastAccessedDate: Date;
-}
-
-// コンテンツ全体の型定義
-export interface Content {
-  lessons: Lesson[];
+/**
+ * クイズ問題データを変換するヘルパー関数
+ */
+function transformQuizQuestion(quiz: any, language: LanguageCode): QuizQuestion {
+  return {
+    id: quiz.id,
+    linkedPhraseId: quiz.linkedPhraseId,
+    questionSuffixJp: quiz.questionText?.ja || quiz.questionSuffixJp,
+    options: quiz.options.map((opt: any) => typeof opt === 'string' ? opt : opt[language] || opt.ja),
+    answerIndex: quiz.answerIndex,
+    explanation: quiz.explanation?.ja || quiz.explanation
+  };
 }
