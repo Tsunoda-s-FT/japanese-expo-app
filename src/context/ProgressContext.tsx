@@ -3,12 +3,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContent } from './ContentContext';
 import { Content, Course, Lesson } from '../types/contentTypes';
 import { QuizSessionLog } from '../types/QuizSessionLog';
-import { 
-  getCourseProgress, 
-  saveCourseProgress, 
-  getLessonProgress, 
-  saveLessonProgress 
-} from '../services/progressManager';
+
+// ストレージキー - progressManager.tsと統一
+const PROGRESS_STORAGE_KEY = '@japanese_app_progress';
+const QUIZ_LOGS_KEY = '@japanese_app_quiz_sessions';
 
 /**
  * コース進捗の型定義
@@ -21,10 +19,19 @@ export interface CourseProgress {
 }
 
 /**
+ * レッスン進捗の型定義
+ */
+export interface LessonProgress {
+  completedCourseIds: Set<string>;
+  lastAccessedDate: Date;
+}
+
+/**
  * 進捗状態の型定義
  */
 interface ProgressState {
   courseProgressMap: Map<string, CourseProgress>;
+  lessonProgressMap: Map<string, LessonProgress>; // レッスン進捗を追加
   quizLogs: QuizSessionLog[];
   isLoading: boolean;
   error: Error | null;
@@ -35,10 +42,15 @@ interface ProgressState {
  */
 type ProgressAction = 
   | { type: 'LOAD_PROGRESS_START' }
-  | { type: 'LOAD_PROGRESS_SUCCESS'; payload: { progressMap: Map<string, CourseProgress>; quizLogs: QuizSessionLog[] } }
+  | { type: 'LOAD_PROGRESS_SUCCESS'; payload: { 
+      courseProgressMap: Map<string, CourseProgress>; 
+      lessonProgressMap: Map<string, LessonProgress>;
+      quizLogs: QuizSessionLog[] 
+    } }
   | { type: 'LOAD_PROGRESS_ERROR'; payload: Error }
   | { type: 'MARK_PHRASE_COMPLETED'; payload: { courseId: string; phraseId: string } }
   | { type: 'MARK_QUIZ_COMPLETED'; payload: { courseId: string; quizId: string } }
+  | { type: 'MARK_COURSE_COMPLETED'; payload: { lessonId: string; courseId: string } }
   | { type: 'CREATE_QUIZ_SESSION'; payload: { sessionId: string; courseId: string } }
   | { type: 'ADD_QUIZ_ANSWER'; payload: { sessionId: string; questionId: string; selectedOptionIndex: number; isCorrect: boolean } }
   | { type: 'FINALIZE_QUIZ_SESSION'; payload: { sessionId: string } }
@@ -49,13 +61,11 @@ type ProgressAction =
  */
 const initialState: ProgressState = {
   courseProgressMap: new Map(),
+  lessonProgressMap: new Map(),
   quizLogs: [],
   isLoading: true,
   error: null
 };
-
-// ストレージキー
-const QUIZ_LOGS_KEY = '@AppQuizLogs';
 
 /**
  * 進捗リデューサー
@@ -68,7 +78,8 @@ function progressReducer(state: ProgressState, action: ProgressAction): Progress
     case 'LOAD_PROGRESS_SUCCESS':
       return { 
         ...state, 
-        courseProgressMap: action.payload.progressMap,
+        courseProgressMap: action.payload.courseProgressMap,
+        lessonProgressMap: action.payload.lessonProgressMap,
         quizLogs: action.payload.quizLogs,
         isLoading: false,
         error: null
@@ -144,6 +155,39 @@ function progressReducer(state: ProgressState, action: ProgressAction): Progress
       return {
         ...state,
         courseProgressMap: newMap
+      };
+    }
+
+    case 'MARK_COURSE_COMPLETED': {
+      const { lessonId, courseId } = action.payload;
+      const newMap = new Map(state.lessonProgressMap);
+      
+      // レッスンの進捗を取得または初期化
+      let lessonProgress = newMap.get(lessonId);
+      if (!lessonProgress) {
+        lessonProgress = {
+          completedCourseIds: new Set<string>(),
+          lastAccessedDate: new Date()
+        };
+      }
+      
+      // 新しいSetを作成して変更を適用
+      const newCompletedCourseIds = new Set(lessonProgress.completedCourseIds);
+      newCompletedCourseIds.add(courseId);
+      
+      // 更新された進捗オブジェクトを作成
+      const updatedProgress = {
+        ...lessonProgress,
+        completedCourseIds: newCompletedCourseIds,
+        lastAccessedDate: new Date()
+      };
+      
+      // マップを更新
+      newMap.set(lessonId, updatedProgress);
+      
+      return {
+        ...state,
+        lessonProgressMap: newMap
       };
     }
     
@@ -235,6 +279,7 @@ function progressReducer(state: ProgressState, action: ProgressAction): Progress
 interface ProgressContextType {
   // ===== 状態 =====
   courseProgressMap: Map<string, CourseProgress>;
+  lessonProgressMap: Map<string, LessonProgress>;
   quizLogs: QuizSessionLog[];
   isLoading: boolean;
   error: Error | null;
@@ -242,11 +287,18 @@ interface ProgressContextType {
   // ===== 進捗マーキング =====
   markPhraseCompleted: (courseId: string, phraseId: string) => Promise<void>;
   markQuizCompleted: (courseId: string, quizId: string) => Promise<void>;
+  markCourseAsCompleted: (lessonId: string, courseId: string) => Promise<void>;
   
   // ===== 進捗取得 =====
   getProgressForCourse: (courseId: string) => CourseProgress | undefined;
+  getLessonProgress: (lessonId: string) => LessonProgress | undefined;
   getCourseProgressRatio: (courseId: string) => number;
   getCourseQuizProgressRatio: (courseId: string) => number;
+  
+  // ===== 進捗確認 =====
+  isPhraseCompleted: (courseId: string, phraseId: string) => boolean;
+  isQuizCompleted: (courseId: string, quizId: string) => boolean;
+  isCourseCompleted: (lessonId: string, courseId: string) => boolean;
   
   // ===== クイズセッション管理 =====
   createNewQuizSession: (courseId: string) => string;
@@ -280,6 +332,16 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     saveQuizLogs();
   }, [state.quizLogs]);
+
+  // courseProgressMapが変更されたら保存
+  useEffect(() => {
+    saveCourseProgressMap();
+  }, [state.courseProgressMap]);
+
+  // lessonProgressMapが変更されたら保存
+  useEffect(() => {
+    saveLessonProgressMap();
+  }, [state.lessonProgressMap]);
   
   /**
    * 進捗データの読み込み
@@ -287,36 +349,149 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const loadProgressData = async () => {
     dispatch({ type: 'LOAD_PROGRESS_START' });
     try {
-      const progressMap = new Map<string, CourseProgress>();
+      // コース進捗マップの読み込み
+      const courseProgressMap = await loadCourseProgressMap();
       
-      // すべてのコースの進捗を読み込む
-      if (contentContext.state.content && contentContext.state.content.lessons) {
-        for (const lesson of contentContext.state.content.lessons) {
-          for (const course of lesson.courses) {
-            const progress = await getCourseProgress(course.id);
-            if (progress) {
-              progressMap.set(course.id, progress);
-            }
-          }
-        }
-      }
+      // レッスン進捗マップの読み込み
+      const lessonProgressMap = await loadLessonProgressMap();
       
       // クイズログを読み込む
-      let quizLogs: QuizSessionLog[] = [];
-      const logsJSON = await AsyncStorage.getItem(QUIZ_LOGS_KEY);
-      if (logsJSON) {
-        quizLogs = JSON.parse(logsJSON);
-      }
+      const quizLogs = await loadQuizLogs();
       
       dispatch({ 
         type: 'LOAD_PROGRESS_SUCCESS', 
         payload: { 
-          progressMap, 
+          courseProgressMap, 
+          lessonProgressMap,
           quizLogs 
         } 
       });
     } catch (error) {
       dispatch({ type: 'LOAD_PROGRESS_ERROR', payload: error as Error });
+    }
+  };
+
+  /**
+   * コース進捗マップの読み込み
+   */
+  const loadCourseProgressMap = async (): Promise<Map<string, CourseProgress>> => {
+    const progressMap = new Map<string, CourseProgress>();
+    
+    try {
+      // すべてのコースIDを取得
+      if (contentContext.state.content && contentContext.state.content.lessons) {
+        for (const lesson of contentContext.state.content.lessons) {
+          for (const course of lesson.courses) {
+            const courseId = course.id;
+            const progress = await getCourseProgressFromStorage(courseId);
+            if (progress) {
+              progressMap.set(courseId, progress);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load course progress map:', error);
+    }
+    
+    return progressMap;
+  };
+
+  /**
+   * レッスン進捗マップの読み込み
+   */
+  const loadLessonProgressMap = async (): Promise<Map<string, LessonProgress>> => {
+    const progressMap = new Map<string, LessonProgress>();
+    
+    try {
+      // すべてのレッスンIDを取得
+      if (contentContext.state.content && contentContext.state.content.lessons) {
+        for (const lesson of contentContext.state.content.lessons) {
+          const lessonId = lesson.id;
+          const progress = await getLessonProgressFromStorage(lessonId);
+          if (progress) {
+            progressMap.set(lessonId, progress);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load lesson progress map:', error);
+    }
+    
+    return progressMap;
+  };
+
+  /**
+   * AsyncStorageからコース進捗を取得
+   */
+  const getCourseProgressFromStorage = async (courseId: string): Promise<CourseProgress | null> => {
+    try {
+      const key = `${PROGRESS_STORAGE_KEY}:course_${courseId}`;
+      const data = await AsyncStorage.getItem(key);
+      
+      if (!data) {
+        return {
+          courseId,
+          learnedPhraseIds: new Set<string>(),
+          completedQuizIds: new Set<string>(),
+          lastAccessedDate: new Date()
+        };
+      }
+
+      const parsed = JSON.parse(data);
+      
+      return {
+        courseId,
+        learnedPhraseIds: new Set(parsed.learnedPhraseIds),
+        completedQuizIds: new Set(parsed.completedQuizIds),
+        lastAccessedDate: new Date(parsed.lastAccessedDate)
+      };
+    } catch (error) {
+      console.error(`Failed to get course progress for ${courseId}:`, error);
+      return null;
+    }
+  };
+
+  /**
+   * AsyncStorageからレッスン進捗を取得
+   */
+  const getLessonProgressFromStorage = async (lessonId: string): Promise<LessonProgress | null> => {
+    try {
+      const key = `${PROGRESS_STORAGE_KEY}:lesson_${lessonId}`;
+      const data = await AsyncStorage.getItem(key);
+      
+      if (!data) {
+        return {
+          completedCourseIds: new Set<string>(),
+          lastAccessedDate: new Date()
+        };
+      }
+
+      const parsed = JSON.parse(data);
+      
+      return {
+        completedCourseIds: new Set(parsed.completedCourseIds),
+        lastAccessedDate: new Date(parsed.lastAccessedDate)
+      };
+    } catch (error) {
+      console.error(`Failed to get lesson progress for ${lessonId}:`, error);
+      return null;
+    }
+  };
+  
+  /**
+   * クイズログを読み込む
+   */
+  const loadQuizLogs = async (): Promise<QuizSessionLog[]> => {
+    try {
+      const logsJSON = await AsyncStorage.getItem(QUIZ_LOGS_KEY);
+      if (logsJSON) {
+        return JSON.parse(logsJSON);
+      }
+      return [];
+    } catch (error) {
+      console.error('Failed to load quiz logs:', error);
+      return [];
     }
   };
   
@@ -330,6 +505,66 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       console.error('Failed to save quiz logs:', error);
     }
   };
+
+  /**
+   * コース進捗マップを保存
+   */
+  const saveCourseProgressMap = async () => {
+    try {
+      for (const [courseId, progress] of state.courseProgressMap.entries()) {
+        await saveCourseProgressToStorage(courseId, progress);
+      }
+    } catch (error) {
+      console.error('Failed to save course progress map:', error);
+    }
+  };
+
+  /**
+   * レッスン進捗マップを保存
+   */
+  const saveLessonProgressMap = async () => {
+    try {
+      for (const [lessonId, progress] of state.lessonProgressMap.entries()) {
+        await saveLessonProgressToStorage(lessonId, progress);
+      }
+    } catch (error) {
+      console.error('Failed to save lesson progress map:', error);
+    }
+  };
+
+  /**
+   * コース進捗をAsyncStorageに保存
+   */
+  const saveCourseProgressToStorage = async (courseId: string, progress: CourseProgress): Promise<void> => {
+    try {
+      const key = `${PROGRESS_STORAGE_KEY}:course_${courseId}`;
+      const data = {
+        courseId,
+        learnedPhraseIds: Array.from(progress.learnedPhraseIds),
+        completedQuizIds: Array.from(progress.completedQuizIds),
+        lastAccessedDate: progress.lastAccessedDate.toISOString()
+      };
+      await AsyncStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+      console.error(`Failed to save course progress for ${courseId}:`, error);
+    }
+  };
+
+  /**
+   * レッスン進捗をAsyncStorageに保存
+   */
+  const saveLessonProgressToStorage = async (lessonId: string, progress: LessonProgress): Promise<void> => {
+    try {
+      const key = `${PROGRESS_STORAGE_KEY}:lesson_${lessonId}`;
+      const data = {
+        completedCourseIds: Array.from(progress.completedCourseIds),
+        lastAccessedDate: progress.lastAccessedDate.toISOString()
+      };
+      await AsyncStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+      console.error(`Failed to save lesson progress for ${lessonId}:`, error);
+    }
+  };
   
   /**
    * フレーズ完了をマーク
@@ -338,12 +573,6 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
    */
   const markPhraseCompleted = async (courseId: string, phraseId: string) => {
     dispatch({ type: 'MARK_PHRASE_COMPLETED', payload: { courseId, phraseId } });
-    
-    // 進捗を保存
-    const updatedProgress = state.courseProgressMap.get(courseId);
-    if (updatedProgress) {
-      await saveCourseProgress(courseId, updatedProgress);
-    }
   };
   
   /**
@@ -353,12 +582,15 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
    */
   const markQuizCompleted = async (courseId: string, quizId: string) => {
     dispatch({ type: 'MARK_QUIZ_COMPLETED', payload: { courseId, quizId } });
-    
-    // 進捗を保存
-    const updatedProgress = state.courseProgressMap.get(courseId);
-    if (updatedProgress) {
-      await saveCourseProgress(courseId, updatedProgress);
-    }
+  };
+
+  /**
+   * コース完了をマーク
+   * @param lessonId レッスンID
+   * @param courseId コースID
+   */
+  const markCourseAsCompleted = async (lessonId: string, courseId: string) => {
+    dispatch({ type: 'MARK_COURSE_COMPLETED', payload: { lessonId, courseId } });
   };
   
   /**
@@ -368,6 +600,15 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
    */
   const getProgressForCourse = (courseId: string): CourseProgress | undefined => {
     return state.courseProgressMap.get(courseId);
+  };
+
+  /**
+   * レッスンの進捗を取得
+   * @param lessonId レッスンID
+   * @returns レッスン進捗
+   */
+  const getLessonProgress = (lessonId: string): LessonProgress | undefined => {
+    return state.lessonProgressMap.get(lessonId);
   };
   
   /**
@@ -404,6 +645,39 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (!course || course.quizQuestions.length === 0) return 0;
     
     return courseProgress.completedQuizIds.size / course.quizQuestions.length;
+  };
+
+  /**
+   * フレーズが学習済みかどうかを確認
+   * @param courseId コースID
+   * @param phraseId フレーズID
+   * @returns 学習済みかどうか
+   */
+  const isPhraseCompleted = (courseId: string, phraseId: string): boolean => {
+    const progress = state.courseProgressMap.get(courseId);
+    return progress?.learnedPhraseIds.has(phraseId) || false;
+  };
+
+  /**
+   * クイズが完了済みかどうかを確認
+   * @param courseId コースID
+   * @param quizId クイズID
+   * @returns 完了済みかどうか
+   */
+  const isQuizCompleted = (courseId: string, quizId: string): boolean => {
+    const progress = state.courseProgressMap.get(courseId);
+    return progress?.completedQuizIds.has(quizId) || false;
+  };
+
+  /**
+   * コースが完了済みかどうかを確認
+   * @param lessonId レッスンID
+   * @param courseId コースID
+   * @returns 完了済みかどうか
+   */
+  const isCourseCompleted = (lessonId: string, courseId: string): boolean => {
+    const progress = state.lessonProgressMap.get(lessonId);
+    return progress?.completedCourseIds.has(courseId) || false;
   };
   
   /**
@@ -476,7 +750,8 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       dispatch({ 
         type: 'LOAD_PROGRESS_SUCCESS', 
         payload: { 
-          progressMap: state.courseProgressMap, 
+          courseProgressMap: state.courseProgressMap, 
+          lessonProgressMap: state.lessonProgressMap,
           quizLogs: [] 
         } 
       });
@@ -485,31 +760,41 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
   
+  const value: ProgressContextType = {
+    // 状態
+    courseProgressMap: state.courseProgressMap,
+    lessonProgressMap: state.lessonProgressMap,
+    quizLogs: state.quizLogs,
+    isLoading: state.isLoading,
+    error: state.error,
+    
+    // 進捗マーキング
+    markPhraseCompleted,
+    markQuizCompleted,
+    markCourseAsCompleted,
+    
+    // 進捗取得
+    getProgressForCourse,
+    getLessonProgress,
+    getCourseProgressRatio,
+    getCourseQuizProgressRatio,
+    
+    // 進捗確認
+    isPhraseCompleted,
+    isQuizCompleted,
+    isCourseCompleted,
+    
+    // クイズセッション管理
+    createNewQuizSession,
+    addAnswerToQuizSession,
+    finalizeQuizSession,
+    abortQuizSession,
+    getQuizSessionById,
+    clearAllQuizSessions
+  };
+  
   return (
-    <ProgressContext.Provider value={{
-      // 状態
-      courseProgressMap: state.courseProgressMap,
-      quizLogs: state.quizLogs,
-      isLoading: state.isLoading,
-      error: state.error,
-      
-      // 進捗マーキング
-      markPhraseCompleted,
-      markQuizCompleted,
-      
-      // 進捗取得
-      getProgressForCourse,
-      getCourseProgressRatio,
-      getCourseQuizProgressRatio,
-      
-      // クイズセッション管理
-      createNewQuizSession,
-      addAnswerToQuizSession,
-      finalizeQuizSession,
-      abortQuizSession,
-      getQuizSessionById,
-      clearAllQuizSessions
-    }}>
+    <ProgressContext.Provider value={value}>
       {children}
     </ProgressContext.Provider>
   );

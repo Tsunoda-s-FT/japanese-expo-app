@@ -5,8 +5,8 @@ import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { getCourseById } from '../services/contentService';
-import { Course } from '../types/contentTypes';
+import { getCourseById, getLessonForCourse } from '../services/contentService';
+import { Course, Lesson } from '../types/contentTypes';
 import { useProgress } from '../context/ProgressContext';
 import { useLanguage } from '../context/LanguageContext';
 import { AppHeader } from '../components';
@@ -23,14 +23,24 @@ const CourseDetailScreen: React.FC = () => {
   const { language, t } = useLanguage();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lessonId, setLessonId] = useState<string | null>(null);
 
-  const { getCourseProgressRatio, getCourseQuizProgressRatio, quizLogs } = useProgress();
+  const { getCourseProgressRatio, getCourseQuizProgressRatio, quizLogs, isCourseCompleted } = useProgress();
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const data = await getCourseById(courseId, language);
         setCourse(data || null);
+        
+        // コースが所属するレッスンIDを見つける
+        if (data) {
+          // 既存のLessonForCourse関数を使用（同期関数）
+          const lesson = getLessonForCourse(courseId);
+          if (lesson) {
+            setLessonId(lesson.id);
+          }
+        }
       } catch (error) {
         console.error('Error loading course:', error);
       } finally {
@@ -40,7 +50,7 @@ const CourseDetailScreen: React.FC = () => {
     
     loadData();
   }, [courseId, language]);
-
+  
   const handleStartLearning = () => {
     if (!course) return;
     navigation.navigate('Session', {
@@ -119,6 +129,11 @@ const CourseDetailScreen: React.FC = () => {
       >
         <Card style={styles.mainCard}>
           <Card.Content>
+            {lessonId && isCourseCompleted(lessonId, courseId) && (
+              <View style={styles.completedBadge}>
+                <Text style={styles.completedText}>完了</Text>
+              </View>
+            )}
             <Text style={styles.description}>{course.description}</Text>
             
             <View style={styles.metaContainer}>
@@ -463,6 +478,21 @@ const styles = StyleSheet.create({
   viewAllText: {
     color: colors.primary,
     fontWeight: 'bold',
+  },
+  completedBadge: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: colors.success,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    zIndex: 1,
+  },
+  completedText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 });
 

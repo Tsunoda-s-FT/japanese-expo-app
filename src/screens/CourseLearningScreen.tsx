@@ -24,13 +24,14 @@ export default function CourseLearningScreen() {
   const navigation = useNavigation<SessionNavProp>();
   const route = useRoute<CourseLearningScreenRouteProp>();
   const { courseId } = route.params;
-  const { markPhraseCompleted } = useProgress();
+  const { markPhraseCompleted, isPhraseCompleted } = useProgress();
 
   const [course, setCourse] = useState<Course | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [evaluationResult, setEvaluationResult] = useState<PronunciationEvaluationResult | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [isCurrentPhraseCompleted, setIsCurrentPhraseCompleted] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -54,6 +55,14 @@ export default function CourseLearningScreen() {
     });
     return () => backHandler.remove();
   }, [navigation]);
+
+  useEffect(() => {
+    // 現在のフレーズが既に完了済みかをチェック
+    if (course && course.phrases[currentIndex]) {
+      const currentPhraseId = course.phrases[currentIndex].id;
+      setIsCurrentPhraseCompleted(isPhraseCompleted(courseId, currentPhraseId));
+    }
+  }, [courseId, course, currentIndex, isPhraseCompleted]);
 
   const showExitConfirmation = () => {
     Alert.alert(
@@ -134,6 +143,11 @@ export default function CourseLearningScreen() {
         {/* Phrase Card */}
         <Card style={styles.phraseCard}>
           <Card.Content>
+            {isCurrentPhraseCompleted && (
+              <View style={styles.completedBadge}>
+                <Text style={styles.completedText}>学習済み</Text>
+              </View>
+            )}
             {/* Main phrase */}
             <View style={styles.phraseContainer}>
               <SegmentedText
@@ -330,5 +344,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.md,
+  },
+  completedBadge: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: colors.success,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 16,
+    zIndex: 1,
+  },
+  completedText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });

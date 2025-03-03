@@ -22,7 +22,7 @@ const CourseQuizScreen: React.FC = () => {
   const navigation = useNavigation<RootNavProp>();
   const route = useRoute<CourseQuizScreenRouteProp>();
   const { courseId } = route.params;
-  const { markQuizCompleted } = useProgress();
+  const { markQuizCompleted, isQuizCompleted } = useProgress();
   const { 
     createNewSession,
     addAnswer,
@@ -35,6 +35,7 @@ const CourseQuizScreen: React.FC = () => {
   const [course, setCourse] = useState<Course | null>(null);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentQuestionIsCompleted, setCurrentQuestionIsCompleted] = useState(false);
 
   // ユーザーが選んだオプション
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -125,6 +126,14 @@ const CourseQuizScreen: React.FC = () => {
 
     return () => backHandler.remove();
   }, [courseId]);
+
+  useEffect(() => {
+    // 現在の問題が既に完了済みかをチェック
+    if (questions[currentIndex]) {
+      const currentQuizId = questions[currentIndex].id;
+      setCurrentQuestionIsCompleted(isQuizCompleted(courseId, currentQuizId));
+    }
+  }, [courseId, questions, currentIndex, isQuizCompleted]);
 
   // 選択肢がタップされた時の処理
   const handleOptionPress = (index: number) => {
@@ -232,6 +241,11 @@ const CourseQuizScreen: React.FC = () => {
                 <Text style={styles.questionText}>{currentQuestion.questionSuffixJp}</Text>
 
                 {/* Options */}
+                {currentQuestionIsCompleted && !isSubmitted && (
+                  <View style={styles.completedBadge}>
+                    <Text style={styles.completedText}>回答済み</Text>
+                  </View>
+                )}
                 {currentQuestion.options.map((option, index) => (
                   <TouchableOpacity
                     key={index}
@@ -242,7 +256,7 @@ const CourseQuizScreen: React.FC = () => {
                       isSubmitted && selectedOption === index && selectedOption !== currentQuestion.answerIndex && styles.incorrectOption
                     ]}
                     onPress={() => handleOptionPress(index)}
-                    disabled={isSubmitted}
+                    disabled={isSubmitted || currentQuestionIsCompleted}
                     activeOpacity={0.7}
                   >
                     <View style={styles.optionContent}>
@@ -268,7 +282,7 @@ const CourseQuizScreen: React.FC = () => {
                 ))}
 
                 {/* Answer / Next button */}
-                {!isSubmitted ? (
+                {!isSubmitted && !currentQuestionIsCompleted ? (
                   <AppButton
                     label="回答する"
                     onPress={handleAnswer}
@@ -482,6 +496,21 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontSize: 16,
     textAlign: 'center',
+  },
+  completedBadge: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: colors.success,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 16,
+    zIndex: 1,
+  },
+  completedText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });
 
