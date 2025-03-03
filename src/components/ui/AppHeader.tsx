@@ -11,7 +11,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useLanguage } from '../../context/LanguageContext';
 import { colors, spacing, shadows } from '../../theme/theme';
-import { LanguageCode, getLanguageInfo } from '../../i18n';
+import { LanguageCode, getLanguageInfo } from '../../i18n/i18n';
 
 const getLanguageDisplay = (code: LanguageCode): string => {
   switch(code) {

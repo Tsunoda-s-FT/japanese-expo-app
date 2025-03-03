@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Text, Card } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../context/LanguageContext';
-import { LANGUAGES, LanguageCode } from '../i18n';
+import { LANGUAGES, LanguageCode } from '../i18n/i18n';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { getFlagIconForLanguage, getNativeLanguageName, getEnglishLanguageName } from '../utils/language';
 import { AppHeader } from '../components';

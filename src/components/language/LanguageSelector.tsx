@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Modal, Text, Pressable } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { LanguageCode, LANGUAGES, getLanguageInfo } from '../../i18n';
+import { LanguageCode, LANGUAGES, getLanguageInfo } from '../../i18n/i18n';
 import { useLanguage } from '../../context/LanguageContext';
 import { colors, spacing, borderRadius, shadows } from '../../theme/theme';
 import { FadeInView } from '../animations/FadeInView';

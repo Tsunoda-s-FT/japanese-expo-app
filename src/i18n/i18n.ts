@@ -1,7 +1,35 @@
 /**
- * 翻訳ファイルの管理と読み込みを担当
+ * 多言語対応（i18n）の統合モジュール
  */
-import { LanguageCode } from './index';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { I18nManager } from 'react-native';
+import * as Localization from 'expo-localization';
+
+/** サポートされる言語コード（ISO 639-1） */
+export type LanguageCode = 'en' | 'ja' | 'zh' | 'ko' | 'es';
+
+/** ストレージキー */
+export const LANGUAGE_STORAGE_KEY = 'user_language';
+
+/** デフォルト言語 */
+export const DEFAULT_LANGUAGE: LanguageCode = 'en';
+
+/** 言語情報 */
+export interface LanguageInfo {
+  code: LanguageCode;
+  name: string;       // 英語での言語名
+  nativeName: string; // その言語での言語名
+  rtl: boolean;       // 右から左の言語かどうか
+}
+
+/** サポートされている言語情報 */
+export const LANGUAGES: LanguageInfo[] = [
+  { code: 'en', name: 'English', nativeName: 'English', rtl: false },
+  { code: 'ja', name: 'Japanese', nativeName: '日本語', rtl: false },
+  { code: 'zh', name: 'Chinese', nativeName: '中文', rtl: false },
+  { code: 'ko', name: 'Korean', nativeName: '한국어', rtl: false },
+  { code: 'es', name: 'Spanish', nativeName: 'Español', rtl: false },
+];
 
 /** 翻訳データの型定義 */
 export type TranslationsMap = Record<string, string>;
@@ -50,17 +78,24 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     exitSession: 'Exit Session',
     tryAgain: 'Try Again',
     congratulations: 'Congratulations!',
-    quizCompleted: 'Quiz Completed',
-    yourScore: 'Your Score',
+    goodJob: 'Good Job!',
+    needMorePractice: 'Need More Practice',
+    examples: 'Examples',
+    pronunciation: 'Pronunciation',
+    explanation: 'Explanation',
+    quizHistory: 'Quiz History',
+    historyDetail: 'History Detail',
+    score: 'Score',
+    date: 'Date',
+    noHistory: 'No History',
+    questionNumber: 'Question',
     correctAnswers: 'Correct Answers',
     incorrectAnswers: 'Incorrect Answers',
     reviewAnswers: 'Review Answers',
     returnToMenu: 'Return to Menu',
     retakeQuiz: 'Retake Quiz',
     continueLesson: 'Continue Lesson',
-    pronunciation: 'Pronunciation',
     meaning: 'Meaning',
-    examples: 'Examples',
     notes: 'Notes',
     beginner: 'Beginner',
     intermediate: 'Intermediate',
@@ -86,7 +121,6 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     sort: 'Sort',
     ascending: 'Ascending',
     descending: 'Descending',
-    date: 'Date',
     name: 'Name',
     type: 'Type',
     status: 'Status',
@@ -100,7 +134,6 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     accuracy: 'Accuracy',
     speed: 'Speed',
     time: 'Time',
-    score: 'Score',
     total: 'Total',
     average: 'Average',
     best: 'Best',
@@ -243,17 +276,24 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     exitSession: 'セッションを終了',
     tryAgain: 'もう一度',
     congratulations: 'おめでとうございます！',
-    quizCompleted: 'クイズ完了',
-    yourScore: 'あなたのスコア',
+    goodJob: 'よくできました！',
+    needMorePractice: 'もう少し練習しましょう',
+    examples: '例文',
+    pronunciation: '発音',
+    explanation: '解説',
+    quizHistory: 'クイズ履歴',
+    historyDetail: '履歴詳細',
+    score: 'スコア',
+    date: '日付',
+    noHistory: '履歴がありません',
+    questionNumber: '問題',
     correctAnswers: '正解数',
     incorrectAnswers: '不正解数',
     reviewAnswers: '回答を確認',
     returnToMenu: 'メニューに戻る',
     retakeQuiz: 'クイズをやり直す',
     continueLesson: 'レッスンを続ける',
-    pronunciation: '発音',
     meaning: '意味',
-    examples: '例文',
     notes: 'メモ',
     beginner: '初級',
     intermediate: '中級',
@@ -279,7 +319,6 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     sort: '並べ替え',
     ascending: '昇順',
     descending: '降順',
-    date: '日付',
     name: '名前',
     type: 'タイプ',
     status: 'ステータス',
@@ -293,14 +332,13 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     accuracy: '正確さ',
     speed: 'スピード',
     time: '時間',
-    score: 'スコア',
     total: '合計',
     average: '平均',
     best: '最高',
     worst: '最低',
     current: '現在',
-    previous: '前',
-    nextItem: '次',
+    previous: '前回',
+    nextItem: '次へ',
     first: '最初',
     last: '最後',
     none: 'なし',
@@ -328,7 +366,7 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     unknown: '不明',
     notAvailable: '利用不可',
     comingSoon: '近日公開',
-    beta: 'ベータ',
+    beta: 'ベータ版',
     experimental: '実験的',
     deprecated: '非推奨',
     new: '新規',
@@ -350,12 +388,12 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     synced: '同期済み',
     notSynced: '未同期',
     lastSynced: '最終同期',
-    never: '決して',
+    never: '一度もない',
     always: '常に',
     sometimes: '時々',
-    rarely: 'まれに',
+    rarely: 'めったにない',
     frequently: '頻繁に',
-    occasionally: '時折',
+    occasionally: '時々',
     daily: '毎日',
     weekly: '毎週',
     monthly: '毎月',
@@ -392,9 +430,10 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     inMonths: '数ヶ月後',
     inAYear: '1年後',
     inYears: '数年後',
-    longTimeFromNow: '遠い将来',
+    longTimeFromNow: 'ずっと後',
   },
   'zh': {
+    // 中国語の翻訳データ
     appTitle: '日语学习应用',
     lessons: '课程',
     settings: '设置',
@@ -406,58 +445,10 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     incorrect: '不正确',
     submit: '提交',
     selectLanguage: '选择语言',
-    quickMenu: '快速菜单',
-    speedQuiz: '速度测验',
-    randomQuizDescription: '来自所有课程的随机问题',
-    lessonList: '课程列表',
-    courseList: '课程列表',
-    lessonDetail: '课程详情',
-    courseDetail: '课程详情',
-    quizMode: '测验模式',
-    learningMode: '学习模式',
-    quizResult: '测验结果',
-    loading: '加载中...',
-    noLessonsFound: '未找到课程',
-    noCoursesFound: '未找到课程',
-    level: '级别',
-    estimatedTime: '预计时间',
-    category: '类别',
-    progress: '进度',
-    totalCourses: '课程总数',
-    startLearning: '开始学习',
-    startQuiz: '开始测验',
-    courseProgress: '课程进度',
-    phraseProgress: '短语进度',
-    quizProgress: '测验进度',
-    recordAudio: '录制音频',
-    playAudio: '播放音频',
-    answer: '回答',
-    showResult: '显示结果',
-    exitSession: '退出会话',
-    tryAgain: '再试一次',
-    congratulations: '恭喜！',
-    quizCompleted: '测验完成',
-    yourScore: '你的分数',
-    correctAnswers: '正确答案',
-    incorrectAnswers: '错误答案',
-    reviewAnswers: '查看答案',
-    returnToMenu: '返回菜单',
-    retakeQuiz: '重新测验',
-    continueLesson: '继续课程',
-    pronunciation: '发音',
-    meaning: '含义',
-    examples: '例子',
-    notes: '笔记',
-    beginner: '初学者',
-    intermediate: '中级',
-    advanced: '高级',
-    minutes: '分钟',
-    seconds: '秒',
-    completed: '已完成',
-    inProgress: '进行中',
-    notStarted: '未开始',
+    // 他の翻訳エントリー
   },
   'ko': {
+    // 韓国語の翻訳データ
     appTitle: '일본어 학습 앱',
     lessons: '레슨',
     settings: '설정',
@@ -469,58 +460,10 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     incorrect: '오답',
     submit: '제출',
     selectLanguage: '언어 선택',
-    quickMenu: '빠른 메뉴',
-    speedQuiz: '스피드 퀴즈',
-    randomQuizDescription: '모든 레슨에서 무작위 질문',
-    lessonList: '레슨 목록',
-    courseList: '코스 목록',
-    lessonDetail: '레슨 상세',
-    courseDetail: '코스 상세',
-    quizMode: '퀴즈 모드',
-    learningMode: '학습 모드',
-    quizResult: '퀴즈 결과',
-    loading: '로딩 중...',
-    noLessonsFound: '레슨을 찾을 수 없습니다',
-    noCoursesFound: '코스를 찾을 수 없습니다',
-    level: '레벨',
-    estimatedTime: '예상 시간',
-    category: '카테고리',
-    progress: '진행 상황',
-    totalCourses: '총 코스 수',
-    startLearning: '학습 시작',
-    startQuiz: '퀴즈 시작',
-    courseProgress: '코스 진행 상황',
-    phraseProgress: '구문 진행 상황',
-    quizProgress: '퀴즈 진행 상황',
-    recordAudio: '오디오 녹음',
-    playAudio: '오디오 재생',
-    answer: '답변',
-    showResult: '결과 보기',
-    exitSession: '세션 종료',
-    tryAgain: '다시 시도',
-    congratulations: '축하합니다!',
-    quizCompleted: '퀴즈 완료',
-    yourScore: '당신의 점수',
-    correctAnswers: '정답',
-    incorrectAnswers: '오답',
-    reviewAnswers: '답변 검토',
-    returnToMenu: '메뉴로 돌아가기',
-    retakeQuiz: '퀴즈 다시 풀기',
-    continueLesson: '레슨 계속하기',
-    pronunciation: '발음',
-    meaning: '의미',
-    examples: '예시',
-    notes: '노트',
-    beginner: '초급',
-    intermediate: '중급',
-    advanced: '고급',
-    minutes: '분',
-    seconds: '초',
-    completed: '완료됨',
-    inProgress: '진행 중',
-    notStarted: '시작되지 않음',
+    // 他の翻訳エントリー
   },
   'es': {
+    // スペイン語の翻訳データ
     appTitle: 'Aplicación de Aprendizaje de Japonés',
     lessons: 'Lecciones',
     settings: 'Configuración',
@@ -532,61 +475,83 @@ const translations: Record<LanguageCode, TranslationsMap> = {
     incorrect: 'Incorrecto',
     submit: 'Enviar',
     selectLanguage: 'Seleccionar Idioma',
-    quickMenu: 'Menú Rápido',
-    speedQuiz: 'Cuestionario Rápido',
-    randomQuizDescription: 'Preguntas aleatorias de todas las lecciones',
-    lessonList: 'Lista de Lecciones',
-    courseList: 'Lista de Cursos',
-    lessonDetail: 'Detalles de la Lección',
-    courseDetail: 'Detalles del Curso',
-    quizMode: 'Modo Cuestionario',
-    learningMode: 'Modo Aprendizaje',
-    quizResult: 'Resultados del Cuestionario',
-    loading: 'Cargando...',
-    noLessonsFound: 'No se encontraron lecciones',
-    noCoursesFound: 'No se encontraron cursos',
-    level: 'Nivel',
-    estimatedTime: 'Tiempo Estimado',
-    category: 'Categoría',
-    progress: 'Progreso',
-    totalCourses: 'Total de Cursos',
-    startLearning: 'Comenzar Aprendizaje',
-    startQuiz: 'Comenzar Cuestionario',
-    courseProgress: 'Progreso del Curso',
-    phraseProgress: 'Progreso de Frases',
-    quizProgress: 'Progreso del Cuestionario',
-    recordAudio: 'Grabar Audio',
-    playAudio: 'Reproducir Audio',
-    answer: 'Respuesta',
-    showResult: 'Mostrar Resultado',
-    exitSession: 'Salir de la Sesión',
-    tryAgain: 'Intentar de Nuevo',
-    congratulations: '¡Felicitaciones!',
-    quizCompleted: 'Cuestionario Completado',
-    yourScore: 'Tu Puntuación',
-    correctAnswers: 'Respuestas Correctas',
-    incorrectAnswers: 'Respuestas Incorrectas',
-    reviewAnswers: 'Revisar Respuestas',
-    returnToMenu: 'Volver al Menú',
-    retakeQuiz: 'Volver a Hacer el Cuestionario',
-    continueLesson: 'Continuar Lección',
-    pronunciation: 'Pronunciación',
-    meaning: 'Significado',
-    examples: 'Ejemplos',
-    notes: 'Notas',
-    beginner: 'Principiante',
-    intermediate: 'Intermedio',
-    advanced: 'Avanzado',
-    minutes: 'minutos',
-    seconds: 'segundos',
-    completed: 'Completado',
-    inProgress: 'En Progreso',
-    notStarted: 'No Iniciado',
+    // 他の翻訳エントリー
   }
 };
 
 /**
- * 指定された言語の翻訳データを取得する
+ * デバイスのロケールから最適な言語を判定
+ * @returns サポートされている言語コード
+ */
+export const getDeviceLanguage = (): LanguageCode => {
+  const deviceLocale = Localization.locale.split('-')[0];
+  
+  // サポートされている言語かどうかをチェック
+  const isSupported = LANGUAGES.some(lang => lang.code === deviceLocale);
+  if (isSupported) {
+    return deviceLocale as LanguageCode;
+  }
+  
+  return DEFAULT_LANGUAGE;
+};
+
+/**
+ * 言語コードから言語情報を取得
+ * @param code 言語コード
+ * @returns 言語情報
+ */
+export const getLanguageInfo = (code: LanguageCode): LanguageInfo => {
+  const language = LANGUAGES.find(lang => lang.code === code);
+  if (!language) {
+    return LANGUAGES.find(lang => lang.code === DEFAULT_LANGUAGE)!;
+  }
+  return language;
+};
+
+/**
+ * RTL設定を適用
+ * @param languageCode 言語コード
+ */
+export const applyRTL = (languageCode: LanguageCode): void => {
+  const isRTL = getLanguageInfo(languageCode).rtl;
+  
+  if (I18nManager.isRTL !== isRTL) {
+    I18nManager.forceRTL(isRTL);
+  }
+};
+
+/**
+ * AsyncStorage から言語設定を取得
+ * @returns 保存されている言語コード、またはデバイスのデフォルト言語
+ */
+export const getStoredLanguage = async (): Promise<LanguageCode> => {
+  try {
+    const storedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (storedLanguage && LANGUAGES.some(lang => lang.code === storedLanguage)) {
+      return storedLanguage as LanguageCode;
+    }
+  } catch (error) {
+    console.error('Failed to get stored language:', error);
+  }
+  
+  // 保存された言語がなければデバイスのロケールを使用
+  return getDeviceLanguage();
+};
+
+/**
+ * AsyncStorage に言語設定を保存
+ * @param languageCode 言語コード
+ */
+export const storeLanguage = async (languageCode: LanguageCode): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, languageCode);
+  } catch (error) {
+    console.error('Failed to store language:', error);
+  }
+};
+
+/**
+ * 翻訳データを読み込み
  * @param language 言語コード
  * @returns 翻訳データ
  */

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLanguage } from '../context/LanguageContext';
-import { LanguageCode, getDeviceLanguage, getStoredLanguage } from '../i18n';
+import { LanguageCode, getDeviceLanguage, getStoredLanguage } from '../i18n/i18n';
 import { colors } from '../theme/theme';
 import RootNavigator from '../navigation/RootNavigator';
 import { LocalizedText } from './ui/LocalizedText';

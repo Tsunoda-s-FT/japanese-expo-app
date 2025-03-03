@@ -22,7 +22,7 @@ export * from './utils';
 export * from './types';
 
 // 国際化
-export * from './i18n';
+export * from './i18n/i18n';
 
 // 注意: コンテキストと型定義の間でCourseProgressの名前衝突があります
 // コンテキストは必要に応じて個別にインポートしてください

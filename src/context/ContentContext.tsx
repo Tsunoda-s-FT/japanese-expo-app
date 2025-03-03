@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { Content, Lesson, Course } from '../types/contentTypes';
 import rawData from '../../assets/data/content.json';
 import { useLanguage } from './LanguageContext';
-import { LanguageCode } from '../i18n';
+import { LanguageCode } from '../i18n/i18n';
 
 // 状態の型定義
 interface ContentState {

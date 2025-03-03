@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 import { colors, spacing, borderRadius, shadows } from '../../theme/theme';
 import { useLanguage } from '../../context/LanguageContext';
-import { LanguageCode, LANGUAGES, getLanguageInfo } from '../../i18n';
+import { LanguageCode, LANGUAGES, getLanguageInfo } from '../../i18n/i18n';
 
 // 言語アイコンマッピング
 const languageIcons: Record<LanguageCode, string> = {

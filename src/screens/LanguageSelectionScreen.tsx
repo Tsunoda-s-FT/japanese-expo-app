@@ -4,7 +4,7 @@ import { Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLanguage } from '../context/LanguageContext';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
-import { LanguageCode } from '../i18n';
+import { LanguageCode } from '../i18n/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AnimatedView } from '../components/animations/AnimatedView';
 import { FadeInView } from '../components/animations/FadeInView';

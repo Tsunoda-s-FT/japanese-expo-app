@@ -1,8 +1,16 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { I18nManager } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LanguageCode, getLanguageInfo, getDeviceLanguage, applyRTL } from '../i18n';
-import { loadTranslations, formatTranslation, TranslationsMap } from '../i18n/translations';
+import { 
+  LanguageCode, 
+  getLanguageInfo, 
+  getDeviceLanguage, 
+  applyRTL,
+  loadTranslations, 
+  formatTranslation, 
+  TranslationsMap,
+  LANGUAGE_STORAGE_KEY
+} from '../i18n/i18n';
 import { LanguageChangeToast } from '../components/language/LanguageChangeToast';
 import { getTypography, TypographyConfig } from '../theme/typography';
 
@@ -194,9 +202,6 @@ function languageReducer(state: LanguageState, action: LanguageAction): Language
       return state;
   }
 }
-
-// ストレージキー
-const LANGUAGE_STORAGE_KEY = 'user_language';
 
 // コンテキスト型定義
 interface LanguageContextType {

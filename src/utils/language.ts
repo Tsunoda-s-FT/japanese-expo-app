@@ -1,4 +1,4 @@
-import { LanguageCode, LANGUAGES, getLanguageInfo } from '../i18n';
+import { LanguageCode, LANGUAGES, getLanguageInfo } from '../i18n/i18n';
 
 /**
  * 言語コードに基づいて適切な国旗アイコン名を返す関数

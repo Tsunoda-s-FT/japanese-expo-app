@@ -4,7 +4,7 @@
  */
 import { Content, Course, Lesson, Phrase, QuizQuestion } from '../types/contentTypes';
 import rawData from '../../assets/data/content.json';
-import { LanguageCode } from '../i18n';
+import { LanguageCode } from '../i18n/i18n';
 
 /**
  * content.jsonの構造に合わせてデータを変換します
@@ -351,4 +351,30 @@ export function getPhrasesCountForCourse(courseId: string): number {
 export function getQuizQuestionsCountForCourse(courseId: string): number {
   const course = getCourseById(courseId);
   return course ? course.quizQuestions.length : 0;
+}
+
+/** 
+ * 全コースを返す (言語対応版) 
+ * @param language 言語コード
+ * @returns コースの配列
+ */
+export function getAllCourses(language: LanguageCode = 'ja'): Course[] {
+  const allCourses = content.lessons.flatMap(l => l.courses);
+  
+  if (language === 'ja') {
+    return allCourses;
+  }
+  
+  // 翻訳されたタイトルとディスクリプションを使用
+  return allCourses.map(course => {
+    const localizedContent = getLocalizedContent(course.id, language);
+    if (!localizedContent) {
+      return course;
+    }
+    return {
+      ...course,
+      title: localizedContent.title,
+      description: localizedContent.description
+    };
+  });
 }

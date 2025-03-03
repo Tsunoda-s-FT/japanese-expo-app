@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Text, TextProps, StyleSheet } from 'react-native';
 import { useLanguage } from '../../context/LanguageContext';
-import { LanguageCode } from '../../i18n';
+import { LanguageCode } from '../../i18n/i18n';
 
 // 言語ごとのテキストスケール係数
 // 日本語や中国語は英語より表示スペースが必要なことが多いため、

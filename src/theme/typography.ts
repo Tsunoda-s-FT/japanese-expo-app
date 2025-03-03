@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import { LanguageCode } from '../i18n';
+import { LanguageCode } from '../i18n/i18n';
 
 // フォント設定の定義
 export interface TypographyConfig {
