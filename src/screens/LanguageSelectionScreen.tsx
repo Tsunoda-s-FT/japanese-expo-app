@@ -6,9 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { LanguageCode } from '../i18n/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AnimatedView } from '../components/animations/AnimatedView';
-import { FadeInView } from '../components/animations/FadeInView';
-import { SlideInView } from '../components/animations/SlideInView';
+import { AnimatedView } from '../components';
 
 // 言語アイコンマッピング
 const languageIcons: Record<LanguageCode, string> = {
@@ -91,7 +89,7 @@ const LanguageSelectionScreen: React.FC<LanguageSelectionScreenProps> = ({ onCom
         
         <View style={styles.languagesContainer}>
           {supportedLanguages.map((langCode, index) => (
-            <SlideInView key={langCode} direction="right" delay={index * 100} duration={500}>
+            <AnimatedView key={langCode} animation="slide" direction="right" delay={index * 100} duration={500}>
               <TouchableOpacity
                 style={[
                   styles.languageButton,
@@ -116,7 +114,7 @@ const LanguageSelectionScreen: React.FC<LanguageSelectionScreenProps> = ({ onCom
                 </View>
                 {selectedLanguage === langCode && <Text style={styles.checkmark}>✓</Text>}
               </TouchableOpacity>
-            </SlideInView>
+            </AnimatedView>
           ))}
         </View>
         

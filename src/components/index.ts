@@ -29,8 +29,8 @@ export { LanguageChangeToast } from './language/LanguageChangeToast';
 
 // アニメーションコンポーネント
 export { AnimatedView } from './animations/AnimatedView';
-export { FadeInView } from './animations/FadeInView';
-export { SlideInView } from './animations/SlideInView';
+// 後方互換性のためのエイリアス
+export { FadeInView, SlideInView } from './animations/compatibilityAliases';
 
 // 初期化コンポーネント
 export { default as AppInitialization } from './AppInitialization'; 

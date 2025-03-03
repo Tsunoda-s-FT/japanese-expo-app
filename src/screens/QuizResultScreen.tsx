@@ -6,11 +6,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { useProgress } from '../context/ProgressContext';
-import { AppCard, AppButton } from '../components';
+import { AppCard, AppButton, AnimatedView } from '../components';
 import { colors, spacing, borderRadius, shadows, commonStyles } from '../theme/theme';
-import { AnimatedView } from '../components/animations/AnimatedView';
-import { FadeInView } from '../components/animations/FadeInView';
-import { SlideInView } from '../components/animations/SlideInView';
 
 type QuizResultScreenRouteProp = RouteProp<SessionStackParamList, 'QuizResult'>;
 type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
@@ -54,7 +51,7 @@ const QuizResultScreen: React.FC = () => {
             <Title style={styles.title}>クイズ結果</Title>
           </AnimatedView>
           
-          <SlideInView direction="left" duration={600} delay={600}>
+          <AnimatedView animation="slide" direction="left" duration={600} delay={600}>
             <View style={styles.resultContainer}>
               <Text style={[styles.score, { color: getResultColor() }]}>
                 {correctCount} / {totalCount}
@@ -63,9 +60,9 @@ const QuizResultScreen: React.FC = () => {
                 正解率: {percentage}%
               </Text>
             </View>
-          </SlideInView>
+          </AnimatedView>
           
-          <FadeInView duration={800} delay={900}>
+          <AnimatedView animation="fade" duration={800} delay={900}>
             <View style={styles.messageContainer}>
               <Text style={[styles.message, { color: getResultColor() }]}>
                 {percentage >= 80
@@ -75,7 +72,7 @@ const QuizResultScreen: React.FC = () => {
                   : 'もう一度復習して挑戦してみましょう。'}
               </Text>
             </View>
-          </FadeInView>
+          </AnimatedView>
         </AppCard>
       </AnimatedView>
 

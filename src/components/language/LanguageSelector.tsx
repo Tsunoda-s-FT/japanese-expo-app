@@ -4,8 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LanguageCode, LANGUAGES, getLanguageInfo } from '../../i18n/i18n';
 import { useLanguage } from '../../context/LanguageContext';
 import { colors, spacing, borderRadius, shadows } from '../../theme/theme';
-import { FadeInView } from '../animations/FadeInView';
-import { SlideInView } from '../animations/SlideInView';
+import { AnimatedView } from '../animations/AnimatedView';
 
 // 言語アイコンマッピング - 国旗アイコンではなく言語コードと絵文字を使用
 const languageIcons: Record<LanguageCode, string> = {
