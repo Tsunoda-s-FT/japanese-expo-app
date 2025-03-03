@@ -1,24 +1,5 @@
 import { Audio, AVPlaybackStatus } from 'expo-av';
-
-// 音声ファイルのマッピング
-const audioFiles: { [key: string]: any } = {
-  'audio/ohayou_gozaimasu.mp3': require('../../assets/audio/ohayou_gozaimasu.mp3'),
-  'audio/ohayou.mp3': require('../../assets/audio/ohayou.mp3'),
-  'audio/ohayou_business.mp3': require('../../assets/audio/ohayou_business.mp3'),
-  'audio/gozaimasu.mp3': require('../../assets/audio/gozaimasu.mp3'),
-  'audio/konnichiwa.mp3': require('../../assets/audio/konnichiwa.mp3'),
-  'audio/desu.mp3': require('../../assets/audio/desu.mp3'),
-  'audio/kyou.mp3': require('../../assets/audio/kyou.mp3'),
-  'audio/watashi.mp3': require('../../assets/audio/watashi.mp3'),
-  'audio/watashi_wa_tanaka.mp3': require('../../assets/audio/watashi_wa_tanaka.mp3'),
-  'audio/yoroshiku.mp3': require('../../assets/audio/yoroshiku.mp3'),
-  'audio/onegai_itashimasu.mp3': require('../../assets/audio/onegai_itashimasu.mp3'),
-  'audio/example_morning_1.mp3': require('../../assets/audio/example_morning_1.mp3'),
-  'audio/example_konnichiwa_1.mp3': require('../../assets/audio/example_konnichiwa_1.mp3'),
-  'audio/example_business_1.mp3': require('../../assets/audio/example_business_1.mp3'),
-  'audio/example_intro_1.mp3': require('../../assets/audio/example_intro_1.mp3'),
-  'audio/irasshaimase.mp3': require('../../assets/audio/irasshaimase.mp3')
-};
+import { audioFiles } from './audioMapping';
 
 // 音声を再生する関数
 export async function playAudio(audioPath: string): Promise<void> {
@@ -28,7 +9,17 @@ export async function playAudio(audioPath: string): Promise<void> {
       return;
     }
 
-    const audioFile = audioFiles[audioPath];
+    // 適切なオーディオファイルを取得
+    let audioFile;
+    
+    // 絶対パス（assets/contents/...）の場合
+    if (audioPath.startsWith('assets/')) {
+      audioFile = audioFiles[audioPath];
+    } else {
+      // 相対パス（旧形式）の場合
+      audioFile = audioFiles[audioPath];
+    }
+    
     if (!audioFile) {
       console.warn(`Audio file not found: ${audioPath}`);
       return;
@@ -66,6 +57,12 @@ export function getAudioResource(path: string): any {
     return null;
   }
   
+  // 絶対パス（assets/contents/...）の場合
+  if (path.startsWith('assets/')) {
+    return audioFiles[path] || null;
+  }
+  
+  // 相対パス（旧形式）の場合
   const resource = audioFiles[path];
   if (!resource) {
     console.warn(`Audio file not found: ${path}`);
@@ -85,30 +82,10 @@ export interface PronunciationEvaluationResult {
 
   // エラー統計 (誤った発音・省略・挿入など)
   mispronunciationCount: number;
-  omissionCount: number;
-  insertionCount: number;
+  omissionCount?: number;
+  insertionCount?: number;
 
   feedback: string;  // 一言フィードバック
-}
-
-/** 
- * フレーズの録音と評価を行う関数
- */
-export async function recordAndEvaluatePhrase(phraseId: string): Promise<{
-  score: number;
-  feedback: string;
-}> {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  const score = Math.floor(Math.random() * 40) + 60; // 60~99
-  let feedback = 'もう少し練習が必要です。';
-  if (score >= 90) {
-    feedback = '素晴らしい発音です！';
-  } else if (score >= 80) {
-    feedback = 'ほぼ完璧です。';
-  }
-
-  return { score, feedback };
 }
 
 /** 
@@ -160,4 +137,4 @@ export async function evaluatePronunciationMock(
     insertionCount: ins,
     feedback,
   };
-} 
+}
