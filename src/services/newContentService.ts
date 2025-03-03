@@ -146,6 +146,19 @@ function transformPhrase(phrase: any, lessonId: string, language: LanguageCode):
     };
   });
   
+  // バリエーションの変換（存在する場合）
+  const variations = phrase.variations ? phrase.variations.map((variation: any) => {
+    return {
+      id: variation.id,
+      jpText: variation.jpText,
+      reading: variation.reading,
+      audioPath: variation.audioPath,
+      politenessLevel: variation.politenessLevel,
+      translations: variation.translations,
+      description: variation.description
+    };
+  }) : undefined;
+  
   // フレーズオブジェクトを作成
   return {
     id: phrase.id,
@@ -154,8 +167,19 @@ function transformPhrase(phrase: any, lessonId: string, language: LanguageCode):
     translations: phrase.translations,
     audio: audioPath,
     segments: phrase.segments || [],
+    // 新しいコンテンツ形式のフィールド
+    examples: exampleSentences,
+    // 互換性のために両方設定
     exampleSentences: exampleSentences,
-    words: phrase.words || []
+    words: phrase.words || [],
+    // 以下の重要フィールドを追加
+    description: phrase.description,
+    usageContext: phrase.usageContext,
+    politenessLevel: phrase.politenessLevel,
+    learningLevel: phrase.learningLevel,
+    sentenceType: phrase.sentenceType,
+    variations: variations,
+    imageRefs: phrase.imageRefs
   };
 }
 
