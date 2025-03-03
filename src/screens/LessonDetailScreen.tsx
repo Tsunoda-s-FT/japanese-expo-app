@@ -9,31 +9,23 @@ import { getLessonById } from '../services/contentService';
 import { useLanguage } from '../context/LanguageContext';
 import { AppHeader } from '../components';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
+import { getImageSource, isValidImage } from '../utils/image';
+import { getLocalizedTagText } from '../utils/localization';
 
-// 画像のマッピング
-const lessonImages: { [key: string]: any } = {
-  'ojigi_aisatsu_business_woman.png': require('../../assets/images/lessons/ojigi_aisatsu_business_woman.png'),
-  // 他の画像もここに追加
-};
+// LessonDetailScreenタイプ定義
+type LessonDetailScreenNavigationProp = NativeStackNavigationProp<
+  MainStackParamList,
+  'LessonDetail'
+>;
 
-// 画像のパスから画像ソースを取得する関数
-const getImageSource = (path: string) => {
-  if (!path) return null;
-  // パスからファイル名を抽出
-  const fileName = path.split('/').pop();
-  if (fileName && lessonImages[fileName]) {
-    return lessonImages[fileName];
-  }
-  // 該当する画像が見つからない場合はデフォルト画像を返すか、nullを返す
-  return null;
-};
+type LessonDetailScreenRouteProp = RouteProp<MainStackParamList, 'LessonDetail'>;
 
-type LessonDetailRouteProp = RouteProp<MainStackParamList, 'LessonDetail'>;
-type LessonDetailNavigationProp = NativeStackNavigationProp<MainStackParamList, 'LessonDetail'>;
-
+/**
+ * レッスン詳細画面コンポーネント
+ */
 const LessonDetailScreen: React.FC = () => {
-  const route = useRoute<LessonDetailRouteProp>();
-  const navigation = useNavigation<LessonDetailNavigationProp>();
+  const route = useRoute<LessonDetailScreenRouteProp>();
+  const navigation = useNavigation<LessonDetailScreenNavigationProp>();
   const { lessonId } = route.params;
   const { language, t } = useLanguage();
 
@@ -43,6 +35,7 @@ const LessonDetailScreen: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        // 言語パラメータを渡して、現在の言語設定に応じたコンテンツを取得
         const data = await getLessonById(lessonId, language);
         setLesson(data || null);
       } catch (error) {
@@ -53,7 +46,7 @@ const LessonDetailScreen: React.FC = () => {
     };
     
     loadData();
-  }, [lessonId, language]);
+  }, [lessonId, language]); // language を依存配列に含めて、言語変更時に再読み込み
 
   const handleCoursePress = (courseId: string) => {
     navigation.navigate('CourseDetail', { courseId });
@@ -100,10 +93,11 @@ const LessonDetailScreen: React.FC = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
       >
+        {/* サムネイル画像 - 常にプレースホルダー画像または実際の画像を表示 */}
         {lesson.thumbnail && (
           <View style={styles.imageContainer}>
             <Image
-              source={getImageSource(lesson.thumbnail) || { uri: 'https://placehold.co/600x400/png' }}
+              source={getImageSource(lesson.thumbnail)}
               style={styles.thumbnail}
               resizeMode="cover"
             />
@@ -118,14 +112,14 @@ const LessonDetailScreen: React.FC = () => {
               <View style={styles.metaInfo}>
                 <View style={styles.metaItem}>
                   <Title style={styles.metaLabel}>
-                    {t('common.category', 'Category')}
+                    {t('common.category', 'カテゴリー')}
                   </Title>
                   <Paragraph style={styles.metaValue}>{lesson.category}</Paragraph>
                 </View>
                 
                 <View style={styles.metaItem}>
                   <Title style={styles.metaLabel}>
-                    {t('common.estimatedTime', 'Estimated Time')}
+                    {t('common.estimatedTime', '推定時間')}
                   </Title>
                   <Paragraph style={styles.metaValue}>{lesson.totalEstimatedTime}</Paragraph>
                 </View>
@@ -136,7 +130,7 @@ const LessonDetailScreen: React.FC = () => {
           <Card style={styles.coursesCard}>
             <Card.Content>
               <Title style={styles.sectionTitle}>
-                {t('lessonDetail.availableCourses', 'Available Courses')}
+                {t('lessonDetail.availableCourses', '利用可能なコース')}
               </Title>
               
               {lesson.courses.map((course) => (
@@ -153,10 +147,10 @@ const LessonDetailScreen: React.FC = () => {
                     
                     <View style={styles.courseMetaContainer}>
                       <Paragraph style={styles.courseMeta}>
-                        {t('common.level', 'Level')}: {course.level}
+                        {t('common.level', 'レベル')}: {getLocalizedTagText('learningLevel', course.level, language)}
                       </Paragraph>
                       <Paragraph style={styles.courseMeta}>
-                        {t('common.estimatedTime', 'Estimated Time')}: {course.estimatedTime}
+                        {t('common.estimatedTime', '推定時間')}: {course.estimatedTime}
                       </Paragraph>
                     </View>
                   </Card.Content>

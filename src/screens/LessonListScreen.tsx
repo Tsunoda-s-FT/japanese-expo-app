@@ -9,23 +9,7 @@ import { getAllLessons } from '../services/contentService';
 import { useLanguage } from '../context/LanguageContext';
 import { AppLoading, AppHeader } from '../components';
 import { colors, spacing, borderRadius, shadows, commonStyles } from '../theme/theme';
-
-// 画像のマッピング
-const lessonImages: { [key: string]: any } = {
-  'ojigi_aisatsu_business_woman.png': require('../../assets/images/lessons/ojigi_aisatsu_business_woman.png'),
-  // 他の画像もここに追加
-};
-
-// 画像のパスから画像ソースを取得する関数
-const getImageSource = (path: string) => {
-  // パスからファイル名を抽出
-  const fileName = path.split('/').pop();
-  if (fileName && lessonImages[fileName]) {
-    return lessonImages[fileName];
-  }
-  // 該当する画像が見つからない場合はデフォルト画像を返すか、nullを返す
-  return null;
-};
+import { getImageSource } from '../utils/image';
 
 type LessonListNavigationProp = NativeStackNavigationProp<MainStackParamList, 'LessonList'>;
 
@@ -38,7 +22,8 @@ const LessonListScreen: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await getAllLessons();
+        // 現在の言語を引数として渡す
+        const data = await getAllLessons(language);
         setLessons(data);
       } catch (error) {
         console.error('Error loading lessons:', error);
@@ -48,7 +33,7 @@ const LessonListScreen: React.FC = () => {
     };
 
     loadData();
-  }, []);
+  }, [language]); // language を依存配列に追加して、言語変更時に再読み込み
 
   const handleLessonPress = (lessonId: string) => {
     navigation.navigate('LessonDetail', { lessonId });
@@ -88,7 +73,7 @@ const LessonListScreen: React.FC = () => {
             >
               {lesson.thumbnail && (
                 <Image
-                  source={getImageSource(lesson.thumbnail) || { uri: 'https://placehold.co/600x400/png' }}
+                  source={getImageSource(lesson.thumbnail)}
                   style={styles.thumbnail}
                 />
               )}

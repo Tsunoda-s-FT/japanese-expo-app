@@ -1,5 +1,8 @@
 import { Audio, AVPlaybackStatus } from 'expo-av';
-import { audioFiles } from './audioMapping';
+import { audioFiles, defaultAudios } from './audioMapping';
+
+// プレースホルダー音声の参照
+const PLACEHOLDER_AUDIO = audioFiles['audio/placeholder.mp3'];
 
 // 音声を再生する関数
 export async function playAudio(audioPath: string): Promise<void> {
@@ -10,15 +13,7 @@ export async function playAudio(audioPath: string): Promise<void> {
     }
 
     // 適切なオーディオファイルを取得
-    let audioFile;
-    
-    // 絶対パス（assets/contents/...）の場合
-    if (audioPath.startsWith('assets/')) {
-      audioFile = audioFiles[audioPath];
-    } else {
-      // 相対パス（旧形式）の場合
-      audioFile = audioFiles[audioPath];
-    }
+    const audioFile = getAudioResource(audioPath);
     
     if (!audioFile) {
       console.warn(`Audio file not found: ${audioPath}`);
@@ -57,19 +52,29 @@ export function getAudioResource(path: string): any {
     return null;
   }
   
-  // 絶対パス（assets/contents/...）の場合
-  if (path.startsWith('assets/')) {
-    return audioFiles[path] || null;
-  }
-  
-  // 相対パス（旧形式）の場合
-  const resource = audioFiles[path];
-  if (!resource) {
-    console.warn(`Audio file not found: ${path}`);
+  try {
+    // 1. まず、マッピングされた実際の音声があるか確認
+    const audioSource = audioFiles[path];
+    if (audioSource) {
+      return audioSource;
+    }
+    
+    // 2. 次に、defaultAudiosにマッピングがあるか確認
+    // (空ファイルやまだ実装されていないファイル用)
+    const defaultAudio = defaultAudios[path];
+    if (defaultAudio) {
+      console.log(`Using placeholder audio for: ${path}`);
+      return defaultAudio;
+    }
+    
+    // 3. どちらのマッピングにもない場合はnullを返す
+    console.warn(`Audio file not found in any mapping: ${path}`);
+    return null;
+  } catch (error) {
+    // 音声ロード中のエラーをキャッチし、アプリがクラッシュしないようにする
+    console.warn(`Error loading audio: ${path}`, error);
     return null;
   }
-  
-  return resource;
 }
 
 // 発音評価関連の型定義

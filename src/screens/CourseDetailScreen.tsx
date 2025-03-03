@@ -12,6 +12,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { AppHeader } from '../components';
 import { colors, spacing, borderRadius, shadows } from '../theme/theme';
 import { formatJapaneseDate } from '../utils/format';
+import { getLocalizedTagText } from '../utils/localization';
 
 type CourseDetailRouteProp = RouteProp<MainStackParamList, 'CourseDetail'>;
 type RootNavProp = NativeStackNavigationProp<RootStackParamList>;
@@ -30,13 +31,14 @@ const CourseDetailScreen: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        // 言語パラメータを渡す
         const data = await getCourseById(courseId, language);
         setCourse(data || null);
         
         // コースが所属するレッスンIDを見つける
         if (data) {
-          // 既存のLessonForCourse関数を使用（同期関数）
-          const lesson = getLessonForCourse(courseId);
+          // getLessonForCourseは非同期関数なのでawaitを使用
+          const lesson = await getLessonForCourse(courseId);
           if (lesson) {
             setLessonId(lesson.id);
           }
@@ -49,7 +51,7 @@ const CourseDetailScreen: React.FC = () => {
     };
     
     loadData();
-  }, [courseId, language]);
+  }, [courseId, language]); // language を依存配列に追加して、言語変更時に再読み込み
   
   const handleStartLearning = () => {
     if (!course) return;
@@ -100,7 +102,7 @@ const CourseDetailScreen: React.FC = () => {
             {t('courseDetail.notFoundMessage', 'The requested course could not be found.')}
           </Text>
         </View>
-      </View>
+    </View>
     );
   }
 
@@ -118,7 +120,7 @@ const CourseDetailScreen: React.FC = () => {
     <View style={styles.container}>
       <AppHeader 
         title={course.title}
-        subtitle={course.level}
+        subtitle={getLocalizedTagText('learningLevel', course.level, language)}
         showBack={true}
         progress={totalProgress}
       />
@@ -131,29 +133,29 @@ const CourseDetailScreen: React.FC = () => {
           <Card.Content>
             {lessonId && isCourseCompleted(lessonId, courseId) && (
               <View style={styles.completedBadge}>
-                <Text style={styles.completedText}>完了</Text>
+                <Text style={styles.completedText}>{t('common.completed', '完了')}</Text>
               </View>
             )}
             <Text style={styles.description}>{course.description}</Text>
             
             <View style={styles.metaContainer}>
               <View style={styles.metaItem}>
-                <Text style={styles.metaLabel}>{t('common.level', 'Level')}</Text>
-                <Text style={styles.metaValue}>{course.level}</Text>
+                <Text style={styles.metaLabel}>{t('common.level', 'レベル')}</Text>
+                <Text style={styles.metaValue}>{getLocalizedTagText('learningLevel', course.level, language)}</Text>
               </View>
               
               <View style={styles.metaItem}>
-                <Text style={styles.metaLabel}>{t('common.estimatedTime', 'Est. Time')}</Text>
+                <Text style={styles.metaLabel}>{t('common.estimatedTime', '推定時間')}</Text>
                 <Text style={styles.metaValue}>{course.estimatedTime}</Text>
               </View>
               
               <View style={styles.metaItem}>
-                <Text style={styles.metaLabel}>{t('common.phrases', 'Phrases')}</Text>
+                <Text style={styles.metaLabel}>{t('common.phrases', 'フレーズ')}</Text>
                 <Text style={styles.metaValue}>{course.phrases.length}</Text>
               </View>
               
               <View style={styles.metaItem}>
-                <Text style={styles.metaLabel}>{t('common.quizzes', 'Quizzes')}</Text>
+                <Text style={styles.metaLabel}>{t('common.quizzes', 'クイズ')}</Text>
                 <Text style={styles.metaValue}>{course.quizQuestions.length}</Text>
               </View>
             </View>
@@ -163,13 +165,13 @@ const CourseDetailScreen: React.FC = () => {
         <Card style={styles.progressCard}>
           <Card.Content>
             <Text style={styles.sectionTitle}>
-              {t('courseDetail.progress', 'Your Progress')}
+              {t('courseDetail.progress', '進捗状況')}
             </Text>
             
             <View style={styles.progressItem}>
               <View style={styles.progressLabelContainer}>
                 <Text style={styles.progressLabel}>
-                  {t('courseDetail.learningProgress', 'Learning')}
+                  {t('courseDetail.learningProgress', '学習')}
                 </Text>
                 <Text style={styles.progressPercentage}>
                   {Math.round(phraseProgress * 100)}%
@@ -191,7 +193,7 @@ const CourseDetailScreen: React.FC = () => {
             <View style={styles.progressItem}>
               <View style={styles.progressLabelContainer}>
                 <Text style={styles.progressLabel}>
-                  {t('courseDetail.quizProgress', 'Quizzes')}
+                  {t('courseDetail.quizProgress', 'クイズ')}
                 </Text>
                 <Text style={styles.progressPercentage}>
                   {Math.round(quizProgress * 100)}%
@@ -221,7 +223,7 @@ const CourseDetailScreen: React.FC = () => {
             labelStyle={styles.buttonLabel}
             icon="book-open-variant"
           >
-            {t('courseDetail.startLearning', 'Start Learning')}
+            {t('courseDetail.startLearning', '学習を開始')}
           </Button>
           
           <Button
@@ -233,19 +235,19 @@ const CourseDetailScreen: React.FC = () => {
             icon="clipboard-list"
             disabled={course.quizQuestions.length === 0}
           >
-            {t('courseDetail.takeQuiz', 'Take Quiz')}
+            {t('courseDetail.takeQuiz', 'クイズを受ける')}
           </Button>
         </View>
         
         <Card style={styles.historyCard}>
           <Card.Content>
             <Text style={styles.sectionTitle}>
-              {t('courseDetail.quizHistory', 'Quiz History')}
+              {t('courseDetail.quizHistory', 'クイズ履歴')}
             </Text>
             
             {courseQuizLogs.length === 0 ? (
               <Text style={styles.noHistoryText}>
-                {t('courseDetail.noHistory', 'No completed quiz history available yet.')}
+                {t('courseDetail.noHistory', 'クイズ履歴はありません。')}
               </Text>
             ) : (
               courseQuizLogs.slice(0, 5).map((log) => {
@@ -291,7 +293,7 @@ const CourseDetailScreen: React.FC = () => {
                 onPress={() => navigation.navigate('Main', { screen: 'QuizHistory' })}
               >
                 <Text style={styles.viewAllText}>
-                  {t('courseDetail.viewAllHistory', 'View All History')}
+                  {t('courseDetail.viewAllHistory', 'すべての履歴を表示')}
                 </Text>
               </TouchableOpacity>
             )}
