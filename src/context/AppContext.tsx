@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import { LanguageProvider } from './LanguageContext';
-import { UserProgressProvider } from './UserProgressContext';
+import { ProgressProvider } from './ProgressContext';
 import { SettingsProvider } from './SettingsContext';
 import { QuizSessionProvider } from './QuizSessionContext';
 import { ContentProvider } from './ContentContext';
@@ -29,11 +29,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       <SettingsProvider>
         <LanguageProvider>
           <ContentProvider>
-            <UserProgressProvider>
+            <ProgressProvider>
               <QuizSessionProvider>
                 {children}
               </QuizSessionProvider>
-            </UserProgressProvider>
+            </ProgressProvider>
           </ContentProvider>
         </LanguageProvider>
       </SettingsProvider>

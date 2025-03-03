@@ -14,7 +14,6 @@ export * from './LanguageContext';
 
 // 進捗関連のコンテキスト
 export * from './ProgressContext';
-export * from './UserProgressContext';
 
 // クイズセッション関連のコンテキスト
 export * from './QuizSessionContext';

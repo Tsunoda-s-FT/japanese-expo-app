@@ -27,6 +27,7 @@ const CourseQuizScreen: React.FC = () => {
     addAnswer,
     finalizeSession,
     abortSession,
+    activeSessionId
   } = useQuizSession();
 
   // コース情報 & 問題リスト
@@ -46,9 +47,6 @@ const CourseQuizScreen: React.FC = () => {
 
   // ローディング中かどうか
   const [loading, setLoading] = useState(true);
-
-  // クイズセッション管理
-  const [sessionId, setSessionId] = useState<string | null>(null);
 
   // アニメーション用の状態
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -87,9 +85,7 @@ const CourseQuizScreen: React.FC = () => {
           text: '中断する',
           style: 'destructive',
           onPress: () => {
-            if (sessionId) {
-              abortSession(sessionId, currentIndex);
-            }
+            abortSession(currentIndex);
             navigation.getParent()?.goBack();
           },
         },
@@ -112,8 +108,7 @@ const CourseQuizScreen: React.FC = () => {
         setLoading(false);
 
         // 新しいクイズセッションを作成
-        const newSessionId = createNewSession(courseId);
-        setSessionId(newSessionId);
+        createNewSession(courseId);
       } catch (error) {
         console.error('Error loading course data:', error);
         setLoading(false);
@@ -138,7 +133,7 @@ const CourseQuizScreen: React.FC = () => {
   };
 
   const handleAnswer = async () => {
-    if (!questions[currentIndex] || !sessionId || selectedOption === null) {
+    if (!questions[currentIndex] || !activeSessionId || selectedOption === null) {
       return;
     }
 
@@ -154,7 +149,6 @@ const CourseQuizScreen: React.FC = () => {
 
     // 回答を記録
     addAnswer(
-      sessionId,
       currentQuestion.id,
       selectedOption,
       correct
@@ -164,12 +158,7 @@ const CourseQuizScreen: React.FC = () => {
   const handleNext = async () => {
     // 最後の問題だった場合
     if (currentIndex >= questions.length - 1) {
-      if (!sessionId) {
-        console.error('Cannot finalize quiz: sessionId is null');
-        return;
-      }
-      
-      await finalizeSession(sessionId);
+      await finalizeSession();
       
       navigation.navigate('Session', {
         screen: 'QuizResult',
