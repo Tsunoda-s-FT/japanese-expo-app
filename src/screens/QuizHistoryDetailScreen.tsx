@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text, Title, Divider, Paragraph } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import { useProgress } from '../context/ProgressContext';
 import { getCourseById } from '../services/contentService';
-import { QuizQuestion } from '../types/contentTypes';
-import { AppCard } from '../components';
+import { QuizQuestion, Course } from '../types/contentTypes';
+import { AppCard, AppLoading } from '../components';
 import { colors, spacing, borderRadius, shadows, commonStyles } from '../theme/theme';
 import { formatJapaneseDate } from '../utils/format';
+import { useLanguage } from '../context/LanguageContext';
 
 type QuizHistoryDetailRouteProp = RouteProp<MainStackParamList, 'QuizHistoryDetail'>;
 
@@ -17,8 +17,30 @@ const QuizHistoryDetailScreen: React.FC = () => {
   const route = useRoute<QuizHistoryDetailRouteProp>();
   const { sessionId } = route.params;
   const { getQuizSessionById } = useProgress();
+  const { language } = useLanguage();
+  
+  const [course, setCourse] = useState<Course | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const session = getQuizSessionById(sessionId);
+
+  useEffect(() => {
+    // Load course data asynchronously
+    const loadCourseData = async () => {
+      if (session && session.courseId) {
+        try {
+          const courseData = await getCourseById(session.courseId, language);
+          setCourse(courseData || null);
+        } catch (error) {
+          console.error('Error loading course data:', error);
+        }
+      }
+      setLoading(false);
+    };
+
+    loadCourseData();
+  }, [session, language]);
+
   if (!session) {
     return (
       <View style={[commonStyles.centeredContent, styles.notFoundContainer]}>
@@ -27,8 +49,10 @@ const QuizHistoryDetailScreen: React.FC = () => {
     );
   }
 
-  // 対応するコースと問題一覧を取得
-  const course = getCourseById(session.courseId);
+  if (loading) {
+    return <AppLoading message="コース情報を読み込み中..." />;
+  }
+
   const courseTitle = course?.title || '不明なコース';
   const scorePercent = session.totalCount ? Math.round((session.correctCount / session.totalCount) * 100) : 0;
 
@@ -59,7 +83,7 @@ const QuizHistoryDetailScreen: React.FC = () => {
       {session.answers.map((answer, idx) => {
         // 該当問題を course.quizQuestions から探す
         let questionData: QuizQuestion | undefined;
-        if (course) {
+        if (course && course.quizQuestions) {
           questionData = course.quizQuestions.find((q) => q.id === answer.questionId);
         }
 
