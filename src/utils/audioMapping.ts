@@ -12,7 +12,6 @@ export const audioFiles: { [key: string]: any } = {
     'audio/placeholder.mp3': PLACEHOLDER_AUDIO,
     
     // 旧構造の音声ファイル (互換性のために残す)
-    'audio/ohayou_gozaimasu.mp3': PLACEHOLDER_AUDIO,
     'audio/ohayou.mp3': PLACEHOLDER_AUDIO,
     'audio/ohayou_business.mp3': PLACEHOLDER_AUDIO,
     'audio/gozaimasu.mp3': PLACEHOLDER_AUDIO,
@@ -28,6 +27,12 @@ export const audioFiles: { [key: string]: any } = {
     'audio/example_business_1.mp3': PLACEHOLDER_AUDIO,
     'audio/example_intro_1.mp3': PLACEHOLDER_AUDIO,
     'audio/irasshaimase.mp3': PLACEHOLDER_AUDIO,
+    
+    // 実際のコンテンツ - レッスン：挨拶
+    'assets/contents/lesson_greetings/audio/ohayou_gozaimasu.mp3': require('../../assets/contents/lesson_greetings/audio/ohayou_gozaimasu.mp3'),
+    
+    // 実際のコンテンツ - レッスン：レストラン
+    'assets/contents/lesson_restaurant/audio/irasshaimase.mp3': require('../../assets/contents/lesson_restaurant/audio/irasshaimase.mp3'),
 };
 
 // 実際のファイルパスとプレースホルダーのマッピング
@@ -41,7 +46,6 @@ export const defaultAudios: { [key: string]: any } = {
     'assets/contents/lesson_greetings/audio/konbanwa.mp3': PLACEHOLDER_AUDIO,
     'assets/contents/lesson_greetings/audio/konnichiwa.mp3': PLACEHOLDER_AUDIO,
     'assets/contents/lesson_greetings/audio/ohayou.mp3': PLACEHOLDER_AUDIO,
-    'assets/contents/lesson_greetings/audio/ohayou_gozaimasu.mp3': PLACEHOLDER_AUDIO,
     'assets/contents/lesson_greetings/audio/sayounara.mp3': PLACEHOLDER_AUDIO,
     
     // 挨拶レッスン例文音声
@@ -79,7 +83,6 @@ export const defaultAudios: { [key: string]: any } = {
     'assets/contents/lesson_restaurant/audio/chumon_onegaishimasu.mp3': PLACEHOLDER_AUDIO,
     'assets/contents/lesson_restaurant/audio/gochisousama_deshita.mp3': PLACEHOLDER_AUDIO,
     'assets/contents/lesson_restaurant/audio/gochisousama.mp3': PLACEHOLDER_AUDIO,
-    'assets/contents/lesson_restaurant/audio/irasshaimase.mp3': PLACEHOLDER_AUDIO,
     'assets/contents/lesson_restaurant/audio/kore_kudasai.mp3': PLACEHOLDER_AUDIO,
     'assets/contents/lesson_restaurant/audio/menu_onegaishimasu.mp3': PLACEHOLDER_AUDIO,
     'assets/contents/lesson_restaurant/audio/oishii_desu.mp3': PLACEHOLDER_AUDIO,

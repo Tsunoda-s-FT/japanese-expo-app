@@ -99,14 +99,15 @@ export interface Phrase {
   imageRefs?: string[];                  // 新規: 画像への参照
 }
 
-// クイズ問題の構造を定義
+// クイズ問題の構造を定義（多言語対応）
 export interface QuizQuestion {
   id: string;
   linkedPhraseId: string;
-  questionSuffixJp: string;
-  options: string[];
+  questionSuffixJp: string;  // この名前は互換性のために残すが、内容は現在の言語を反映
+  options: string[];         // 言語に応じた選択肢の配列
   answerIndex: number;
-  explanation: string;
+  explanation: string;       // 言語に応じた説明文
+  questionText?: LocalizedText;  // 元のマルチ言語データ（デバッグ用）
 }
 
 // 進捗管理用の型定義

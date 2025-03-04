@@ -187,12 +187,35 @@ function transformPhrase(phrase: any, lessonId: string, language: LanguageCode):
  * クイズ問題データを変換するヘルパー関数
  */
 function transformQuizQuestion(quiz: any, language: LanguageCode): QuizQuestion {
+  // 質問テキストの多言語対応
+  const questionText = quiz.questionText 
+    ? (quiz.questionText[language] || quiz.questionText.ja) 
+    : quiz.questionSuffixJp;
+  
+  // オプションが配列の場合と言語別オブジェクトの場合の両方に対応
+  const options = quiz.options.map((opt: any) => {
+    if (typeof opt === 'string') {
+      return opt; // 単純な文字列の場合はそのまま
+    } else if (typeof opt === 'object') {
+      // 言語別オブジェクトの場合は現在の言語またはフォールバックを選択
+      return opt[language] || opt.ja || '';
+    }
+    return '';
+  });
+  
+  // 説明文も多言語対応
+  const explanation = quiz.explanation 
+    ? (typeof quiz.explanation === 'object' 
+       ? (quiz.explanation[language] || quiz.explanation.ja || '') 
+       : quiz.explanation)
+    : '';
+  
   return {
     id: quiz.id,
     linkedPhraseId: quiz.linkedPhraseId,
-    questionSuffixJp: quiz.questionText?.ja || quiz.questionSuffixJp,
-    options: quiz.options.map((opt: any) => typeof opt === 'string' ? opt : opt[language] || opt.ja),
+    questionSuffixJp: questionText, // 名前はSuffixJpでも内容は現在の言語を反映
+    options: options,
     answerIndex: quiz.answerIndex,
-    explanation: quiz.explanation?.ja || quiz.explanation
+    explanation: explanation
   };
 }

@@ -20,6 +20,9 @@ export const imageFiles: { [key: string]: any } = {
     'assets/icon.png': require('../../assets/icon.png'),
     'assets/splash-icon.png': require('../../assets/splash-icon.png'),
     
+    // 実際のコンテンツ - レッスン：挨拶
+    'assets/contents/lesson_greetings/images/thumbnail.png': require('../../assets/contents/lesson_greetings/images/thumbnail.png'),
+    
     // 注意: 以下の空ファイルはプレースホルダーで代用されます
     // 空ファイルへの直接的なrequireは削除し、実行時にgetImageSourceが
     // プレースホルダー画像を返すようにします
@@ -28,9 +31,6 @@ export const imageFiles: { [key: string]: any } = {
 // 実際のファイルパスとプレースホルダーのマッピング
 // ファイルが存在しない場合に使用されるマッピング
 export const defaultImages: { [key: string]: any } = {
-    // レッスン：挨拶
-    'assets/contents/lesson_greetings/images/thumbnail.png': PLACEHOLDER_IMAGE,
-    
     // アイコン
     'assets/contents/lesson_greetings/images/icons/farewell_icon.png': PLACEHOLDER_IMAGE,
     'assets/contents/lesson_greetings/images/icons/gratitude_icon.png': PLACEHOLDER_IMAGE,

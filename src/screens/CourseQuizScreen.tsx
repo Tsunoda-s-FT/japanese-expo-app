@@ -9,6 +9,7 @@ import { SessionStackParamList } from '../navigation/SessionNavigator';
 import { getCourseById } from '../services/contentService';
 import { useProgress } from '../context/ProgressContext';
 import { useQuizSession } from '../context/QuizSessionContext';
+import { useLanguage } from '../context/LanguageContext'; // 追加: 言語コンテキストをインポート
 import { Course, QuizQuestion } from '../types/contentTypes';
 import SegmentedText from '../components/learning/SegmentedText';
 import { AppButton, AppProgressBar, AppLoading } from '../components';
@@ -30,6 +31,7 @@ const CourseQuizScreen: React.FC = () => {
     abortSession,
     activeSessionId
   } = useQuizSession();
+  const { language, t } = useLanguage(); // 追加: 言語コンテキストを使用
 
   // コース情報 & 問題リスト
   const [course, setCourse] = useState<Course | null>(null);
@@ -79,12 +81,12 @@ const CourseQuizScreen: React.FC = () => {
 
   const showExitConfirmation = () => {
     Alert.alert(
-      'クイズを中断しますか？',
-      'クイズを中断して呼び出し元の画面に戻ります',
+      t('exitQuizTitle', 'クイズを中断しますか？'),
+      t('exitQuizMessage', 'クイズを中断して呼び出し元の画面に戻ります'),
       [
-        { text: 'キャンセル', style: 'cancel' },
+        { text: t('cancel', 'キャンセル'), style: 'cancel' },
         {
-          text: '中断する',
+          text: t('exit', '中断する'),
           style: 'destructive',
           onPress: () => {
             abortSession(currentIndex);
@@ -98,7 +100,8 @@ const CourseQuizScreen: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const courseData = await getCourseById(courseId);
+        // 言語パラメータを追加して適切な言語でコースデータを取得
+        const courseData = await getCourseById(courseId, language);
         if (!courseData) {
           console.error('Course not found:', courseId);
           setLoading(false);
@@ -125,7 +128,7 @@ const CourseQuizScreen: React.FC = () => {
     });
 
     return () => backHandler.remove();
-  }, [courseId]);
+  }, [courseId, language]); // 依存配列にlanguageを追加して言語変更時に再読み込み
 
   useEffect(() => {
     // 現在の問題が既に完了済みかをチェック
@@ -190,13 +193,13 @@ const CourseQuizScreen: React.FC = () => {
   };
 
   if (loading) {
-    return <AppLoading message="クイズを準備中..." />;
+    return <AppLoading message={t('loadingQuiz', 'クイズを準備中...')} />;
   }
 
   if (!course || questions.length === 0) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>クイズが見つかりません。</Text>
+        <Text style={styles.errorText}>{t('quizNotFound', 'クイズが見つかりません。')}</Text>
       </View>
     );
   }
@@ -210,7 +213,7 @@ const CourseQuizScreen: React.FC = () => {
       {/* Header with progress */}
       <View style={styles.headerContainer}>
         <Text style={styles.questionCounter}>
-          質問 {currentIndex + 1} / {questions.length}
+          {t('questionCounter', '質問')} {currentIndex + 1} / {questions.length}
         </Text>
         <AppProgressBar progress={progress} height={8} />
       </View>
@@ -243,7 +246,7 @@ const CourseQuizScreen: React.FC = () => {
                 {/* Options */}
                 {currentQuestionIsCompleted && !isSubmitted && (
                   <View style={styles.completedBadge}>
-                    <Text style={styles.completedText}>回答済み</Text>
+                    <Text style={styles.completedText}>{t('answered', '回答済み')}</Text>
                   </View>
                 )}
                 {currentQuestion.options.map((option, index) => (
@@ -284,7 +287,7 @@ const CourseQuizScreen: React.FC = () => {
                 {/* Answer / Next button */}
                 {!isSubmitted && !currentQuestionIsCompleted ? (
                   <AppButton
-                    label="回答する"
+                    label={t('answer', '回答する')}
                     onPress={handleAnswer}
                     disabled={selectedOption === null}
                     variant="primary"
@@ -312,7 +315,7 @@ const CourseQuizScreen: React.FC = () => {
                           color="#fff" 
                         />
                         <Text style={styles.feedbackTitle}>
-                          {isCorrect ? '正解！' : '不正解...'}
+                          {isCorrect ? t('correct', '正解！') : t('incorrect', '不正解...')}
                         </Text>
                       </View>
                       <View style={styles.explanationContainer}>
@@ -321,7 +324,7 @@ const CourseQuizScreen: React.FC = () => {
                         </Text>
                       </View>
                       <AppButton 
-                        label={currentIndex < questions.length - 1 ? '次へ' : '結果を見る'} 
+                        label={currentIndex < questions.length - 1 ? t('next', '次へ') : t('viewResults', '結果を見る')} 
                         onPress={handleNext}
                         variant="primary"
                         icon={currentIndex < questions.length - 1 ? "arrow-right" : "flag-checkered"}
